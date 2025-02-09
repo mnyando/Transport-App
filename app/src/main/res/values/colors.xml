@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="green">#228B22</color>  <!-- Forest Green -->
+    <color name="blue">#1E90FF</color>   <!-- Dodger Blue -->
+    <color name="red">#FF4500</color>    <!-- Orange Red -->
+    <color name="light_green">#32CD32</color> <!-- Light Green -->
+    <color name="gold">#FFD700</color> <!-- Gold -->
+    <color name="gray">#707070</color> <!-- Medium Gray -->
+    <color name="light_gray">#D3D3D3</color> <!-- Light Gray -->
+</resources>
