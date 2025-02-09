@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Application block -->
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,27 +13,43 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TransportApp"
         tools:targetApi="31">
+
+        <!-- ChatActivity, marked as non-exported for security -->
+        <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
+
+        <!-- ParentLanding Activity -->
         <activity
             android:name=".ParentLanding"
             android:exported="false" />
+
+        <!-- SchoolLanding Activity -->
         <activity
             android:name=".SchoolLanding"
             android:exported="false" />
+
+        <!-- Navigation Activity -->
         <activity
             android:name=".Navigation"
             android:exported="false" />
+
+        <!-- DriverLanding Activity -->
         <activity
             android:name=".DriverLanding"
             android:exported="false" />
+
+        <!-- MainActivity is exported since it's the entry point of the app -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
+                <!-- Main entry point to the app -->
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
