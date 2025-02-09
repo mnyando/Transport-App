@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -9,15 +10,9 @@
     android:padding="16dp">
 
     <!-- Navigation Bar -->
-
-    <!-- Trip Summary Section -->
-
-
-    <!-- Chat Button -->
-
     <androidx.appcompat.widget.Toolbar
         android:layout_width="374dp"
-        android:layout_height="93dp"
+        android:layout_height="77dp"
         android:background="@color/green"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -39,6 +34,7 @@
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
+    <!-- Trip Summary Section -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,6 +67,7 @@
             android:layout_marginBottom="6dp" />
     </androidx.cardview.widget.CardView>
 
+    <!-- Notifications Section -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -103,16 +100,18 @@
             android:layout_marginBottom="6dp" />
     </androidx.cardview.widget.CardView>
 
+    <!-- Chat Button -->
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Chat with Parents"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/green"
-        android:layout_margin="12dp"
-        android:padding="12dp"/>
+        android:id="@+id/chatButton"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Chat with Parents"
+    android:textSize="16sp"
+    android:textStyle="bold"
+    android:textColor="@color/white"
+    android:backgroundTint="@color/green"
+    android:layout_margin="12dp"
+    android:padding="12dp" />
 
     <!-- Footer Section -->
     <LinearLayout
