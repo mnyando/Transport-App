@@ -70,6 +70,7 @@
 
                 <!-- Image Section -->
                 <ImageView
+                    android:id="@+id/landing_image"
                     android:layout_width="335dp"
                     android:layout_height="239dp"
                     android:layout_gravity="center"
@@ -107,11 +108,11 @@
                             android:gravity="center">
 
                             <ImageView
+                                android:paddingTop="6dp"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
-                                android:src="@drawable/baseline_perm_identity_24"
-                                android:contentDescription="Students Enrolled"
-                                app:tint="@color/green" />
+                                android:src="@drawable/students_enrolled"
+                                android:contentDescription="Students Enrolled"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -123,6 +124,7 @@
                                 android:paddingTop="8dp"/>
 
                             <TextView
+                                android:id="@+id/students_enrolled_text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="1200"
@@ -150,11 +152,11 @@
                             android:gravity="center">
 
                             <ImageView
+                                android:paddingTop="6dp"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
-                                android:src="@drawable/baseline_perm_identity_24"
-                                android:contentDescription="Routes"
-                                app:tint="@color/blue" />
+                                android:src="@drawable/routes_travelled"
+                                android:contentDescription="Routes"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -166,6 +168,7 @@
                                 android:paddingTop="8dp"/>
 
                             <TextView
+                                android:id="@+id/routes_travelled_text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="15"
@@ -195,9 +198,8 @@
                             <ImageView
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
-                                android:src="@drawable/baseline_perm_identity_24"
-                                android:contentDescription="Active Vehicles"
-                                app:tint="@color/green" />
+                                android:src="@drawable/active_vehicles"
+                                android:contentDescription="Active Vehicles"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -209,6 +211,7 @@
                                 android:paddingTop="8dp"/>
 
                             <TextView
+                                android:id="@+id/active_vehicles_text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="20"
@@ -238,9 +241,8 @@
                             <ImageView
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
-                                android:src="@drawable/baseline_perm_identity_24"
-                                android:contentDescription="Inactive Vehicles"
-                                app:tint="@color/red" />
+                                android:src="@drawable/inactive_vehicles"
+                                android:contentDescription="Inactive Vehicles"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -252,6 +254,7 @@
                                 android:paddingTop="8dp"/>
 
                             <TextView
+                                android:id="@+id/inactive_vehicles_text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="5"
@@ -281,9 +284,8 @@
                             <ImageView
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
-                                android:src="@drawable/baseline_perm_identity_24"
-                                android:contentDescription="Active Drivers"
-                                app:tint="@color/green" />
+                                android:src="@drawable/active_driverr"
+                                android:contentDescription="Active Drivers"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -295,6 +297,7 @@
                                 android:paddingTop="8dp"/>
 
                             <TextView
+                                android:id="@+id/active_drivers_text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="18"
@@ -321,11 +324,11 @@
                             android:gravity="center">
 
                             <ImageView
+                                android:paddingTop="6dp"
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
-                                android:src="@drawable/baseline_perm_identity_24"
-                                android:contentDescription="Active Drivers"
-                                app:tint="@color/green" />
+                                android:src="@drawable/inactive_driver"
+                                android:contentDescription="Active Drivers" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -337,6 +340,7 @@
                                 android:paddingTop="8dp"/>
 
                             <TextView
+                                android:id="@+id/inactive_drivers_text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="18"
@@ -351,6 +355,19 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+
+        <!-- Title for Student Record Actions Section -->
+        <TextView
+            android:id="@+id/tvStudentRecordTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Student Record Actions"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:paddingBottom="1dp"
+            android:layout_marginTop="24dp"
+            android:gravity="center"/>
 
         <!-- Student Record Actions Section -->
         <LinearLayout
@@ -378,9 +395,10 @@
                     android:gravity="center">
 
                     <ImageView
+                        android:paddingTop="6dp"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/ic_android_black_24dp"
+                        android:src="@drawable/add_student"
                         android:contentDescription="Add Student" />
 
                     <TextView
@@ -411,9 +429,10 @@
                     android:gravity="center">
 
                     <ImageView
+                        android:paddingTop="6dp"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/ic_android_black_24dp"
+                        android:src="@drawable/modify_student"
                         android:contentDescription="Modify Student" />
 
                     <TextView
@@ -444,15 +463,400 @@
                     android:gravity="center">
 
                     <ImageView
+                        android:paddingTop="6dp"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/ic_android_black_24dp"
+                        android:src="@drawable/delete_student"
                         android:contentDescription="Delete Student" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Delete Student Record"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <!-- Title for Vehicle Record Actions Section -->
+        <TextView
+            android:id="@+id/ManageVehicle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vehicle Management"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:paddingBottom="8dp"
+            android:layout_marginTop="24dp"
+            android:gravity="center"/>
+
+        <!-- Vehicle Record Actions Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:weightSum="3">
+
+            <!-- Add Vehicle Record -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/AddVehicle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:paddingTop="6dp"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/add_vehicle"
+                        android:contentDescription="Add Student" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add Vehicle Record"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Modify Vehicle Record -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ModifyVehicle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:paddingTop="6dp"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/modify_vehicle"
+                        android:contentDescription="Modify Student" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Modify Vehicle Record"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Delete Vehicle Record -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/DeleteVehicle"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:paddingTop="6dp"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/delete_vehicle"
+                        android:contentDescription="Delete Student" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Delete Vehicle Record"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <!-- Title for Route Record Actions Section -->
+        <TextView
+            android:id="@+id/RouteRecordTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Route Management"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:paddingBottom="8dp"
+            android:layout_marginTop="24dp"
+            android:gravity="center"/>
+
+        <!-- Route Record Actions Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:weightSum="3">
+
+            <!-- Add Route Record -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/AddRoute"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:paddingTop="6dp"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/add_route"
+                        android:contentDescription="Add Route" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add Route Record"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Modify Route Record -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ModifyRoute"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:paddingTop="6dp"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/modify_route"
+                        android:contentDescription="Modify Route" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Modify Route Record"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Delete Route Record -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/DeleteRoute"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:paddingTop="6dp"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/delete_routee"
+                        android:contentDescription="Delete Route" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Delete Route Record"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <!-- Title for Staff Record Actions Section -->
+        <TextView
+            android:id="@+id/StaffRecordTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Staff Management"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:paddingBottom="8dp"
+            android:layout_marginTop="24dp"
+            android:gravity="center"/>
+
+        <!-- Student Record Actions Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:weightSum="3">
+
+            <!-- Add Staff Record -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/AddStaffRecord"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:paddingTop="6dp"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/add_staff"
+                        android:contentDescription="Add Staff" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add Staff Record"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Modify Staff Record -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/ModifyStaffRecord"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:paddingTop="6dp"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/modify_staff"
+                        android:contentDescription="Modify Staff" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Modify Staff Record"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Delete Student Record -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/DeleteStaffRecord"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                app:cardElevation="6dp"
+                app:cardCornerRadius="12dp"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:paddingTop="6dp"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/delete_staff"
+                        android:contentDescription="Delete Staff" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Delete Staff Record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"

@@ -37,16 +37,7 @@ public class SchoolLanding extends AppCompatActivity {
         activeDrivers = findViewById(R.id.active_drivers_text); // Assuming a corresponding ID
         inactiveDrivers = findViewById(R.id.inactive_drivers_text); // Assuming a corresponding ID
 
-        // ImageViews
-        enrolledIcon = findViewById(R.id.enrolled_icon); // Assuming ID for ImageView
-        routesIcon = findViewById(R.id.routes_icon); // Assuming ID for ImageView
-        activeVehiclesIcon = findViewById(R.id.active_vehicles_icon); // Assuming ID for ImageView
-        inactiveVehiclesIcon = findViewById(R.id.inactive_vehicles_icon); // Assuming ID for ImageView
-        activeDriversIcon = findViewById(R.id.active_drivers_icon); // Assuming ID for ImageView
-        inactiveDriversIcon = findViewById(R.id.inactive_drivers_icon); // Assuming ID for ImageView
 
-        // Grid Layout for general information
-        generalInfoGrid = findViewById(R.id.general_info_grid); // Assuming ID for GridLayout
 
         // Set up back button functionality
         backButton.setOnClickListener(v -> finish());  // Navigates back to the previous screen
