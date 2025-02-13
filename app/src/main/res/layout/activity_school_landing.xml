@@ -71,8 +71,8 @@
                 <!-- Image Section -->
                 <ImageView
                     android:id="@+id/landing_image"
-                    android:layout_width="335dp"
-                    android:layout_height="239dp"
+                    android:layout_width="333dp"
+                    android:layout_height="189dp"
                     android:layout_gravity="center"
                     android:contentDescription="Transport Information"
                     android:paddingBottom="12dp"
