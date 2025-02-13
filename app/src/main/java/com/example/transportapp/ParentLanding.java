@@ -2,16 +2,28 @@ package com.example.transportapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class ParentLanding extends AppCompatActivity {
+
+    private static final String TAG = "ParentLanding";
 
     private RecyclerView childRecyclerView;
     private RecyclerView notificationRecyclerView;
@@ -21,10 +33,15 @@ public class ParentLanding extends AppCompatActivity {
     private ChildAdapter childAdapter;
     private NotificationAdapter notificationAdapter;
 
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parent_landing);
+
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
 
         // Initialize RecyclerViews and Button
         childRecyclerView = findViewById(R.id.childRecyclerView);
@@ -35,8 +52,9 @@ public class ParentLanding extends AppCompatActivity {
         childList = new ArrayList<>();
         notificationList = new ArrayList<>();
 
-        // Sample data for children and notifications
-        loadSampleData();
+        // Fetch children and notifications from Firestore
+        fetchChildrenFromFirestore();
+        fetchNotificationsFromFirestore();
 
         // Set up the RecyclerViews with adapters
         setupRecyclerViews();
@@ -52,14 +70,40 @@ public class ParentLanding extends AppCompatActivity {
         });
     }
 
-    private void loadSampleData() {
-        // Add sample children data
-        childList.add("John Doe - Grade 4");
-        childList.add("Jane Doe - Grade 2");
+    private void fetchChildrenFromFirestore() {
+        CollectionReference childrenRef = db.collection("children");
+        childrenRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot document : task.getResult()) {
+                        String childData = document.getString("name") + " - " + document.getString("grade");
+                        childList.add(childData);
+                    }
+                    childAdapter.notifyDataSetChanged();
+                } else {
+                    Log.d(TAG, "Error getting children data: ", task.getException());
+                }
+            }
+        });
+    }
 
-        // Add sample notifications data
-        notificationList.add("Bus will arrive at 8:00 AM.");
-        notificationList.add("School is closed on Friday.");
+    private void fetchNotificationsFromFirestore() {
+        CollectionReference notificationsRef = db.collection("notifications");
+        notificationsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot document : task.getResult()) {
+                        String notification = document.getString("message");
+                        notificationList.add(notification);
+                    }
+                    notificationAdapter.notifyDataSetChanged();
+                } else {
+                    Log.d(TAG, "Error getting notifications: ", task.getException());
+                }
+            }
+        });
     }
 
     private void setupRecyclerViews() {
