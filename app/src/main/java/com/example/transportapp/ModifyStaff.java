@@ -54,7 +54,7 @@ public class ModifyStaff extends AppCompatActivity {
         String newRole = modifyStaffRole.getText().toString().trim();
 
         if (TextUtils.isEmpty(newName) || TextUtils.isEmpty(newRole)) {
-            Toast.makeText(ModifyStaffActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ModifyStaff.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -67,10 +67,10 @@ public class ModifyStaff extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(ModifyStaffActivity.this, "Staff updated successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ModifyStaff.this, "Staff updated successfully", Toast.LENGTH_SHORT).show();
                     finish();  // Close the activity after successful update
                 } else {
-                    Toast.makeText(ModifyStaffActivity.this, "Failed to update staff", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ModifyStaff.this, "Failed to update staff", Toast.LENGTH_SHORT).show();
                 }
             }
         });
