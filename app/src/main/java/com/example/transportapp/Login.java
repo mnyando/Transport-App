@@ -14,12 +14,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Login extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
     private Button btnLogin;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +30,9 @@ public class Login extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
-        // Initialize Firebase Auth
+        // Initialize Firebase Auth and Firestore
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         // Get references to UI elements
         etEmail = findViewById(R.id.etEmail);
@@ -62,24 +66,62 @@ public class Login extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
+                        // Sign in success, fetch user role from Firestore
                         FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(Login.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                        updateUI(user);
+                        if (user != null) {
+                            fetchUserRole(user.getUid());
+                        }
                     } else {
-                        // If sign in fails, display a message to the user.
+                        // If sign-in fails, display a message to the user
                         Log.w("Login", "signInWithEmail:failure", task.getException());
                         Toast.makeText(Login.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void updateUI(FirebaseUser user) {
-        if (user != null) {
-            // Start a new activity or go to the main dashboard
-            Intent intent = new Intent(Login.this, MainActivity.class); // Replace with your dashboard activity
-            startActivity(intent);
-            finish(); // Close login activity
+    private void fetchUserRole(String userId) {
+        db.collection("users").document(userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            String role = document.getString("role");
+                            navigateToRoleBasedPage(role);
+                        } else {
+                            Toast.makeText(Login.this, "User data not found!", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(Login.this, "Failed to fetch user role: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void navigateToRoleBasedPage(String role) {
+        if (role == null) {
+            Toast.makeText(this, "User role is undefined", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        Intent intent;
+        switch (role.toLowerCase()) {
+            case "school":
+                intent = new Intent(Login.this, SchoolLanding.class);
+                break;
+            case "parent":
+                intent = new Intent(Login.this, ParentLanding.class);
+                break;
+            case "driver":
+                intent = new Intent(Login.this, DriverLanding.class);
+                break;
+            default:
+                Toast.makeText(this, "Unknown role: " + role, Toast.LENGTH_SHORT).show();
+                return;
+        }
+
+        // Start the appropriate activity and finish the login activity
+        startActivity(intent);
+        finish();
     }
 }
+

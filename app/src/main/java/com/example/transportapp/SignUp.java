@@ -1,5 +1,6 @@
 package com.example.transportapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -12,6 +13,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignUp extends AppCompatActivity {
 
@@ -21,14 +27,16 @@ public class SignUp extends AppCompatActivity {
     private ImageView ivTogglePassword;
     private boolean isPasswordVisible = false;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        // Initialize Firebase Auth
+        // Initialize Firebase Auth and Firestore
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         // Initialize UI elements
         etFullName = findViewById(R.id.etFullName);
@@ -43,14 +51,12 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isPasswordVisible) {
-                    // Hide password
                     etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    ivTogglePassword.setImageResource(R.drawable.baseline_remove_red_eye_24);  // Update icon if necessary
+                    ivTogglePassword.setImageResource(R.drawable.baseline_remove_red_eye_24);
                     isPasswordVisible = false;
                 } else {
-                    // Show password
                     etPassword.setInputType(InputType.TYPE_CLASS_TEXT);
-                    ivTogglePassword.setImageResource(R.drawable.baseline_remove_red_eye_24);  // Update icon if necessary
+                    ivTogglePassword.setImageResource(R.drawable.baseline_remove_red_eye_24);
                     isPasswordVisible = true;
                 }
                 etPassword.setSelection(etPassword.getText().length());
@@ -93,10 +99,28 @@ public class SignUp extends AppCompatActivity {
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                // Sign-up success
-                                Toast.makeText(SignUp.this, "Sign-up successful!", Toast.LENGTH_SHORT).show();
-                                // Navigate to another activity, e.g., the login screen
-                                finish();
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                if (user != null) {
+                                    // Store user information in Firestore
+                                    Map<String, Object> userData = new HashMap<>();
+                                    userData.put("fullName", fullName);
+                                    userData.put("email", email);
+                                    userData.put("role", "parent");  // Default role
+
+                                    db.collection("users").document(user.getUid())
+                                            .set(userData)
+                                            .addOnSuccessListener(aVoid -> {
+                                                Toast.makeText(SignUp.this, "Sign-up successful!", Toast.LENGTH_SHORT).show();
+
+                                                // Navigate to the parent landing page
+                                                Intent intent = new Intent(SignUp.this, ParentLanding.class);
+                                                startActivity(intent);
+                                                finish();
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                Toast.makeText(SignUp.this, "Failed to save user data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                            });
+                                }
                             } else {
                                 // Sign-up failed
                                 Toast.makeText(SignUp.this, "Sign-up failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -109,7 +133,8 @@ public class SignUp extends AppCompatActivity {
         tvSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate to login activity
+                Intent intent = new Intent(SignUp.this, Login.class);
+                startActivity(intent);
                 finish();  // Close current activity and go back to login
             }
         });

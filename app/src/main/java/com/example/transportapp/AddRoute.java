@@ -1,17 +1,13 @@
 package com.example.transportapp;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -19,55 +15,80 @@ import java.util.Map;
 
 public class AddRoute extends AppCompatActivity {
 
-    private EditText routeNameEditText, routeNumberEditText;
+    private EditText routeNameEditText;
+    private EditText totalDistanceInput;
+    private EditText routeDescriptionInput;
+    private Spinner vehicleDropdown;
     private Button addRouteButton;
+
     private FirebaseFirestore firestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_route);
+        setContentView(R.layout.activity_add_route); // Ensure this matches your XML filename
+
+        // Initialize UI elements
+        routeNameEditText = findViewById(R.id.routeNameEditText);
+        totalDistanceInput = findViewById(R.id.totalDistanceInput);
+        routeDescriptionInput = findViewById(R.id.routeDescriptionInput);
+        vehicleDropdown = findViewById(R.id.vehicleDropdown);
+        addRouteButton = findViewById(R.id.addRouteButton);
 
         // Initialize Firestore
         firestore = FirebaseFirestore.getInstance();
 
-        // Initialize Views
-        routeNameEditText = findViewById(R.id.routeNameEditText);
-        routeNumberEditText = findViewById(R.id.routeNumberEditText);
-        addRouteButton = findViewById(R.id.addRouteButton);
-
+        // Set button click listener
         addRouteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addRoute();
+                addRouteToFirestore();
             }
         });
     }
 
-    private void addRoute() {
+    private void addRouteToFirestore() {
         String routeName = routeNameEditText.getText().toString().trim();
-        String routeNumber = routeNumberEditText.getText().toString().trim();
+        String totalDistanceStr = totalDistanceInput.getText().toString().trim();
+        String routeDescription = routeDescriptionInput.getText().toString().trim();
+        String selectedVehicle = vehicleDropdown.getSelectedItem().toString();
 
-        if (TextUtils.isEmpty(routeName) || TextUtils.isEmpty(routeNumber)) {
-            Toast.makeText(AddRoute.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+        if (routeName.isEmpty() || totalDistanceStr.isEmpty() || routeDescription.isEmpty()) {
+            Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Map<String, Object> routeData = new HashMap<>();
-        routeData.put("name", routeName);
-        routeData.put("number", routeNumber);
+        double totalDistance;
+        try {
+            totalDistance = Double.parseDouble(totalDistanceStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Invalid distance value", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // Add route to Firestore
-        firestore.collection("routes").add(routeData).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(AddRoute.this, "Route added successfully", Toast.LENGTH_SHORT).show();
-                    finish();  // Close the activity after successful addition
-                } else {
-                    Toast.makeText(AddRoute.this, "Failed to add route", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        // Prepare data to be sent to Firestore
+        Map<String, Object> routeData = new HashMap<>();
+        routeData.put("routeName", routeName);
+        routeData.put("totalDistance", totalDistance);
+        routeData.put("routeDescription", routeDescription);
+        routeData.put("vehicle", selectedVehicle);
+
+        // Add the route data to Firestore
+        firestore.collection("Routes")
+                .add(routeData)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(this, "Route added successfully", Toast.LENGTH_SHORT).show();
+                    clearForm();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to add route: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void clearForm() {
+        routeNameEditText.setText("");
+        totalDistanceInput.setText("");
+        routeDescriptionInput.setText("");
+        vehicleDropdown.setSelection(0);
     }
 }
