@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -20,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class Login extends AppCompatActivity {
 
     private EditText etEmail, etPassword;
+    private TextView tvSignUp;
     private Button btnLogin;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -38,12 +40,22 @@ public class Login extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        tvSignUp = findViewById(R.id.tvSignUp);
 
         // Login button click listener
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loginUser();
+            }
+        });
+
+        // Navigate to the SignUp page
+        tvSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Login.this, SignUp.class);
+                startActivity(intent);
             }
         });
     }
@@ -123,5 +135,6 @@ public class Login extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
 }
 

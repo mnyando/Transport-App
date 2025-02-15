@@ -3,6 +3,7 @@ package com.example.transportapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +29,8 @@ public class SignUp extends AppCompatActivity {
     private boolean isPasswordVisible = false;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+
+    private static final String TAG = "SignUpDebug";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,24 +74,22 @@ public class SignUp extends AppCompatActivity {
                 String email = etEmail.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();
 
+                // Input validation
                 if (fullName.isEmpty()) {
                     etFullName.setError("Full name is required");
                     etFullName.requestFocus();
                     return;
                 }
-
                 if (email.isEmpty()) {
                     etEmail.setError("Email is required");
                     etEmail.requestFocus();
                     return;
                 }
-
                 if (password.isEmpty()) {
                     etPassword.setError("Password is required");
                     etPassword.requestFocus();
                     return;
                 }
-
                 if (password.length() < 6) {
                     etPassword.setError("Password must be at least 6 characters");
                     etPassword.requestFocus();
@@ -101,6 +102,7 @@ public class SignUp extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 if (user != null) {
+                                    Log.d(TAG, "User created successfully: " + user.getUid());
                                     // Store user information in Firestore
                                     Map<String, Object> userData = new HashMap<>();
                                     userData.put("fullName", fullName);
@@ -110,6 +112,7 @@ public class SignUp extends AppCompatActivity {
                                     db.collection("users").document(user.getUid())
                                             .set(userData)
                                             .addOnSuccessListener(aVoid -> {
+                                                Log.d(TAG, "User data saved to Firestore with role: parent");
                                                 Toast.makeText(SignUp.this, "Sign-up successful!", Toast.LENGTH_SHORT).show();
 
                                                 // Navigate to the parent landing page
@@ -118,11 +121,15 @@ public class SignUp extends AppCompatActivity {
                                                 finish();
                                             })
                                             .addOnFailureListener(e -> {
+                                                Log.e(TAG, "Failed to save user data to Firestore: " + e.getMessage());
                                                 Toast.makeText(SignUp.this, "Failed to save user data: " + e.getMessage(), Toast.LENGTH_LONG).show();
                                             });
+                                } else {
+                                    Log.e(TAG, "User is null after creation");
+                                    Toast.makeText(SignUp.this, "User creation failed.", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                // Sign-up failed
+                                Log.e(TAG, "Sign-up failed: " + task.getException().getMessage());
                                 Toast.makeText(SignUp.this, "Sign-up failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
                         });
