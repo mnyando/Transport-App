@@ -27,13 +27,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Add Driver"
+            android:text="Add Student"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"/>
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- Add Driver Form Section -->
+    <!-- Add Student Form Section -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,71 +48,99 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Driver Name -->
+            <!-- Student Name -->
             <EditText
-                android:id="@+id/driverNameInput"
+                android:id="@+id/studentNameInput"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginHorizontal="10dp"
                 android:background="@drawable/edittext_background"
-                android:hint="Driver Name"
+                android:hint="Student Name"
                 android:inputType="text"
                 android:padding="12dp"
                 android:textColor="@color/black"
-                android:textSize="25sp"/>
+                android:textSize="20sp"/>
 
-            <!-- Phone Number -->
-            <EditText
-                android:id="@+id/driverPhoneInput"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:hint="Phone Number"
-                android:inputType="phone"
-                android:padding="12dp"
-                android:textColor="@color/black"
-                android:textSize="25sp"/>
-
-            <!-- Driver's License Number -->
-            <EditText
-                android:id="@+id/licenseNumberInput"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:hint="Driver's License Number"
-                android:inputType="text"
-                android:padding="12dp"
-                android:textColor="@color/black"
-                android:textSize="25sp"/>
-
-            <!-- Assigned Vehicle Dropdown -->
+            <!-- Class Dropdown -->
             <Spinner
-                android:id="@+id/vehicleDropdown"
+                android:id="@+id/classDropdown"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="55dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginHorizontal="10dp"
                 android:background="@drawable/edittext_background"
                 android:padding="12dp"/>
+
+            <!-- Student ID Number -->
+            <EditText
+                android:id="@+id/studentIdInput"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@drawable/edittext_background"
+                android:hint="Student ID Number"
+                android:inputType="number"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"/>
 
             <!-- Assigned Route Dropdown -->
             <Spinner
                 android:id="@+id/routeDropdown"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="55dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginHorizontal="10dp"
                 android:background="@drawable/edittext_background"
                 android:padding="12dp"/>
 
+            <!-- Parent Name -->
+            <EditText
+                android:id="@+id/parentNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@drawable/edittext_background"
+                android:hint="Parent Name"
+                android:inputType="text"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"/>
+
+            <!-- Parent Contact -->
+            <EditText
+                android:id="@+id/parentContactInput"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@drawable/edittext_background"
+                android:hint="Parent Contact"
+                android:inputType="phone"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"/>
+
+            <!-- Home Location -->
+            <EditText
+                android:id="@+id/homeLocationInput"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@drawable/edittext_background"
+                android:hint="Home Location"
+                android:inputType="text"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"/>
+
             <!-- Save Button -->
             <Button
-                android:id="@+id/saveDriverButton"
+                android:id="@+id/saveStudentButton"
                 android:layout_width="280dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -121,7 +149,7 @@
                 android:backgroundTint="@color/green"
                 android:drawablePadding="8dp"
                 android:padding="16dp"
-                android:text="Save Driver"
+                android:text="Add Student"
                 android:textColor="@color/white"
                 android:textSize="16sp"/>
         </LinearLayout>

@@ -12,7 +12,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/top_navigation_bar"
             android:layout_width="match_parent"
@@ -44,6 +43,7 @@
 
         <!-- General Information Section -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/general_info_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -80,7 +80,6 @@
                     android:src="@drawable/landing_image" />
 
                 <!-- Information Grid -->
-                <!-- General Information Grid -->
                 <GridLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -93,6 +92,7 @@
 
                     <!-- Students Enrolled -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/students_enrolled_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
@@ -137,6 +137,7 @@
 
                     <!-- Routes Travelled -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/routes_travelled_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
@@ -181,6 +182,7 @@
 
                     <!-- Active Vehicles -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/active_vehicles_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
@@ -224,6 +226,7 @@
 
                     <!-- Inactive Vehicles -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/inactive_vehicles_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
@@ -267,6 +270,7 @@
 
                     <!-- Active Drivers -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/active_drivers_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
@@ -308,7 +312,9 @@
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
 
+                    <!-- Inactive Drivers -->
                     <androidx.cardview.widget.CardView
+                        android:id="@+id/inactive_drivers_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
@@ -328,7 +334,7 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/inactive_driver"
-                                android:contentDescription="Active Drivers" />
+                                android:contentDescription="Inactive Drivers" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -351,10 +357,8 @@
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
                 </GridLayout>
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
 
         <!-- Title for Student Record Actions Section -->
         <TextView
@@ -380,6 +384,7 @@
 
             <!-- Add Student Record -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/addStudent"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -414,6 +419,7 @@
 
             <!-- Modify Student Record -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/modifyStudent"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -448,6 +454,7 @@
 
             <!-- Delete Student Record -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/deleteStudent"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
@@ -750,7 +757,7 @@
             android:layout_marginTop="24dp"
             android:gravity="center"/>
 
-        <!-- Student Record Actions Section -->
+        <!-- Staff Record Actions Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -829,7 +836,7 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Delete Student Record -->
+            <!-- Delete Staff Record -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/DeleteStaffRecord"
                 android:layout_width="0dp"

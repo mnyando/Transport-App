@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Transport App</string>
+    
+    <string-array name="grade_levels">
+        <item>Grade 1</item>
+        <item>Grade 2</item>
+        <item>Grade 3</item>
+        <item>Grade 4</item>
+        <item>Grade 5</item>
+        <item>Grade 6</item>
+    </string-array>
 </resources>
