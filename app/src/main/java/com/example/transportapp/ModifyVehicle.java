@@ -1,24 +1,36 @@
 package com.example.transportapp;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ModifyVehicle extends AppCompatActivity {
-
-    private EditText vehicleIdInput, vehicleNameInput, vehicleNumberInput, capacityInput;
-    private Button updateVehicleButton;
-    private ImageButton backButton;
     private FirebaseFirestore db;
+    private CollectionReference vehiclesRef;
+    private Spinner filterDropdown;
+    private EditText vehicleNameInput, vehicleNumberInput, vehicleIdInput, capacityInput;
+    private Button saveVehicleButton;
+    private RecyclerView vehicleRecyclerView;
+    private VehicleAdapter vehicleAdapter;
+    private List<Vehicle> vehicleList;
+    private String selectedVehicleId = null; // Track editing vehicle
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,41 +38,54 @@ public class ModifyVehicle extends AppCompatActivity {
         setContentView(R.layout.activity_modify_vehicle);
 
         db = FirebaseFirestore.getInstance();
+        vehiclesRef = db.collection("vehicle");
 
-        vehicleIdInput = findViewById(R.id.vehicleIdInput);
+        // Initialize Views
+        filterDropdown = findViewById(R.id.filterDropdown);
         vehicleNameInput = findViewById(R.id.vehicleNameInput);
         vehicleNumberInput = findViewById(R.id.vehicleNumberInput);
+        vehicleIdInput = findViewById(R.id.vehicleIdInput);
         capacityInput = findViewById(R.id.capacityInput);
-        updateVehicleButton = findViewById(R.id.updateVehicleButton);
-        backButton = findViewById(R.id.backButton);
+        saveVehicleButton = findViewById(R.id.saveVehicleButton);
+        vehicleRecyclerView = findViewById(R.id.vehicleRecyclerView);
 
-        backButton.setOnClickListener(v -> finish()); // Go back
+        // Setup RecyclerView
+        vehicleRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        vehicleList = new ArrayList<>();
+        vehicleAdapter = new VehicleAdapter(vehicleList, this::onVehicleClicked);
+        vehicleRecyclerView.setAdapter(vehicleAdapter);
 
-        updateVehicleButton.setOnClickListener(v -> updateVehicleData());
+        // Fetch vehicles
+        fetchVehicles();
+
+        // Save Button Click
+        saveVehicleButton.setOnClickListener(v -> saveVehicleData());
     }
 
-    private void updateVehicleData() {
-        String vehicleId = vehicleIdInput.getText().toString().trim();
-        String vehicleName = vehicleNameInput.getText().toString().trim();
-        String vehicleNumber = vehicleNumberInput.getText().toString().trim();
-        String capacity = capacityInput.getText().toString().trim();
+    private void fetchVehicles() {
+        vehiclesRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            vehicleList.clear();
+            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                Vehicle vehicle = document.toObject(Vehicle.class);
+                vehicle.setId(document.getId());
+                vehicleList.add(vehicle);
+            }
+            vehicleAdapter.notifyDataSetChanged();
+        });
+    }
 
-        if (vehicleId.isEmpty() || vehicleName.isEmpty() || vehicleNumber.isEmpty() || capacity.isEmpty()) {
-            Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
+    private void onVehicleClicked(Vehicle vehicle) {
+        selectedVehicleId = vehicle.getId();
+        vehicleNameInput.setText(vehicle.getVehicleName());
+        vehicleNumberInput.setText(vehicle.getVehicleNumber());
+        vehicleIdInput.setText(vehicle.getVehicleId());
+        capacityInput.setText(vehicle.getCapacity());
+    }
 
-        Map<String, Object> updatedData = new HashMap<>();
-        updatedData.put("vehicleName", vehicleName);
-        updatedData.put("vehicleNumber", vehicleNumber);
-        updatedData.put("capacity", capacity);
-
-        db.collection("vehicle").document(vehicleId)
-                .update(updatedData)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Vehicle updated successfully", Toast.LENGTH_SHORT).show();
-                    finish();
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    private void saveVehicleData() {
+        DocumentReference vehicleRef = vehiclesRef.document(selectedVehicleId);
+        vehicleRef.update("vehicleName", vehicleNameInput.getText().toString(),
+                "vehicleNumber", vehicleNumberInput.getText().toString(),
+                "capacity", capacityInput.getText().toString());
     }
 }
