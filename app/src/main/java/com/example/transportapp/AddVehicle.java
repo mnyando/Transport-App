@@ -1,7 +1,6 @@
 package com.example.transportapp;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,6 +27,7 @@ public class AddVehicle extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
+        // Initialize UI components
         vehicleNameInput = findViewById(R.id.vehicleNameInput);
         vehicleNumberInput = findViewById(R.id.vehicleNumberInput);
         capacityInput = findViewById(R.id.capacityInput);
@@ -35,8 +35,7 @@ public class AddVehicle extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
 
         backButton.setOnClickListener(v -> finish()); // Go back
-
-        saveVehicleButton.setOnClickListener(v -> saveVehicleData());
+        saveVehicleButton.setOnClickListener(v -> saveVehicleData()); // Save vehicle
     }
 
     private void saveVehicleData() {
@@ -49,14 +48,18 @@ public class AddVehicle extends AppCompatActivity {
             return;
         }
 
+        // Create a map for the vehicle data
         Map<String, Object> vehicleData = new HashMap<>();
         vehicleData.put("vehicleName", vehicleName);
         vehicleData.put("vehicleNumber", vehicleNumber);
         vehicleData.put("capacity", capacity);
 
-        db.collection("vehicle").add(vehicleData).addOnSuccessListener(documentReference -> {
-            Toast.makeText(this, "Vehicle added successfully", Toast.LENGTH_SHORT).show();
-            finish();
-        }).addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        // Save data to Firestore
+        db.collection("vehicle").add(vehicleData)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(this, "Vehicle added successfully", Toast.LENGTH_SHORT).show();
+                    finish(); // Close the activity after saving
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }
