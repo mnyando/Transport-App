@@ -6,16 +6,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDriverClickListener {
+public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDriverClickListener {
 
     private EditText driverNameInput, driverPhoneInput, licenseNumberInput;
     private Button updateDriverButton;
@@ -39,7 +39,7 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_modify_staff);
+        setContentView(R.layout.activity_delete_staff);
 
         // Initialize Firestore
         firestore = FirebaseFirestore.getInstance();
@@ -75,7 +75,7 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
             @Override
             public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
                 if (e != null) {
-                    Toast.makeText(ModifyStaff.this, "Error fetching drivers", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DeleteStaff.this, "Error fetching drivers", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -102,27 +102,35 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
         licenseNumberInput.setText(driver.getLicenseNumber());
     }
 
-    // Handle long click for driver deletion
+    // Handle driver long press for deletion
     @Override
     public void onDriverLongClick(final Driver driver) {
         new AlertDialog.Builder(this)
                 .setTitle("Delete Driver")
                 .setMessage("Are you sure you want to delete " + driver.getName() + "?")
-                .setPositiveButton("Delete", (dialog, which) -> deleteDriver(driver.getId()))
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteDriver(driver.getId());
+                    }
+                })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    // Delete driver from Firestore
+    // Delete the driver from Firestore
     private void deleteDriver(String driverId) {
         firestore.collection("drivers").document(driverId)
                 .delete()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(ModifyStaff.this, "Driver deleted successfully", Toast.LENGTH_SHORT).show();
-                        fetchDrivers(); // Refresh list
-                    } else {
-                        Toast.makeText(ModifyStaff.this, "Failed to delete driver", Toast.LENGTH_SHORT).show();
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(DeleteStaff.this, "Driver deleted successfully", Toast.LENGTH_SHORT).show();
+                            fetchDrivers(); // Refresh the list
+                        } else {
+                            Toast.makeText(DeleteStaff.this, "Failed to delete driver", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }
@@ -154,9 +162,9 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(ModifyStaff.this, "Driver updated successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DeleteStaff.this, "Driver updated successfully", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(ModifyStaff.this, "Failed to update driver", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(DeleteStaff.this, "Failed to update driver", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

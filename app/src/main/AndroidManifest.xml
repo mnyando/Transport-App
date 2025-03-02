@@ -13,6 +13,12 @@
         android:theme="@style/Theme.TransportApp"
         tools:targetApi="31">
         <activity
+            android:name=".DeleteStaff"
+            android:exported="false" />
+        <activity
+            android:name=".DeleteRoute"
+            android:exported="false" />
+        <activity
             android:name=".DeleteVehicle"
             android:exported="false" />
         <activity

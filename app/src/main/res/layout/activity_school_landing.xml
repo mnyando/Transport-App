@@ -409,7 +409,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add Student Record"
+                        android:text="Add Student        Record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
@@ -537,7 +537,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add Vehicle Record"
+                        android:text="Add Vehicle       Record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
@@ -665,7 +665,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add Route Record"
+                        android:text="Add Route       Record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
@@ -793,7 +793,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add Staff Record"
+                        android:text="Add Staff       Record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
@@ -828,7 +828,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Modify Staff Record"
+                        android:text="Modify Staff       Record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
@@ -863,7 +863,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Delete Staff Record"
+                        android:text="Delete Staff      Record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"

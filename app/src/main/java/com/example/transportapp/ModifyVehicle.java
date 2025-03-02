@@ -78,7 +78,7 @@ public class ModifyVehicle extends AppCompatActivity {
         selectedVehicleId = vehicle.getId();
         vehicleNameInput.setText(vehicle.getVehicleName());
         vehicleNumberInput.setText(vehicle.getVehicleNumber());
-        vehicleIdInput.setText(vehicle.getVehicleId());
+        vehicleIdInput.setText(vehicle.getId());
         capacityInput.setText(vehicle.getCapacity());
     }
 
