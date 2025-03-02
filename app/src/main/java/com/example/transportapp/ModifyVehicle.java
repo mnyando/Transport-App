@@ -41,7 +41,6 @@ public class ModifyVehicle extends AppCompatActivity {
         vehiclesRef = db.collection("vehicle");
 
         // Initialize Views
-        filterDropdown = findViewById(R.id.filterDropdown);
         vehicleNameInput = findViewById(R.id.vehicleNameInput);
         vehicleNumberInput = findViewById(R.id.vehicleNumberInput);
         vehicleIdInput = findViewById(R.id.vehicleIdInput);
@@ -83,9 +82,30 @@ public class ModifyVehicle extends AppCompatActivity {
     }
 
     private void saveVehicleData() {
+        if (selectedVehicleId == null) {
+            Toast.makeText(this, "Please select a vehicle to update", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         DocumentReference vehicleRef = vehiclesRef.document(selectedVehicleId);
-        vehicleRef.update("vehicleName", vehicleNameInput.getText().toString(),
-                "vehicleNumber", vehicleNumberInput.getText().toString(),
-                "capacity", capacityInput.getText().toString());
+        vehicleRef.update(
+                        "vehicleName", vehicleNameInput.getText().toString(),
+                        "vehicleNumber", vehicleNumberInput.getText().toString(),
+                        "capacity", capacityInput.getText().toString()
+                )
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Vehicle updated successfully", Toast.LENGTH_SHORT).show();
+                    // Clear the inputs after successful update
+                    vehicleNameInput.setText("");
+                    vehicleNumberInput.setText("");
+                    capacityInput.setText("");
+                    vehicleIdInput.setText("");
+                    selectedVehicleId = null;
+                    // Refresh the vehicle list
+                    fetchVehicles();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to update vehicle: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }

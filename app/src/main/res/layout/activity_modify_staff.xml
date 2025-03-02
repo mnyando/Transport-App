@@ -8,7 +8,7 @@
     android:background="#F5F5F5"
     android:padding="16dp">
 
-    <!-- Navigation Bar -->
+    <!-- Navigation Bar (Fixed at Top) -->
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,136 +27,149 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Add Driver"
+            android:text="Modify Staff"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"/>
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- 🔹 New CardView for RecyclerView (Driver List) -->
-    <androidx.cardview.widget.CardView
+    <!-- ScrollView for Scrollable Content -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/white"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="10dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Driver List"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_gravity="center"
-                android:paddingBottom="8dp"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/driverRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:scrollbars="vertical"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <!-- Add Driver Form Section -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/white"
-        android:padding="24dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="10dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Driver Name -->
-            <EditText
-                android:id="@+id/driverNameInput"
+            <!-- RecyclerView CardView -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:hint="Driver Name"
-                android:inputType="text"
-                android:padding="12dp"
-                android:textColor="@color/black"
-                android:textSize="25sp"/>
+                android:layout_height="300dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="10dp">
 
-            <!-- Phone Number -->
-            <EditText
-                android:id="@+id/driverPhoneInput"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Staff List"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center"
+                        android:paddingBottom="8dp"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/driverRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="250dp"
+                        android:scrollbars="vertical"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Add Driver Form Section -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:hint="Phone Number"
-                android:inputType="phone"
-                android:padding="12dp"
-                android:textColor="@color/black"
-                android:textSize="25sp"/>
-
-            <!-- Driver's License Number -->
-            <EditText
-                android:id="@+id/licenseNumberInput"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:hint="Driver's License Number"
-                android:inputType="text"
-                android:padding="12dp"
-                android:textColor="@color/black"
-                android:textSize="25sp"/>
-
-            <!-- Assigned Vehicle Dropdown -->
-            <Spinner
-                android:id="@+id/vehicleDropdown"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:padding="12dp"/>
-
-            <!-- Assigned Route Dropdown -->
-            <Spinner
-                android:id="@+id/routeDropdown"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:padding="12dp"/>
-
-            <!-- Save Button -->
-            <Button
-                android:id="@+id/saveDriverButton"
-                android:layout_width="280dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/green"
-                android:drawablePadding="8dp"
-                android:padding="16dp"
-                android:text="Save Driver"
-                android:textColor="@color/white"
-                android:textSize="16sp"/>
+                android:layout_marginTop="12dp"
+                android:backgroundTint="@color/white"
+                android:padding="24dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Driver Name -->
+                    <EditText
+                        android:id="@+id/driverNameInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginHorizontal="10dp"
+                        android:background="@drawable/edittext_background"
+                        android:hint="Driver Name"
+                        android:inputType="text"
+                        android:padding="12dp"
+                        android:textColor="@color/black"
+                        android:textSize="25sp"/>
+
+                    <!-- Phone Number -->
+                    <EditText
+                        android:id="@+id/driverPhoneInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginHorizontal="10dp"
+                        android:background="@drawable/edittext_background"
+                        android:hint="Phone Number"
+                        android:inputType="phone"
+                        android:padding="12dp"
+                        android:textColor="@color/black"
+                        android:textSize="25sp"/>
+
+                    <!-- Driver's License Number -->
+                    <EditText
+                        android:id="@+id/licenseNumberInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginHorizontal="10dp"
+                        android:background="@drawable/edittext_background"
+                        android:hint="Driver's License Number"
+                        android:inputType="text"
+                        android:padding="12dp"
+                        android:textColor="@color/black"
+                        android:textSize="25sp"/>
+
+                    <!-- Assigned Vehicle Dropdown -->
+                    <Spinner
+                        android:id="@+id/vehicleDropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginHorizontal="10dp"
+                        android:background="@drawable/edittext_background"
+                        android:padding="12dp"/>
+
+                    <!-- Assigned Route Dropdown -->
+                    <Spinner
+                        android:id="@+id/routeDropdown"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginHorizontal="10dp"
+                        android:background="@drawable/edittext_background"
+                        android:padding="12dp"/>
+
+                    <!-- Save Button -->
+                    <Button
+                        android:id="@+id/saveDriverButton"
+                        android:layout_width="280dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="10dp"
+                        android:backgroundTint="@color/green"
+                        android:drawablePadding="8dp"
+                        android:padding="16dp"
+                        android:text="Save Driver"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </ScrollView>
 </LinearLayout>

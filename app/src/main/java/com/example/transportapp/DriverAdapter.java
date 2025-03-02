@@ -8,21 +8,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.DriverViewHolder> {
 
-    private ArrayList<Driver> driverList;
+    private List<Driver> driverList;
     private OnDriverClickListener listener;
 
-    public interface OnDriverClickListener {
-        void onDriverClick(Driver driver);
-
-        // Handle driver long press for deletion
-        void onDriverLongClick(Driver driver);
-    }
-
-    public DriverAdapter(ArrayList<Driver> driverList, OnDriverClickListener listener) {
+    public DriverAdapter(List<Driver> driverList, OnDriverClickListener listener) {
         this.driverList = driverList;
         this.listener = listener;
     }
@@ -30,14 +23,15 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.DriverView
     @NonNull
     @Override
     public DriverViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_driver, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(android.R.layout.simple_list_item_1, parent, false);
         return new DriverViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull DriverViewHolder holder, int position) {
         Driver driver = driverList.get(position);
-        holder.driverName.setText(driver.getName());
+        holder.textView.setText(driver.getStaffName());
         holder.itemView.setOnClickListener(v -> listener.onDriverClick(driver));
     }
 
@@ -46,12 +40,16 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.DriverView
         return driverList.size();
     }
 
-    public static class DriverViewHolder extends RecyclerView.ViewHolder {
-        TextView driverName;
+    static class DriverViewHolder extends RecyclerView.ViewHolder {
+        TextView textView;
 
-        public DriverViewHolder(@NonNull View itemView) {
+        DriverViewHolder(@NonNull View itemView) {
             super(itemView);
-            driverName = itemView.findViewById(R.id.driverName);
+            textView = itemView.findViewById(android.R.id.text1);
         }
+    }
+
+    public interface OnDriverClickListener {
+        void onDriverClick(Driver driver);
     }
 }

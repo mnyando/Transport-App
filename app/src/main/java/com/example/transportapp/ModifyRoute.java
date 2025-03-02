@@ -2,6 +2,7 @@ package com.example.transportapp;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -29,7 +30,9 @@ public class ModifyRoute extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private List<Route> routeList;
     private RouteAdapter routeAdapter;
-    private String selectedRouteId; // To track the selected route for updating
+    private String selectedRouteId;
+    private List<String> vehicleNamesList; // To store vehicle names for the Spinner
+    private ArrayAdapter<String> vehicleAdapter; // Adapter for the Spinner
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +56,39 @@ public class ModifyRoute extends AppCompatActivity {
         routeRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         routeRecyclerView.setAdapter(routeAdapter);
 
-        // Fetch routes from Firestore
-        fetchRoutes();
+        // Initialize Spinner with vehicle names
+        vehicleNamesList = new ArrayList<>();
+        vehicleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, vehicleNamesList);
+        vehicleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        vehicleDropdown.setAdapter(vehicleAdapter);
+
+        // Fetch data
+        fetchVehicles(); // Fetch vehicle names first
+        fetchRoutes();   // Then fetch routes
 
         // Set button click listener for updating route
         updateRouteButton.setOnClickListener(v -> updateRouteInFirestore());
+    }
+
+    private void fetchVehicles() {
+        firestore.collection("vehicle")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    vehicleNamesList.clear();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        String vehicleName = document.getString("vehicleName"); // Adjust field name as needed
+                        if (vehicleName != null) {
+                            vehicleNamesList.add(vehicleName);
+                        }
+                    }
+                    vehicleAdapter.notifyDataSetChanged();
+                    if (vehicleNamesList.isEmpty()) {
+                        Toast.makeText(this, "No vehicles found", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to fetch vehicles: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void fetchRoutes() {
@@ -67,7 +98,7 @@ public class ModifyRoute extends AppCompatActivity {
                     routeList.clear();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Route route = document.toObject(Route.class);
-                        route.setId(document.getId()); // Store document ID
+                        route.setId(document.getId());
                         routeList.add(route);
                     }
                     routeAdapter.notifyDataSetChanged();
@@ -81,13 +112,12 @@ public class ModifyRoute extends AppCompatActivity {
         totalDistanceInput.setText(String.valueOf(route.getTotalDistance()));
         routeDescriptionInput.setText(route.getRouteDescription());
 
-        // Set Spinner selection (you may need to adapt this part based on your Spinner setup)
-        // For simplicity, assuming vehicle name is directly set as Spinner selection
-        for (int i = 0; i < vehicleDropdown.getCount(); i++) {
-            if (vehicleDropdown.getItemAtPosition(i).toString().equals(route.getVehicle())) {
-                vehicleDropdown.setSelection(i);
-                break;
-            }
+        // Set the Spinner to the route's vehicle
+        int position = vehicleAdapter.getPosition(route.getVehicle());
+        if (position >= 0) {
+            vehicleDropdown.setSelection(position);
+        } else {
+            vehicleDropdown.setSelection(0); // Default to first item if not found
         }
     }
 
@@ -100,10 +130,11 @@ public class ModifyRoute extends AppCompatActivity {
         String routeName = routeNameInput.getText().toString().trim();
         String totalDistanceStr = totalDistanceInput.getText().toString().trim();
         String routeDescription = routeDescriptionInput.getText().toString().trim();
-        String selectedVehicle = vehicleDropdown.getSelectedItem().toString();
+        String selectedVehicle = vehicleDropdown.getSelectedItem() != null ?
+                vehicleDropdown.getSelectedItem().toString() : "";
 
-        if (routeName.isEmpty() || totalDistanceStr.isEmpty() || routeDescription.isEmpty()) {
-            Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
+        if (routeName.isEmpty() || totalDistanceStr.isEmpty() || routeDescription.isEmpty() || selectedVehicle.isEmpty()) {
+            Toast.makeText(this, "Please fill out all fields and select a vehicle", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -126,7 +157,10 @@ public class ModifyRoute extends AppCompatActivity {
         firestore.collection("Routes")
                 .document(selectedRouteId)
                 .update(updatedData)
-                .addOnSuccessListener(aVoid -> Toast.makeText(this, "Route updated successfully", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to update route", Toast.LENGTH_SHORT).show());
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Route updated successfully", Toast.LENGTH_SHORT).show();
+                    fetchRoutes(); // Refresh the route list
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to update route: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }
