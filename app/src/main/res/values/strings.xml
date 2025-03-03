@@ -8,5 +8,9 @@
         <item>Grade 4</item>
         <item>Grade 5</item>
         <item>Grade 6</item>
+        <item>Grade 7</item>
+        <item>Grade 8</item>
     </string-array>
+
+    <string name="parent">Parent Dashboard</string>
 </resources>
