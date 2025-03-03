@@ -4,10 +4,9 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#F5F5F5"
-    android:padding="16dp">
+    android:background="#F5F5F5">
 
-    <!-- Navigation Bar -->
+    <!-- Navigation Bar (Fixed at the top) -->
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,8 +14,8 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:src="@drawable/baseline_arrow_back_24"
             android:background="@null"
             android:contentDescription="Back"/>
@@ -31,86 +30,100 @@
             android:layout_gravity="center"/>
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- Child Assignment Section -->
-    <androidx.cardview.widget.CardView
+    <!-- ScrollView to make the middle content scrollable -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="6dp"
-        android:padding="16dp"
-        android:layout_margin="8dp"
-        android:backgroundTint="@color/white">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Your Children"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:paddingBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_marginBottom="6dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/childRecyclerView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_marginBottom="6dp"/>
-    </androidx.cardview.widget.CardView>
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <!-- Notification Center -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="6dp"
-        android:padding="16dp"
-        android:layout_margin="8dp"
-        android:backgroundTint="@color/white">
+            <!-- Child Assignment Section -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="6dp"
+                android:padding="16dp"
+                android:layout_margin="8dp"
+                android:backgroundTint="@color/white">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Notifications"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:paddingBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_marginBottom="6dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Your Children"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:paddingBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    android:layout_marginBottom="6dp"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/notificationRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_marginBottom="6dp"/>
-    </androidx.cardview.widget.CardView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/childRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    android:layout_marginBottom="6dp"/>
+            </androidx.cardview.widget.CardView>
 
-    <!-- Chat Button -->
-    <Button
-        android:id="@+id/chatButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Chat with Attendants"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/green"
-        android:layout_margin="12dp"
-        android:padding="12dp"/>
+            <!-- Notification Center -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="6dp"
+                android:padding="16dp"
+                android:layout_margin="8dp"
+                android:backgroundTint="@color/white">
 
-    <!-- Footer Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Notifications"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:paddingBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    android:layout_marginBottom="6dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/notificationRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"
+                    android:layout_marginBottom="6dp"/>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Chat Button -->
+            <Button
+                android:id="@+id/chatButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chat with Attendants"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/green"
+                android:layout_margin="12dp"
+                android:padding="12dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Footer Section (Fixed at the bottom) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
