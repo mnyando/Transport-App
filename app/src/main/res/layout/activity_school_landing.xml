@@ -124,7 +124,7 @@
                                 android:paddingTop="8dp"/>
 
                             <TextView
-                                android:id="@+id/students_enrolled_text"
+                                android:id="@+id/studentsEnrolledText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="1200"
@@ -169,7 +169,7 @@
                                 android:paddingTop="8dp"/>
 
                             <TextView
-                                android:id="@+id/routes_travelled_text"
+                                android:id="@+id/routesTraveledText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="15"
@@ -213,7 +213,7 @@
                                 android:paddingTop="8dp"/>
 
                             <TextView
-                                android:id="@+id/active_vehicles_text"
+                                android:id="@+id/activeVehiclesText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="20"
@@ -257,7 +257,7 @@
                                 android:paddingTop="8dp"/>
 
                             <TextView
-                                android:id="@+id/inactive_vehicles_text"
+                                android:id="@+id/inactiveVehiclesText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="5"
@@ -301,7 +301,7 @@
                                 android:paddingTop="8dp"/>
 
                             <TextView
-                                android:id="@+id/active_drivers_text"
+                                android:id="@+id/activeDriversText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="18"
@@ -346,7 +346,7 @@
                                 android:paddingTop="8dp"/>
 
                             <TextView
-                                android:id="@+id/inactive_drivers_text"
+                                android:id="@+id/inactiveDriversText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="18"
