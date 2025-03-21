@@ -3,31 +3,31 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp"
+    android:padding="8dp"
     android:background="@drawable/edittext_background">
 
     <TextView
         android:id="@+id/vehicleName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Vehicle Name"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"/>
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/vehicleNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Vehicle Number"
-        android:textSize="16sp"
-        android:textColor="@color/black"/>
+        android:textSize="16sp"/>
 
     <TextView
         android:id="@+id/vehicleCapacity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Capacity"
-        android:textSize="16sp"
-        android:textColor="@color/black"/>
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/vehicleStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"/>
 </LinearLayout>

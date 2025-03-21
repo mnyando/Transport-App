@@ -1,12 +1,9 @@
 package com.example.transportapp;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,8 +21,8 @@ import java.util.List;
 public class ModifyVehicle extends AppCompatActivity {
     private FirebaseFirestore db;
     private CollectionReference vehiclesRef;
-    private Spinner filterDropdown;
     private EditText vehicleNameInput, vehicleNumberInput, vehicleIdInput, capacityInput;
+    private RadioGroup statusRadioGroup; // Added RadioGroup
     private Button saveVehicleButton;
     private RecyclerView vehicleRecyclerView;
     private VehicleAdapter vehicleAdapter;
@@ -45,6 +42,7 @@ public class ModifyVehicle extends AppCompatActivity {
         vehicleNumberInput = findViewById(R.id.vehicleNumberInput);
         vehicleIdInput = findViewById(R.id.vehicleIdInput);
         capacityInput = findViewById(R.id.capacityInput);
+        statusRadioGroup = findViewById(R.id.statusRadioGroup); // Initialize RadioGroup
         saveVehicleButton = findViewById(R.id.saveVehicleButton);
         vehicleRecyclerView = findViewById(R.id.vehicleRecyclerView);
 
@@ -79,6 +77,14 @@ public class ModifyVehicle extends AppCompatActivity {
         vehicleNumberInput.setText(vehicle.getVehicleNumber());
         vehicleIdInput.setText(vehicle.getId());
         capacityInput.setText(vehicle.getCapacity());
+        // Set radio button based on vehicle status
+        if ("Active".equals(vehicle.getStatus())) {
+            statusRadioGroup.check(R.id.activeRadioButton);
+        } else if ("Not Active".equals(vehicle.getStatus())) {
+            statusRadioGroup.check(R.id.notActiveRadioButton);
+        } else {
+            statusRadioGroup.clearCheck(); // Clear selection if status is null or unexpected
+        }
     }
 
     private void saveVehicleData() {
@@ -87,19 +93,42 @@ public class ModifyVehicle extends AppCompatActivity {
             return;
         }
 
+        String vehicleName = vehicleNameInput.getText().toString().trim();
+        String vehicleNumber = vehicleNumberInput.getText().toString().trim();
+        String capacity = capacityInput.getText().toString().trim();
+        int selectedStatusId = statusRadioGroup.getCheckedRadioButtonId();
+        String status;
+
+        if (vehicleName.isEmpty() || vehicleNumber.isEmpty() || capacity.isEmpty()) {
+            Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Determine selected status
+        if (selectedStatusId == R.id.activeRadioButton) {
+            status = "Active";
+        } else if (selectedStatusId == R.id.notActiveRadioButton) {
+            status = "Not Active";
+        } else {
+            Toast.makeText(this, "Please select a status", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         DocumentReference vehicleRef = vehiclesRef.document(selectedVehicleId);
         vehicleRef.update(
-                        "vehicleName", vehicleNameInput.getText().toString(),
-                        "vehicleNumber", vehicleNumberInput.getText().toString(),
-                        "capacity", capacityInput.getText().toString()
+                        "vehicleName", vehicleName,
+                        "vehicleNumber", vehicleNumber,
+                        "capacity", capacity,
+                        "status", status // Add status to update
                 )
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Vehicle updated successfully", Toast.LENGTH_SHORT).show();
                     // Clear the inputs after successful update
                     vehicleNameInput.setText("");
                     vehicleNumberInput.setText("");
-                    capacityInput.setText("");
                     vehicleIdInput.setText("");
+                    capacityInput.setText("");
+                    statusRadioGroup.clearCheck(); // Clear radio selection
                     selectedVehicleId = null;
                     // Refresh the vehicle list
                     fetchVehicles();

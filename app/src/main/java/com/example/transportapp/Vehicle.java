@@ -1,38 +1,20 @@
 package com.example.transportapp;
 
 public class Vehicle {
-    private String id;
-    private String vehicleName;
-    private String vehicleNumber;
-    private String capacity;
+    private String id, vehicleName, vehicleNumber, capacity, status;
 
-    // Empty constructor for Firestore
+    // Default constructor for Firestore
     public Vehicle() {}
 
-    public Vehicle(String id, String vehicleName, String vehicleNumber, String capacity) {
-        this.id = id;
-        this.vehicleName = vehicleName;
-        this.vehicleNumber = vehicleNumber;
-        this.capacity = capacity;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getVehicleName() {
-        return vehicleName;
-    }
-
-    public String getVehicleNumber() {
-        return vehicleNumber;
-    }
-
-    public String getCapacity() {
-        return capacity;
-    }
+    // Getters and setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getVehicleName() { return vehicleName; }
+    public void setVehicleName(String vehicleName) { this.vehicleName = vehicleName; }
+    public String getVehicleNumber() { return vehicleNumber; }
+    public void setVehicleNumber(String vehicleNumber) { this.vehicleNumber = vehicleNumber; }
+    public String getCapacity() { return capacity; }
+    public void setCapacity(String capacity) { this.capacity = capacity; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

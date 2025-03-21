@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDr
 
     private EditText driverNameInput, driverPhoneInput, licenseNumberInput;
     private Spinner vehicleDropdown, routeDropdown;
+    private RadioGroup statusRadioGroup;
     private Button deleteDriverButton;
     private RecyclerView driverRecyclerView;
     private DriverAdapter driverAdapter;
@@ -47,7 +49,6 @@ public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDr
         licenseNumberInput = findViewById(R.id.licenseNumberInput);
         vehicleDropdown = findViewById(R.id.vehicleDropdown);
         routeDropdown = findViewById(R.id.routeDropdown);
-        deleteDriverButton = findViewById(R.id.saveDriverButton); // Rename in XML to deleteDriverButton if desired
         driverRecyclerView = findViewById(R.id.driverRecyclerView);
 
         // Setup RecyclerView
@@ -57,7 +58,7 @@ public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDr
         driverRecyclerView.setAdapter(driverAdapter);
 
         // Setup Spinners
-        vehicleList = new ArrayList<>();
+        vehicleList = new ArrayList<>(); // Fixed typo here
         routeList = new ArrayList<>();
         vehicleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, vehicleList);
         routeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, routeList);
@@ -76,7 +77,7 @@ public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDr
     }
 
     private void fetchDrivers() {
-        firestore.collection("staff")
+        firestore.collection("drivers")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     driverList.clear();
@@ -97,6 +98,7 @@ public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDr
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     vehicleList.clear();
+                    vehicleList.add("Select Vehicle");
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String vehicleName = doc.getString("vehicleName");
                         if (vehicleName != null) {
@@ -115,6 +117,7 @@ public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDr
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     routeList.clear();
+                    routeList.add("Select Route");
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String routeName = doc.getString("routeName");
                         if (routeName != null) {
@@ -131,23 +134,24 @@ public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDr
     @Override
     public void onDriverClick(Driver driver) {
         selectedDriverId = driver.getId();
-        driverNameInput.setText(driver.getStaffName());
-        driverPhoneInput.setText(driver.getStaffPhone());
-        licenseNumberInput.setText(driver.getStaffLicense());
+        driverNameInput.setText(driver.getDriverName());
+        driverPhoneInput.setText(driver.getPhoneNumber());
+        licenseNumberInput.setText(driver.getLicenseNumber());
 
         // Set Spinner selections
         int vehiclePosition = vehicleAdapter.getPosition(driver.getAssignedVehicle());
-        if (vehiclePosition >= 0) {
-            vehicleDropdown.setSelection(vehiclePosition);
-        } else {
-            vehicleDropdown.setSelection(0);
-        }
+        vehicleDropdown.setSelection(vehiclePosition >= 0 ? vehiclePosition : 0);
 
         int routePosition = routeAdapter.getPosition(driver.getAssignedRoute());
-        if (routePosition >= 0) {
-            routeDropdown.setSelection(routePosition);
+        routeDropdown.setSelection(routePosition >= 0 ? routePosition : 0);
+
+        // Set RadioGroup selection
+        if ("Active".equals(driver.getStatus())) {
+            statusRadioGroup.check(R.id.activeRadioButton);
+        } else if ("Not Active".equals(driver.getStatus())) {
+            statusRadioGroup.check(R.id.notActiveRadioButton);
         } else {
-            routeDropdown.setSelection(0);
+            statusRadioGroup.clearCheck();
         }
     }
 
@@ -166,7 +170,7 @@ public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDr
     }
 
     private void deleteDriver() {
-        firestore.collection("staff").document(selectedDriverId)
+        firestore.collection("drivers").document(selectedDriverId)
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Driver deleted successfully", Toast.LENGTH_SHORT).show();
@@ -185,5 +189,7 @@ public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDr
         licenseNumberInput.setText("");
         vehicleDropdown.setSelection(0);
         routeDropdown.setSelection(0);
+        statusRadioGroup.check(R.id.activeRadioButton); // Reset to default "Active"
     }
 }
+

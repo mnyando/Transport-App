@@ -2,6 +2,7 @@ package com.example.transportapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,15 +88,18 @@ public class SchoolLanding extends AppCompatActivity {
         startActivity(intent);
     }
 
-    // Count total students
     private void countTotalStudents() {
-        db.collection("students")
+        db.collectionGroup("studentList")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     int totalStudents = queryDocumentSnapshots.size();
                     studentsEnrolledText.setText(String.valueOf(totalStudents));
+                    Log.d("CountStudents", "Total students: " + totalStudents); // Optional: for debugging
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error fetching student count: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    Toast.makeText(SchoolLanding.this, "Error fetching student count: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("CountStudents", "Error: " + e.getMessage()); // Optional: for debugging
+                });
     }
 
     // Count total routes
@@ -106,12 +110,12 @@ public class SchoolLanding extends AppCompatActivity {
                     int totalRoutes = queryDocumentSnapshots.size();
                     routesTraveledText.setText(String.valueOf(totalRoutes));
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error fetching routes count: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(SchoolLanding.this, "Error fetching routes count: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     // Count active and inactive vehicles
     private void countVehicles() {
-        db.collection("vehicles")
+        db.collection("vehicle") // Adjusted to "vehicle" to match AddVehicle; use "vehicles" if that's your collection name
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     int activeVehicles = 0;
@@ -119,9 +123,9 @@ public class SchoolLanding extends AppCompatActivity {
 
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String status = doc.getString("status");
-                        if ("Active".equalsIgnoreCase(status)) {
+                        if ("Active".equals(status)) { // Exact match for "Active"
                             activeVehicles++;
-                        } else {
+                        } else if ("Not Active".equals(status)) { // Exact match for "Not Active"
                             inactiveVehicles++;
                         }
                     }
@@ -129,7 +133,7 @@ public class SchoolLanding extends AppCompatActivity {
                     activeVehiclesText.setText(String.valueOf(activeVehicles));
                     inactiveVehiclesText.setText(String.valueOf(inactiveVehicles));
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error fetching vehicles count: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(SchoolLanding.this, "Error fetching vehicles count: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     // Count active and inactive drivers
@@ -142,9 +146,9 @@ public class SchoolLanding extends AppCompatActivity {
 
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String status = doc.getString("status");
-                        if ("Active".equalsIgnoreCase(status)) {
+                        if ("Active".equals(status)) { // Exact match for "Active"
                             activeDrivers++;
-                        } else {
+                        } else if ("Not Active".equals(status)) { // Exact match for "Not Active"
                             inactiveDrivers++;
                         }
                     }
@@ -152,6 +156,6 @@ public class SchoolLanding extends AppCompatActivity {
                     activeDriversText.setText(String.valueOf(activeDrivers));
                     inactiveDriversText.setText(String.valueOf(inactiveDrivers));
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error fetching drivers count: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> Toast.makeText(SchoolLanding.this, "Error fetching drivers count: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }

@@ -35,6 +35,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
         holder.vehicleName.setText(vehicle.getVehicleName());
         holder.vehicleNumber.setText(vehicle.getVehicleNumber());
         holder.capacity.setText("Capacity: " + vehicle.getCapacity());
+        holder.status.setText("Status: " + (vehicle.getStatus() != null ? vehicle.getStatus() : "Unknown")); // Bind status
 
         holder.itemView.setOnClickListener(v -> onVehicleClickListener.onVehicleClick(vehicle));
     }
@@ -45,13 +46,14 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
     }
 
     public static class VehicleViewHolder extends RecyclerView.ViewHolder {
-        TextView vehicleName, vehicleNumber, capacity;
+        TextView vehicleName, vehicleNumber, capacity, status; // Added status TextView
 
         public VehicleViewHolder(@NonNull View itemView) {
             super(itemView);
             vehicleName = itemView.findViewById(R.id.vehicleName);
             vehicleNumber = itemView.findViewById(R.id.vehicleNumber);
             capacity = itemView.findViewById(R.id.vehicleCapacity);
+            status = itemView.findViewById(R.id.vehicleStatus); // Initialize status TextView
         }
     }
 }

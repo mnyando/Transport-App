@@ -24,14 +24,15 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.DriverView
     @Override
     public DriverViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(android.R.layout.simple_list_item_1, parent, false);
+                .inflate(R.layout.item_driver, parent, false); // Use custom layout
         return new DriverViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull DriverViewHolder holder, int position) {
         Driver driver = driverList.get(position);
-        holder.textView.setText(driver.getStaffName());
+        holder.driverNameTextView.setText(driver.getDriverName());
+        holder.driverStatusTextView.setText("Status: " + (driver.getStatus() != null ? driver.getStatus() : "Unknown"));
         holder.itemView.setOnClickListener(v -> listener.onDriverClick(driver));
     }
 
@@ -41,11 +42,12 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.DriverView
     }
 
     static class DriverViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+        TextView driverNameTextView, driverStatusTextView;
 
         DriverViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(android.R.id.text1);
+            driverNameTextView = itemView.findViewById(R.id.driverNameTextView);
+            driverStatusTextView = itemView.findViewById(R.id.driverStatusTextView);
         }
     }
 

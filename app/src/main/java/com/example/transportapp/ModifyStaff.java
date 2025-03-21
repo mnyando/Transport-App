@@ -2,10 +2,10 @@ package com.example.transportapp;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -25,6 +25,7 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
 
     private EditText driverNameInput, driverPhoneInput, licenseNumberInput;
     private Spinner vehicleDropdown, routeDropdown;
+    private RadioGroup statusRadioGroup; // Added RadioGroup
     private Button updateDriverButton;
     private RecyclerView driverRecyclerView;
     private DriverAdapter driverAdapter;
@@ -50,6 +51,7 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
         licenseNumberInput = findViewById(R.id.licenseNumberInput);
         vehicleDropdown = findViewById(R.id.vehicleDropdown);
         routeDropdown = findViewById(R.id.routeDropdown);
+        statusRadioGroup = findViewById(R.id.statusRadioGroup); // Initialize RadioGroup
         updateDriverButton = findViewById(R.id.saveDriverButton);
         driverRecyclerView = findViewById(R.id.driverRecyclerView);
 
@@ -79,7 +81,7 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
     }
 
     private void fetchDrivers() {
-        firestore.collection("staff")
+        firestore.collection("drivers") // Updated to "drivers" to match XML intent
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     driverList.clear();
@@ -100,6 +102,7 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     vehicleList.clear();
+                    vehicleList.add("Select Vehicle"); // Add default option
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String vehicleName = doc.getString("vehicleName");
                         if (vehicleName != null) {
@@ -118,6 +121,7 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     routeList.clear();
+                    routeList.add("Select Route"); // Add default option
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String routeName = doc.getString("routeName");
                         if (routeName != null) {
@@ -134,23 +138,24 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
     @Override
     public void onDriverClick(Driver driver) {
         selectedDriverId = driver.getId();
-        driverNameInput.setText(driver.getStaffName());
-        driverPhoneInput.setText(driver.getStaffPhone());
-        licenseNumberInput.setText(driver.getStaffLicense());
+        driverNameInput.setText(driver.getDriverName()); // Updated to match Driver class
+        driverPhoneInput.setText(driver.getPhoneNumber());
+        licenseNumberInput.setText(driver.getLicenseNumber());
 
         // Set Spinner selections
         int vehiclePosition = vehicleAdapter.getPosition(driver.getAssignedVehicle());
-        if (vehiclePosition >= 0) {
-            vehicleDropdown.setSelection(vehiclePosition);
-        } else {
-            vehicleDropdown.setSelection(0);
-        }
+        vehicleDropdown.setSelection(vehiclePosition >= 0 ? vehiclePosition : 0);
 
         int routePosition = routeAdapter.getPosition(driver.getAssignedRoute());
-        if (routePosition >= 0) {
-            routeDropdown.setSelection(routePosition);
+        routeDropdown.setSelection(routePosition >= 0 ? routePosition : 0);
+
+        // Set RadioGroup selection
+        if ("Active".equals(driver.getStatus())) {
+            statusRadioGroup.check(R.id.activeRadioButton);
+        } else if ("Not Active".equals(driver.getStatus())) {
+            statusRadioGroup.check(R.id.notActiveRadioButton);
         } else {
-            routeDropdown.setSelection(0);
+            statusRadioGroup.clearCheck(); // Clear if status is null or unexpected
         }
     }
 
@@ -165,28 +170,42 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
         String updatedLicense = licenseNumberInput.getText().toString().trim();
         String updatedVehicle = vehicleDropdown.getSelectedItem() != null ? vehicleDropdown.getSelectedItem().toString() : "";
         String updatedRoute = routeDropdown.getSelectedItem() != null ? routeDropdown.getSelectedItem().toString() : "";
+        int selectedStatusId = statusRadioGroup.getCheckedRadioButtonId();
+        String updatedStatus = selectedStatusId == R.id.activeRadioButton ? "Active" : "Not Active";
 
         if (TextUtils.isEmpty(updatedName) || TextUtils.isEmpty(updatedPhone) || TextUtils.isEmpty(updatedLicense) ||
-                TextUtils.isEmpty(updatedVehicle) || TextUtils.isEmpty(updatedRoute)) {
-            Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
+                "Select Vehicle".equals(updatedVehicle) || "Select Route".equals(updatedRoute)) {
+            Toast.makeText(this, "All fields are required and must be valid", Toast.LENGTH_SHORT).show();
             return;
         }
 
         Map<String, Object> updatedData = new HashMap<>();
-        updatedData.put("staffName", updatedName);
-        updatedData.put("staffPhone", updatedPhone);
-        updatedData.put("staffLicense", updatedLicense);
+        updatedData.put("driverName", updatedName); // Updated field names to match Driver class
+        updatedData.put("phoneNumber", updatedPhone);
+        updatedData.put("licenseNumber", updatedLicense);
         updatedData.put("assignedVehicle", updatedVehicle);
         updatedData.put("assignedRoute", updatedRoute);
+        updatedData.put("status", updatedStatus); // Added status
 
-        firestore.collection("staff").document(selectedDriverId)
+        firestore.collection("drivers").document(selectedDriverId) // Updated to "drivers"
                 .update(updatedData)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Driver updated successfully", Toast.LENGTH_SHORT).show();
+                    clearForm();
                     fetchDrivers(); // Refresh the list
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Failed to update driver: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    private void clearForm() {
+        driverNameInput.setText("");
+        driverPhoneInput.setText("");
+        licenseNumberInput.setText("");
+        vehicleDropdown.setSelection(0);
+        routeDropdown.setSelection(0);
+        statusRadioGroup.check(R.id.activeRadioButton); // Reset to default "Active"
+        selectedDriverId = null;
     }
 }
