@@ -2,6 +2,7 @@ package com.example.transportapp;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,17 +22,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDriverClickListener {
+public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnStaffClickListener {
 
-    private EditText driverNameInput, driverPhoneInput, licenseNumberInput;
+    private static final String TAG = "ModifyStaff"; // For logging
+
+    private EditText staffNameInput, staffPhoneInput, licenseNumberInput;
     private Spinner vehicleDropdown, routeDropdown;
-    private RadioGroup statusRadioGroup; // Added RadioGroup
-    private Button updateDriverButton;
-    private RecyclerView driverRecyclerView;
-    private DriverAdapter driverAdapter;
-    private List<Driver> driverList;
+    private RadioGroup statusRadioGroup, roleRadioGroup;
+    private Button updateStaffButton;
+    private RecyclerView staffRecyclerView;
+    private StaffAdapter staffAdapter;
+    private List<Staff> staffList;
     private FirebaseFirestore firestore;
-    private String selectedDriverId = null;
+    private String selectedStaffId = null;
     private List<String> vehicleList;
     private List<String> routeList;
     private ArrayAdapter<String> vehicleAdapter;
@@ -46,20 +49,22 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
         firestore = FirebaseFirestore.getInstance();
 
         // Initialize Views
-        driverNameInput = findViewById(R.id.driverNameInput);
-        driverPhoneInput = findViewById(R.id.driverPhoneInput);
+        staffNameInput = findViewById(R.id.driverNameInput);
+        staffPhoneInput = findViewById(R.id.driverPhoneInput);
         licenseNumberInput = findViewById(R.id.licenseNumberInput);
         vehicleDropdown = findViewById(R.id.vehicleDropdown);
         routeDropdown = findViewById(R.id.routeDropdown);
-        statusRadioGroup = findViewById(R.id.statusRadioGroup); // Initialize RadioGroup
-        updateDriverButton = findViewById(R.id.saveDriverButton);
-        driverRecyclerView = findViewById(R.id.driverRecyclerView);
+        statusRadioGroup = findViewById(R.id.statusRadioGroup);
+        roleRadioGroup = findViewById(R.id.roleRadioGroup);
+        updateStaffButton = findViewById(R.id.saveDriverButton);
+        staffRecyclerView = findViewById(R.id.driverRecyclerView);
 
         // Setup RecyclerView
-        driverList = new ArrayList<>();
-        driverAdapter = new DriverAdapter(driverList, this);
-        driverRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        driverRecyclerView.setAdapter(driverAdapter);
+        staffList = new ArrayList<>();
+        staffAdapter = new StaffAdapter(staffList, this);
+        staffRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        staffRecyclerView.setAdapter(staffAdapter);
+        Log.d(TAG, "RecyclerView initialized with adapter");
 
         // Setup Spinners
         vehicleList = new ArrayList<>();
@@ -74,26 +79,33 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
         // Load data
         fetchVehicles();
         fetchRoutes();
-        fetchDrivers();
+        fetchStaff();
 
-        // Handle driver updates
-        updateDriverButton.setOnClickListener(v -> updateDriver());
+        // Handle staff updates
+        updateStaffButton.setOnClickListener(v -> updateStaff());
     }
 
-    private void fetchDrivers() {
-        firestore.collection("drivers") // Updated to "drivers" to match XML intent
+    private void fetchStaff() {
+        Log.d(TAG, "Fetching staff from Firestore");
+        firestore.collection("staff")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    driverList.clear();
+                    staffList.clear();
+                    Log.d(TAG, "Firestore query returned " + queryDocumentSnapshots.size() + " documents");
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        Driver driver = doc.toObject(Driver.class);
-                        driver.setId(doc.getId());
-                        driverList.add(driver);
+                        Staff staff = doc.toObject(Staff.class);
+                        staff.setId(doc.getId());
+                        staffList.add(staff);
+                        Log.d(TAG, "Added staff: " + staff.getStaffName() + ", Role: " + staff.getRole());
                     }
-                    driverAdapter.notifyDataSetChanged();
+                    staffAdapter.notifyDataSetChanged();
+                    if (staffList.isEmpty()) {
+                        Toast.makeText(this, "No staff found in database", Toast.LENGTH_SHORT).show();
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error fetching drivers: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error fetching staff: " + e.getMessage());
+                    Toast.makeText(this, "Error fetching staff: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -102,7 +114,7 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     vehicleList.clear();
-                    vehicleList.add("Select Vehicle"); // Add default option
+                    vehicleList.add("Select Vehicle");
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String vehicleName = doc.getString("vehicleName");
                         if (vehicleName != null) {
@@ -112,6 +124,7 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
                     vehicleAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching vehicles: " + e.getMessage());
                     Toast.makeText(this, "Error fetching vehicles: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
@@ -121,7 +134,7 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     routeList.clear();
-                    routeList.add("Select Route"); // Add default option
+                    routeList.add("Select Route");
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         String routeName = doc.getString("routeName");
                         if (routeName != null) {
@@ -131,47 +144,56 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
                     routeAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching routes: " + e.getMessage());
                     Toast.makeText(this, "Error fetching routes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
     @Override
-    public void onDriverClick(Driver driver) {
-        selectedDriverId = driver.getId();
-        driverNameInput.setText(driver.getDriverName()); // Updated to match Driver class
-        driverPhoneInput.setText(driver.getPhoneNumber());
-        licenseNumberInput.setText(driver.getLicenseNumber());
+    public void onStaffClick(Staff staff) {
+        selectedStaffId = staff.getId();
+        staffNameInput.setText(staff.getStaffName());
+        staffPhoneInput.setText(staff.getPhoneNumber());
+        licenseNumberInput.setText(staff.getLicenseNumber());
 
-        // Set Spinner selections
-        int vehiclePosition = vehicleAdapter.getPosition(driver.getAssignedVehicle());
+        int vehiclePosition = vehicleAdapter.getPosition(staff.getAssignedVehicle());
         vehicleDropdown.setSelection(vehiclePosition >= 0 ? vehiclePosition : 0);
 
-        int routePosition = routeAdapter.getPosition(driver.getAssignedRoute());
+        int routePosition = routeAdapter.getPosition(staff.getAssignedRoute());
         routeDropdown.setSelection(routePosition >= 0 ? routePosition : 0);
 
-        // Set RadioGroup selection
-        if ("Active".equals(driver.getStatus())) {
+        if ("Active".equals(staff.getStatus())) {
             statusRadioGroup.check(R.id.activeRadioButton);
-        } else if ("Not Active".equals(driver.getStatus())) {
+        } else if ("Not Active".equals(staff.getStatus())) {
             statusRadioGroup.check(R.id.notActiveRadioButton);
         } else {
-            statusRadioGroup.clearCheck(); // Clear if status is null or unexpected
+            statusRadioGroup.clearCheck();
+        }
+
+        if ("Driver".equals(staff.getRole())) {
+            roleRadioGroup.check(R.id.driverRadioButton);
+        } else if ("Attendant".equals(staff.getRole())) {
+            roleRadioGroup.check(R.id.attendantRadioButton);
+        } else {
+            roleRadioGroup.check(R.id.driverRadioButton);
         }
     }
 
-    private void updateDriver() {
-        if (selectedDriverId == null) {
-            Toast.makeText(this, "Please select a driver to update", Toast.LENGTH_SHORT).show();
+    private void updateStaff() {
+        if (selectedStaffId == null) {
+            Toast.makeText(this, "Please select a staff member to update", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String updatedName = driverNameInput.getText().toString().trim();
-        String updatedPhone = driverPhoneInput.getText().toString().trim();
+        String updatedName = staffNameInput.getText().toString().trim();
+        String updatedPhone = staffPhoneInput.getText().toString().trim();
         String updatedLicense = licenseNumberInput.getText().toString().trim();
         String updatedVehicle = vehicleDropdown.getSelectedItem() != null ? vehicleDropdown.getSelectedItem().toString() : "";
         String updatedRoute = routeDropdown.getSelectedItem() != null ? routeDropdown.getSelectedItem().toString() : "";
         int selectedStatusId = statusRadioGroup.getCheckedRadioButtonId();
         String updatedStatus = selectedStatusId == R.id.activeRadioButton ? "Active" : "Not Active";
+        int selectedRoleId = roleRadioGroup.getCheckedRadioButtonId();
+        String updatedRole = selectedRoleId == R.id.driverRadioButton ? "Driver" : "Attendant";
 
         if (TextUtils.isEmpty(updatedName) || TextUtils.isEmpty(updatedPhone) || TextUtils.isEmpty(updatedLicense) ||
                 "Select Vehicle".equals(updatedVehicle) || "Select Route".equals(updatedRoute)) {
@@ -180,32 +202,37 @@ public class ModifyStaff extends AppCompatActivity implements DriverAdapter.OnDr
         }
 
         Map<String, Object> updatedData = new HashMap<>();
-        updatedData.put("driverName", updatedName); // Updated field names to match Driver class
+        updatedData.put("staffName", updatedName);
         updatedData.put("phoneNumber", updatedPhone);
         updatedData.put("licenseNumber", updatedLicense);
         updatedData.put("assignedVehicle", updatedVehicle);
         updatedData.put("assignedRoute", updatedRoute);
-        updatedData.put("status", updatedStatus); // Added status
+        updatedData.put("status", updatedStatus);
+        updatedData.put("role", updatedRole);
 
-        firestore.collection("drivers").document(selectedDriverId) // Updated to "drivers"
+        firestore.collection("staff").document(selectedStaffId)
                 .update(updatedData)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Driver updated successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Staff updated successfully", Toast.LENGTH_SHORT).show();
                     clearForm();
-                    fetchDrivers(); // Refresh the list
+                    fetchStaff();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to update driver: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to update staff: " + e.getMessage());
+                    Toast.makeText(this, "Failed to update staff: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
     private void clearForm() {
-        driverNameInput.setText("");
-        driverPhoneInput.setText("");
+        staffNameInput.setText("");
+        staffPhoneInput.setText("");
         licenseNumberInput.setText("");
         vehicleDropdown.setSelection(0);
         routeDropdown.setSelection(0);
-        statusRadioGroup.check(R.id.activeRadioButton); // Reset to default "Active"
-        selectedDriverId = null;
+        statusRadioGroup.check(R.id.activeRadioButton);
+        roleRadioGroup.check(R.id.driverRadioButton);
+        selectedStaffId = null;
     }
 }
+
+

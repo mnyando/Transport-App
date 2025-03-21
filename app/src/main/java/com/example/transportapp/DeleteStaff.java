@@ -19,17 +19,17 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDriverClickListener {
+public class DeleteStaff extends AppCompatActivity implements StaffAdapter.OnStaffClickListener {
 
-    private EditText driverNameInput, driverPhoneInput, licenseNumberInput;
+    private EditText staffNameInput, staffPhoneInput, licenseNumberInput;
     private Spinner vehicleDropdown, routeDropdown;
-    private RadioGroup statusRadioGroup;
-    private Button deleteDriverButton;
-    private RecyclerView driverRecyclerView;
-    private DriverAdapter driverAdapter;
-    private List<Driver> driverList;
+    private RadioGroup statusRadioGroup, roleRadioGroup; // Added roleRadioGroup
+    private Button deleteStaffButton;
+    private RecyclerView staffRecyclerView;
+    private StaffAdapter staffAdapter;
+    private List<Staff> staffList;
     private FirebaseFirestore firestore;
-    private String selectedDriverId = null;
+    private String selectedStaffId = null;
     private List<String> vehicleList;
     private List<String> routeList;
     private ArrayAdapter<String> vehicleAdapter;
@@ -44,21 +44,24 @@ public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDr
         firestore = FirebaseFirestore.getInstance();
 
         // Initialize Views
-        driverNameInput = findViewById(R.id.driverNameInput);
-        driverPhoneInput = findViewById(R.id.driverPhoneInput);
+        staffNameInput = findViewById(R.id.driverNameInput);
+        staffPhoneInput = findViewById(R.id.driverPhoneInput);
         licenseNumberInput = findViewById(R.id.licenseNumberInput);
         vehicleDropdown = findViewById(R.id.vehicleDropdown);
         routeDropdown = findViewById(R.id.routeDropdown);
-        driverRecyclerView = findViewById(R.id.driverRecyclerView);
+        statusRadioGroup = findViewById(R.id.statusRadioGroup);
+        roleRadioGroup = findViewById(R.id.roleRadioGroup); // Initialize new RadioGroup
+        deleteStaffButton = findViewById(R.id.deleteStaffButton); // Assuming ID updated in XML
+        staffRecyclerView = findViewById(R.id.driverRecyclerView);
 
         // Setup RecyclerView
-        driverList = new ArrayList<>();
-        driverAdapter = new DriverAdapter(driverList, this);
-        driverRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        driverRecyclerView.setAdapter(driverAdapter);
+        staffList = new ArrayList<>();
+        staffAdapter = new StaffAdapter(staffList, this);
+        staffRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        staffRecyclerView.setAdapter(staffAdapter);
 
         // Setup Spinners
-        vehicleList = new ArrayList<>(); // Fixed typo here
+        vehicleList = new ArrayList<>();
         routeList = new ArrayList<>();
         vehicleAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, vehicleList);
         routeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, routeList);
@@ -70,26 +73,26 @@ public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDr
         // Load data
         fetchVehicles();
         fetchRoutes();
-        fetchDrivers();
+        fetchStaff();
 
-        // Handle driver deletion
-        deleteDriverButton.setOnClickListener(v -> showDeleteConfirmationDialog());
+        // Handle staff deletion
+        deleteStaffButton.setOnClickListener(v -> showDeleteConfirmationDialog());
     }
 
-    private void fetchDrivers() {
-        firestore.collection("drivers")
+    private void fetchStaff() {
+        firestore.collection("staff") // Changed to "staff"
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    driverList.clear();
+                    staffList.clear();
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        Driver driver = doc.toObject(Driver.class);
-                        driver.setId(doc.getId());
-                        driverList.add(driver);
+                        Staff staff = doc.toObject(Staff.class);
+                        staff.setId(doc.getId());
+                        staffList.add(staff);
                     }
-                    driverAdapter.notifyDataSetChanged();
+                    staffAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error fetching drivers: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error fetching staff: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -132,64 +135,73 @@ public class DeleteStaff extends AppCompatActivity implements DriverAdapter.OnDr
     }
 
     @Override
-    public void onDriverClick(Driver driver) {
-        selectedDriverId = driver.getId();
-        driverNameInput.setText(driver.getDriverName());
-        driverPhoneInput.setText(driver.getPhoneNumber());
-        licenseNumberInput.setText(driver.getLicenseNumber());
+    public void onStaffClick(Staff staff) {
+        selectedStaffId = staff.getId();
+        staffNameInput.setText(staff.getStaffName());
+        staffPhoneInput.setText(staff.getPhoneNumber());
+        licenseNumberInput.setText(staff.getLicenseNumber());
 
         // Set Spinner selections
-        int vehiclePosition = vehicleAdapter.getPosition(driver.getAssignedVehicle());
+        int vehiclePosition = vehicleAdapter.getPosition(staff.getAssignedVehicle());
         vehicleDropdown.setSelection(vehiclePosition >= 0 ? vehiclePosition : 0);
 
-        int routePosition = routeAdapter.getPosition(driver.getAssignedRoute());
+        int routePosition = routeAdapter.getPosition(staff.getAssignedRoute());
         routeDropdown.setSelection(routePosition >= 0 ? routePosition : 0);
 
-        // Set RadioGroup selection
-        if ("Active".equals(driver.getStatus())) {
+        // Set Status RadioGroup selection
+        if ("Active".equals(staff.getStatus())) {
             statusRadioGroup.check(R.id.activeRadioButton);
-        } else if ("Not Active".equals(driver.getStatus())) {
+        } else if ("Not Active".equals(staff.getStatus())) {
             statusRadioGroup.check(R.id.notActiveRadioButton);
         } else {
             statusRadioGroup.clearCheck();
         }
+
+        // Set Role RadioGroup selection
+        if ("Driver".equals(staff.getRole())) {
+            roleRadioGroup.check(R.id.driverRadioButton);
+        } else if ("Attendant".equals(staff.getRole())) {
+            roleRadioGroup.check(R.id.attendantRadioButton);
+        } else {
+            roleRadioGroup.check(R.id.driverRadioButton); // Default to Driver if null
+        }
     }
 
     private void showDeleteConfirmationDialog() {
-        if (selectedDriverId == null) {
-            Toast.makeText(this, "Please select a driver to delete", Toast.LENGTH_SHORT).show();
+        if (selectedStaffId == null) {
+            Toast.makeText(this, "Please select a staff member to delete", Toast.LENGTH_SHORT).show();
             return;
         }
 
         new AlertDialog.Builder(this)
-                .setTitle("Delete Driver")
-                .setMessage("Are you sure you want to delete " + driverNameInput.getText().toString() + "?")
-                .setPositiveButton("Delete", (dialog, which) -> deleteDriver())
+                .setTitle("Delete Staff")
+                .setMessage("Are you sure you want to delete " + staffNameInput.getText().toString() + "?")
+                .setPositiveButton("Delete", (dialog, which) -> deleteStaff())
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    private void deleteDriver() {
-        firestore.collection("drivers").document(selectedDriverId)
+    private void deleteStaff() {
+        firestore.collection("staff").document(selectedStaffId) // Changed to "staff"
                 .delete()
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Driver deleted successfully", Toast.LENGTH_SHORT).show();
-                    fetchDrivers(); // Refresh the list
+                    Toast.makeText(this, "Staff deleted successfully", Toast.LENGTH_SHORT).show();
+                    fetchStaff(); // Refresh the list
                     clearFields();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to delete driver: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Failed to delete staff: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
     private void clearFields() {
-        selectedDriverId = null;
-        driverNameInput.setText("");
-        driverPhoneInput.setText("");
+        selectedStaffId = null;
+        staffNameInput.setText("");
+        staffPhoneInput.setText("");
         licenseNumberInput.setText("");
         vehicleDropdown.setSelection(0);
         routeDropdown.setSelection(0);
         statusRadioGroup.check(R.id.activeRadioButton); // Reset to default "Active"
+        roleRadioGroup.check(R.id.driverRadioButton); // Reset to default "Driver"
     }
 }
-
