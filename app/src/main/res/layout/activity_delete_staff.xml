@@ -8,35 +8,38 @@
     android:background="#F5F5F5"
     android:padding="16dp">
 
-    <!-- Navigation Bar (Fixed at Top) -->
+    <!-- Navigation Bar -->
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/green"
+        android:elevation="6dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="8dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
             android:background="@null"
             android:contentDescription="Back"
-            android:src="@drawable/baseline_arrow_back_24"/>
+            android:src="@drawable/baseline_arrow_back_24"
+            app:tint="@android:color/white" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Delete Driver"
+            android:text="Delete Staff"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"/>
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- ScrollView for Scrollable Content -->
+    <!-- ScrollView -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:fillViewport="true">
 
         <LinearLayout
@@ -47,9 +50,9 @@
             <!-- RecyclerView CardView -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:backgroundTint="@color/white"
+                android:backgroundTint="@android:color/white"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="10dp">
 
@@ -62,10 +65,10 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Driver List"
+                        android:text="Staff List"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="@color/black"
+                        android:textColor="#212121"
                         android:layout_gravity="center"
                         android:paddingBottom="8dp"/>
 
@@ -77,22 +80,21 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Delete Driver Form Section -->
+            <!-- Delete Staff Form Section -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:backgroundTint="@color/white"
-                android:padding="24dp"
+                android:backgroundTint="@android:color/white"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="24dp">
 
-                    <!-- Driver Name -->
                     <EditText
                         android:id="@+id/driverNameInput"
                         android:layout_width="match_parent"
@@ -100,13 +102,14 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginHorizontal="10dp"
                         android:background="@drawable/edittext_background"
-                        android:hint="Driver Name"
+                        android:hint="Staff Name"
                         android:inputType="text"
                         android:padding="12dp"
-                        android:textColor="@color/black"
-                        android:textSize="25sp"/>
+                        android:textColor="#212121"
+                        android:textColorHint="#757575"
+                        android:textSize="20sp"
+                        android:enabled="false" /> <!-- Disabled for display only -->
 
-                    <!-- Phone Number -->
                     <EditText
                         android:id="@+id/driverPhoneInput"
                         android:layout_width="match_parent"
@@ -117,10 +120,11 @@
                         android:hint="Phone Number"
                         android:inputType="phone"
                         android:padding="12dp"
-                        android:textColor="@color/black"
-                        android:textSize="25sp"/>
+                        android:textColor="#212121"
+                        android:textColorHint="#757575"
+                        android:textSize="20sp"
+                        android:enabled="false" />
 
-                    <!-- Driver's License Number -->
                     <EditText
                         android:id="@+id/licenseNumberInput"
                         android:layout_width="match_parent"
@@ -128,13 +132,14 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginHorizontal="10dp"
                         android:background="@drawable/edittext_background"
-                        android:hint="Driver's License Number"
+                        android:hint="License Number"
                         android:inputType="text"
                         android:padding="12dp"
-                        android:textColor="@color/black"
-                        android:textSize="25sp"/>
+                        android:textColor="#212121"
+                        android:textColorHint="#757575"
+                        android:textSize="20sp"
+                        android:enabled="false" />
 
-                    <!-- Assigned Vehicle Dropdown -->
                     <Spinner
                         android:id="@+id/vehicleDropdown"
                         android:layout_width="match_parent"
@@ -142,9 +147,10 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginHorizontal="10dp"
                         android:background="@drawable/edittext_background"
-                        android:padding="12dp"/>
+                        android:padding="12dp"
+                        android:spinnerMode="dropdown"
+                        android:enabled="false" />
 
-                    <!-- Assigned Route Dropdown -->
                     <Spinner
                         android:id="@+id/routeDropdown"
                         android:layout_width="match_parent"
@@ -152,22 +158,86 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginHorizontal="10dp"
                         android:background="@drawable/edittext_background"
-                        android:padding="12dp"/>
+                        android:padding="12dp"
+                        android:spinnerMode="dropdown"
+                        android:enabled="false" />
 
-                    <!-- Delete Button (Renamed) -->
+                    <RadioGroup
+                        android:id="@+id/statusRadioGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginHorizontal="10dp"
+                        android:orientation="horizontal"
+                        android:enabled="false">
+
+                        <RadioButton
+                            android:id="@+id/activeRadioButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Active"
+                            android:textSize="18sp"
+                            android:textColor="#212121"
+                            android:padding="8dp"
+                            android:checked="true" />
+
+                        <RadioButton
+                            android:id="@+id/notActiveRadioButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Not Active"
+                            android:textSize="18sp"
+                            android:textColor="#212121"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
+                    <RadioGroup
+                        android:id="@+id/roleRadioGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginHorizontal="10dp"
+                        android:orientation="horizontal"
+                        android:enabled="false">
+
+                        <RadioButton
+                            android:id="@+id/driverRadioButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Driver"
+                            android:textSize="18sp"
+                            android:textColor="#212121"
+                            android:padding="8dp"
+                            android:checked="true" />
+
+                        <RadioButton
+                            android:id="@+id/attendantRadioButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Attendant"
+                            android:textSize="18sp"
+                            android:textColor="#212121"
+                            android:padding="8dp" />
+                    </RadioGroup>
+
                     <Button
-                        android:id="@+id/saveDriverButton"
-                        android:layout_width="280dp"
+                        android:id="@+id/deleteStaffButton"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="24dp"
                         android:layout_marginBottom="10dp"
                         android:backgroundTint="@color/green"
-                        android:drawablePadding="8dp"
                         android:padding="16dp"
-                        android:text="Delete Driver"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"/>
+                        android:text="Delete Staff"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="12dp" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
