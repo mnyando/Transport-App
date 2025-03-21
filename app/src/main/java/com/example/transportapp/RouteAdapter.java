@@ -9,8 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHolder> {
-
+class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHolder> {
     private List<Route> routeList;
     private OnRouteClickListener listener;
 
@@ -19,17 +18,17 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         this.listener = listener;
     }
 
-    @NonNull
     @Override
-    public RouteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_route, parent, false);
+    public RouteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(android.R.layout.simple_list_item_1, parent, false);
         return new RouteViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RouteViewHolder holder, int position) {
+    public void onBindViewHolder(RouteViewHolder holder, int position) {
         Route route = routeList.get(position);
-        holder.routeNameTextView.setText(route.getRouteName());
+        holder.textView.setText(route.getRouteName());
         holder.itemView.setOnClickListener(v -> listener.onRouteClick(route));
     }
 
@@ -39,16 +38,15 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
     }
 
     static class RouteViewHolder extends RecyclerView.ViewHolder {
-        TextView routeNameTextView;
+        TextView textView;
 
-        public RouteViewHolder(@NonNull View itemView) {
+        RouteViewHolder(View itemView) {
             super(itemView);
-            routeNameTextView = itemView.findViewById(R.id.routeNameTextView);
+            textView = itemView.findViewById(android.R.id.text1);
         }
     }
 
-    public interface OnRouteClickListener {
+    interface OnRouteClickListener {
         void onRouteClick(Route route);
     }
 }
-

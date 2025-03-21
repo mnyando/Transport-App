@@ -130,7 +130,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void fetchParentId(String authUid) {
-        db.collection("parents")
+        db.collection("users")
                 .whereEqualTo("authUid", authUid)
                 .limit(1)
                 .get()

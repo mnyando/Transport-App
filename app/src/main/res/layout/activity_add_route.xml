@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#F5F5F5"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <!-- Navigation Bar -->
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/green"
+        android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="8dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
             android:background="@null"
             android:contentDescription="Back"
-            android:src="@drawable/baseline_arrow_back_24" />
+            android:src="@drawable/baseline_arrow_back_24"
+            app:tint="@android:color/white" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,37 +30,36 @@
             android:layout_gravity="center"
             android:text="Add Route"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
-
-
-    <!-- Beautified Modify Route Form Section inside CardView -->
+    <!-- Beautified Add Route Form Section inside CardView -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/white"
-        android:padding="24dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/white"
         app:cardCornerRadius="16dp"
-        app:cardElevation="10dp">
+        app:cardElevation="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="20dp">
 
             <!-- Route ID/Name -->
             <EditText
                 android:id="@+id/routeNameEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/edittext_background"
                 android:hint="Route ID/Name"
                 android:padding="12dp"
-                android:layout_marginTop="6dp"
-                android:background="@drawable/edittext_background"
-                android:textColor="@color/black"
+                android:textColor="#212121"
+                android:textColorHint="#757575"
                 android:textSize="16sp" />
 
             <!-- Total Distance -->
@@ -67,12 +67,13 @@
                 android:id="@+id/totalDistanceInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Total Distance"
                 android:layout_marginTop="16dp"
-                android:padding="12dp"
                 android:background="@drawable/edittext_background"
+                android:hint="Total Distance (km)"
                 android:inputType="numberDecimal"
-                android:textColor="@color/black"
+                android:padding="12dp"
+                android:textColor="#212121"
+                android:textColorHint="#757575"
                 android:textSize="16sp" />
 
             <!-- Route Description -->
@@ -80,11 +81,12 @@
                 android:id="@+id/routeDescriptionInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Route Description"
                 android:layout_marginTop="16dp"
-                android:padding="12dp"
                 android:background="@drawable/edittext_background"
-                android:textColor="@color/black"
+                android:hint="Route Description"
+                android:padding="12dp"
+                android:textColor="#212121"
+                android:textColorHint="#757575"
                 android:textSize="16sp" />
 
             <!-- Vehicle Dropdown -->
@@ -93,22 +95,56 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:background="@drawable/edittext_background"
                 android:padding="12dp"
-                android:background="@drawable/edittext_background" />
+                android:spinnerMode="dropdown" />
 
-            <!-- Update Button -->
+            <!-- Pickup Time -->
+            <EditText
+                android:id="@+id/pickupTimeInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/edittext_background"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:hint="Pickup Time"
+                android:onClick="showTimePickerDialog"
+                android:padding="12dp"
+                android:textColor="#212121"
+                android:textColorHint="#757575"
+                android:textSize="16sp" />
+
+            <!-- Drop Off Time -->
+            <EditText
+                android:id="@+id/dropOffTimeInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/edittext_background"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:hint="Drop Off Time"
+                android:onClick="showTimePickerDialog"
+                android:padding="12dp"
+                android:textColor="#212121"
+                android:textColorHint="#757575"
+                android:textSize="16sp" />
+
+            <!-- Add Route Button -->
             <Button
                 android:id="@+id/addRouteButton"
-                android:layout_width="280dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add Route"
                 android:layout_gravity="center"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/green"
                 android:layout_marginTop="24dp"
-                android:padding="16dp"
-                android:drawablePadding="8dp" />
+                android:backgroundTint="@color/green"
+                android:padding="14dp"
+                android:text="Add Route"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="12dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

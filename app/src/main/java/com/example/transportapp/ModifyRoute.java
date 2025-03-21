@@ -1,5 +1,6 @@
 package com.example.transportapp;
 
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -23,6 +24,7 @@ import java.util.Map;
 public class ModifyRoute extends AppCompatActivity {
 
     private EditText routeNameInput, totalDistanceInput, routeDescriptionInput;
+    private EditText pickupTimeInput, dropOffTimeInput; // New fields
     private Spinner vehicleDropdown;
     private Button updateRouteButton;
     private RecyclerView routeRecyclerView;
@@ -31,8 +33,8 @@ public class ModifyRoute extends AppCompatActivity {
     private List<Route> routeList;
     private RouteAdapter routeAdapter;
     private String selectedRouteId;
-    private List<String> vehicleNamesList; // To store vehicle names for the Spinner
-    private ArrayAdapter<String> vehicleAdapter; // Adapter for the Spinner
+    private List<String> vehicleNamesList;
+    private ArrayAdapter<String> vehicleAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,8 @@ public class ModifyRoute extends AppCompatActivity {
         routeNameInput = findViewById(R.id.routeNameInput);
         totalDistanceInput = findViewById(R.id.totalDistanceInput);
         routeDescriptionInput = findViewById(R.id.routeDescriptionInput);
+        pickupTimeInput = findViewById(R.id.pickupTimeInput); // Initialize pickup time
+        dropOffTimeInput = findViewById(R.id.dropOffTimeInput); // Initialize drop-off time
         vehicleDropdown = findViewById(R.id.vehicleDropdown);
         updateRouteButton = findViewById(R.id.updateRouteButton);
         routeRecyclerView = findViewById(R.id.routeRecyclerView);
@@ -63,11 +67,15 @@ public class ModifyRoute extends AppCompatActivity {
         vehicleDropdown.setAdapter(vehicleAdapter);
 
         // Fetch data
-        fetchVehicles(); // Fetch vehicle names first
-        fetchRoutes();   // Then fetch routes
+        fetchVehicles();
+        fetchRoutes();
 
         // Set button click listener for updating route
         updateRouteButton.setOnClickListener(v -> updateRouteInFirestore());
+
+        // Set click listeners for time inputs to show TimePickerDialog
+        pickupTimeInput.setOnClickListener(v -> showTimePickerDialog(pickupTimeInput));
+        dropOffTimeInput.setOnClickListener(v -> showTimePickerDialog(dropOffTimeInput));
     }
 
     private void fetchVehicles() {
@@ -76,7 +84,7 @@ public class ModifyRoute extends AppCompatActivity {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     vehicleNamesList.clear();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        String vehicleName = document.getString("vehicleName"); // Adjust field name as needed
+                        String vehicleName = document.getString("vehicleName");
                         if (vehicleName != null) {
                             vehicleNamesList.add(vehicleName);
                         }
@@ -86,9 +94,7 @@ public class ModifyRoute extends AppCompatActivity {
                         Toast.makeText(this, "No vehicles found", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to fetch vehicles: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(this, "Failed to fetch vehicles: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void fetchRoutes() {
@@ -111,6 +117,8 @@ public class ModifyRoute extends AppCompatActivity {
         routeNameInput.setText(route.getRouteName());
         totalDistanceInput.setText(String.valueOf(route.getTotalDistance()));
         routeDescriptionInput.setText(route.getRouteDescription());
+        pickupTimeInput.setText(route.getPickupTime()); // Set pickup time from database
+        dropOffTimeInput.setText(route.getDropOffTime()); // Set drop-off time from database
 
         // Set the Spinner to the route's vehicle
         int position = vehicleAdapter.getPosition(route.getVehicle());
@@ -132,8 +140,11 @@ public class ModifyRoute extends AppCompatActivity {
         String routeDescription = routeDescriptionInput.getText().toString().trim();
         String selectedVehicle = vehicleDropdown.getSelectedItem() != null ?
                 vehicleDropdown.getSelectedItem().toString() : "";
+        String pickupTime = pickupTimeInput.getText().toString().trim(); // Get pickup time
+        String dropOffTime = dropOffTimeInput.getText().toString().trim(); // Get drop-off time
 
-        if (routeName.isEmpty() || totalDistanceStr.isEmpty() || routeDescription.isEmpty() || selectedVehicle.isEmpty()) {
+        if (routeName.isEmpty() || totalDistanceStr.isEmpty() || routeDescription.isEmpty() ||
+                selectedVehicle.isEmpty() || pickupTime.isEmpty() || dropOffTime.isEmpty()) {
             Toast.makeText(this, "Please fill out all fields and select a vehicle", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -152,6 +163,8 @@ public class ModifyRoute extends AppCompatActivity {
         updatedData.put("totalDistance", totalDistance);
         updatedData.put("routeDescription", routeDescription);
         updatedData.put("vehicle", selectedVehicle);
+        updatedData.put("pickupTime", pickupTime); // Include pickup time
+        updatedData.put("dropOffTime", dropOffTime); // Include drop-off time
 
         // Update Firestore
         firestore.collection("Routes")
@@ -163,4 +176,14 @@ public class ModifyRoute extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to update route: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
+
+    private void showTimePickerDialog(EditText targetEditText) {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                (view, hourOfDay, minute) -> {
+                    String time = String.format("%02d:%02d", hourOfDay, minute); // Ensures "05:40"
+                    targetEditText.setText(time);
+                }, 12, 0, true); // 24-hour format, default to 12:00
+        timePickerDialog.show();
+    }
 }
+
