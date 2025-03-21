@@ -4,19 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +22,12 @@ public class ParentLanding extends AppCompatActivity {
 
     private RecyclerView childRecyclerView;
     private RecyclerView notificationRecyclerView;
-    private Button chatButton;
-    private ArrayList<String> childList;
-    private ArrayList<String> notificationList;
+    private List<String> childList;
+    private List<Notification> notificationList; // Updated to List<Notification>
     private ChildAdapter childAdapter;
-    private NotificationAdapter notificationAdapter;
-
+    private NotificationAdapter notificationAdapter; // Using the NotificationAdapter with click listener
     private FirebaseFirestore db;
+    private String parentId; // Parent ID passed from Login
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,67 +37,60 @@ public class ParentLanding extends AppCompatActivity {
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Initialize RecyclerViews and Button
+        // Get parent ID from Intent (assumed from Login)
+        parentId = getIntent().getStringExtra("parentId");
+        if (parentId == null) {
+            Log.e(TAG, "Parent ID not found");
+            finish();
+            return;
+        }
+
+        // Initialize RecyclerViews
         childRecyclerView = findViewById(R.id.childRecyclerView);
         notificationRecyclerView = findViewById(R.id.notificationRecyclerView);
-        chatButton = findViewById(R.id.chatButton);
 
-        // Initialize child and notification data
+        // Initialize data lists
         childList = new ArrayList<>();
         notificationList = new ArrayList<>();
 
-        // Fetch children and notifications from Firestore
+        // Fetch data from Firestore
         fetchChildrenFromFirestore();
         fetchNotificationsFromFirestore();
 
-        // Set up the RecyclerViews with adapters
+        // Set up RecyclerViews
         setupRecyclerViews();
-
-        // Set up chat button click listener
-        chatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Navigate to chat activity
-                Intent intent = new Intent(ParentLanding.this, ChatActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     private void fetchChildrenFromFirestore() {
-        CollectionReference childrenRef = db.collection("children");
-        childrenRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (DocumentSnapshot document : task.getResult()) {
+        db.collection("children")
+                .whereEqualTo("parentId", parentId) // Filter by parent ID
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    childList.clear();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         String childData = document.getString("name") + " - " + document.getString("grade");
                         childList.add(childData);
                     }
                     childAdapter.notifyDataSetChanged();
-                } else {
-                    Log.d(TAG, "Error getting children data: ", task.getException());
-                }
-            }
-        });
+                })
+                .addOnFailureListener(e -> Log.d(TAG, "Error getting children data: ", e));
     }
 
     private void fetchNotificationsFromFirestore() {
-        CollectionReference notificationsRef = db.collection("notifications");
-        notificationsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (DocumentSnapshot document : task.getResult()) {
-                        String notification = document.getString("message");
+        db.collection("notifications")
+                .whereEqualTo("parentId", parentId) // Filter by parent ID
+                .orderBy("timestamp", Query.Direction.DESCENDING) // Latest first
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    notificationList.clear();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Notification notification = document.toObject(Notification.class);
+                        notification.setId(document.getId());
                         notificationList.add(notification);
                     }
                     notificationAdapter.notifyDataSetChanged();
-                } else {
-                    Log.d(TAG, "Error getting notifications: ", task.getException());
-                }
-            }
-        });
+                })
+                .addOnFailureListener(e -> Log.d(TAG, "Error getting notifications: ", e));
     }
 
     private void setupRecyclerViews() {
@@ -114,7 +101,18 @@ public class ParentLanding extends AppCompatActivity {
 
         // Set up notification RecyclerView
         notificationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        notificationAdapter = new NotificationAdapter(notificationList);
+        notificationAdapter = new NotificationAdapter(notificationList, this::onNotificationClick); // Updated with click listener
         notificationRecyclerView.setAdapter(notificationAdapter);
     }
+
+    private void onNotificationClick(Notification notification) {
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("parentId", parentId);
+        intent.putExtra("driverId", notification.getDriverId()); // Navigate to chat with driver
+        startActivity(intent);
+    }
 }
+
+
+
+

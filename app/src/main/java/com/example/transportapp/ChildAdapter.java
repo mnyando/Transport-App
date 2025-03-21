@@ -5,30 +5,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> {
+// ChildAdapter (unchanged from your original intent)
+class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHolder> {
+    private List<String> childList;
 
-    private ArrayList<String> childList;
-
-    public ChildAdapter(ArrayList<String> childList) {
+    public ChildAdapter(List<String> childList) {
         this.childList = childList;
     }
 
-    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.child_item, parent, false);
-        return new ViewHolder(view);
+    public ChildViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(android.R.layout.simple_list_item_1, parent, false);
+        return new ChildViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(ChildViewHolder holder, int position) {
         String child = childList.get(position);
-        holder.childTextView.setText(child);
+        holder.textView.setText(child);
     }
 
     @Override
@@ -36,12 +35,12 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ViewHolder> 
         return childList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView childTextView;
+    static class ChildViewHolder extends RecyclerView.ViewHolder {
+        TextView textView;
 
-        public ViewHolder(@NonNull View itemView) {
+        ChildViewHolder(View itemView) {
             super(itemView);
-            childTextView = itemView.findViewById(R.id.childTextView);
+            textView = itemView.findViewById(android.R.id.text1);
         }
     }
 }

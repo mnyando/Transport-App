@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class Login extends AppCompatActivity {
 
@@ -43,20 +44,12 @@ public class Login extends AppCompatActivity {
         tvSignUp = findViewById(R.id.tvSignUp);
 
         // Login button click listener
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginUser();
-            }
-        });
+        btnLogin.setOnClickListener(v -> loginUser());
 
         // Navigate to the SignUp page
-        tvSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Login.this, SignUp.class);
-                startActivity(intent);
-            }
+        tvSignUp.setOnClickListener(v -> {
+            Intent intent = new Intent(Login.this, SignUp.class);
+            startActivity(intent);
         });
     }
 
@@ -91,15 +84,21 @@ public class Login extends AppCompatActivity {
                 });
     }
 
-    private void fetchUserRole(String userId) {
-        db.collection("users").document(userId)
+    private void fetchUserRole(String authUid) {
+        db.collection("users").document(authUid)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
                             String role = document.getString("role");
-                            navigateToRoleBasedPage(role);
+                            if ("driver".equalsIgnoreCase(role)) {
+                                fetchDriverId(authUid);
+                            } else if ("parent".equalsIgnoreCase(role)) {
+                                fetchParentId(authUid); // Fetch parentId for parents
+                            } else {
+                                navigateToRoleBasedPage(role, null);
+                            }
                         } else {
                             Toast.makeText(Login.this, "User data not found!", Toast.LENGTH_SHORT).show();
                         }
@@ -109,7 +108,49 @@ public class Login extends AppCompatActivity {
                 });
     }
 
-    private void navigateToRoleBasedPage(String role) {
+    private void fetchDriverId(String authUid) {
+        db.collection("drivers")
+                .whereEqualTo("authUid", authUid)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (!querySnapshot.isEmpty()) {
+                            DocumentSnapshot driverDoc = querySnapshot.getDocuments().get(0);
+                            String driverId = driverDoc.getId();
+                            navigateToRoleBasedPage("driver", driverId);
+                        } else {
+                            Toast.makeText(Login.this, "Driver profile not found!", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(Login.this, "Failed to fetch driver data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void fetchParentId(String authUid) {
+        db.collection("parents")
+                .whereEqualTo("authUid", authUid)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (!querySnapshot.isEmpty()) {
+                            DocumentSnapshot parentDoc = querySnapshot.getDocuments().get(0);
+                            String parentId = parentDoc.getId(); // Firestore document ID
+                            navigateToRoleBasedPage("parent", parentId); // Pass parentId
+                        } else {
+                            Toast.makeText(Login.this, "Parent profile not found!", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(Login.this, "Failed to fetch parent data: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void navigateToRoleBasedPage(String role, String id) {
         if (role == null) {
             Toast.makeText(this, "User role is undefined", Toast.LENGTH_SHORT).show();
             return;
@@ -122,9 +163,11 @@ public class Login extends AppCompatActivity {
                 break;
             case "parent":
                 intent = new Intent(Login.this, ParentLanding.class);
+                intent.putExtra("parentId", id); // Pass parentId to ParentLanding
                 break;
             case "driver":
                 intent = new Intent(Login.this, DriverLanding.class);
+                intent.putExtra("driverId", id); // Pass driverId to DriverDashboard
                 break;
             default:
                 Toast.makeText(this, "Unknown role: " + role, Toast.LENGTH_SHORT).show();
@@ -135,6 +178,4 @@ public class Login extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
-
 }
-

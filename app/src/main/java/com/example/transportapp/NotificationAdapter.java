@@ -9,26 +9,32 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
-    private ArrayList<String> notificationList;
+// Notification Adapter
+class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
+    private List<Notification> notificationList;
+    private OnNotificationClickListener listener;
 
-    public NotificationAdapter(ArrayList<String> notificationList) {
+    public NotificationAdapter(List<Notification> notificationList, OnNotificationClickListener listener) {
         this.notificationList = notificationList;
-    }
-
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_item, parent, false);
-        return new ViewHolder(view);
+        this.listener = listener;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String notification = notificationList.get(position);
-        holder.notificationTextView.setText(notification);
+    public NotificationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(android.R.layout.simple_list_item_2, parent, false); // Two-line layout for parent and message
+        return new NotificationViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(NotificationViewHolder holder, int position) {
+        Notification notification = notificationList.get(position);
+        holder.text1.setText("From Parent: " + notification.getParentId()); // Replace with parent name if available
+        holder.text2.setText(notification.getMessage());
+        holder.itemView.setOnClickListener(v -> listener.onNotificationClick(notification));
     }
 
     @Override
@@ -36,12 +42,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return notificationList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView notificationTextView;
+    static class NotificationViewHolder extends RecyclerView.ViewHolder {
+        TextView text1, text2;
 
-        public ViewHolder(@NonNull View itemView) {
+        NotificationViewHolder(View itemView) {
             super(itemView);
-            notificationTextView = itemView.findViewById(R.id.notificationTextView);
+            text1 = itemView.findViewById(android.R.id.text1); // Parent ID/name
+            text2 = itemView.findViewById(android.R.id.text2); // Message
         }
+    }
+
+    interface OnNotificationClickListener {
+        void onNotificationClick(Notification notification);
     }
 }
