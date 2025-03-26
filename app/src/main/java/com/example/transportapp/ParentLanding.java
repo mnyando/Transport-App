@@ -23,11 +23,11 @@ public class ParentLanding extends AppCompatActivity {
     private RecyclerView childRecyclerView;
     private RecyclerView notificationRecyclerView;
     private List<String> childList;
-    private List<Notification> notificationList; // Updated to List<Notification>
+    private List<Notification> notificationList;
     private ChildAdapter childAdapter;
-    private NotificationAdapter notificationAdapter; // Using the NotificationAdapter with click listener
+    private NotificationAdapter notificationAdapter;
     private FirebaseFirestore db;
-    private String parentId; // Parent ID passed from Login
+    private String parentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +37,9 @@ public class ParentLanding extends AppCompatActivity {
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Get parent ID from Intent (assumed from Login)
+        // Get parent ID from Intent
         parentId = getIntent().getStringExtra("parentId");
-        if (parentId == null) {
+        if (parentId == null || parentId.isEmpty()) {
             Log.e(TAG, "Parent ID not found");
             finish();
             return;
@@ -49,37 +49,54 @@ public class ParentLanding extends AppCompatActivity {
         childRecyclerView = findViewById(R.id.childRecyclerView);
         notificationRecyclerView = findViewById(R.id.notificationRecyclerView);
 
-        // Initialize data lists
+        // Initialize lists
         childList = new ArrayList<>();
         notificationList = new ArrayList<>();
+
+        // Set up RecyclerViews before fetching data
+        setupRecyclerViews();
 
         // Fetch data from Firestore
         fetchChildrenFromFirestore();
         fetchNotificationsFromFirestore();
+    }
 
-        // Set up RecyclerViews
-        setupRecyclerViews();
+    private void setupRecyclerViews() {
+        // Child RecyclerView setup
+        childRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        childAdapter = new ChildAdapter(childList);
+        childRecyclerView.setAdapter(childAdapter);
+
+        // Notification RecyclerView setup
+        notificationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        notificationAdapter = new NotificationAdapter(notificationList, this::onNotificationClick);
+        notificationRecyclerView.setAdapter(notificationAdapter);
     }
 
     private void fetchChildrenFromFirestore() {
         db.collection("children")
-                .whereEqualTo("parentId", parentId) // Filter by parent ID
+                .whereEqualTo("parentId", parentId)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     childList.clear();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        String childData = document.getString("name") + " - " + document.getString("grade");
-                        childList.add(childData);
+                        String childName = document.getString("name");
+                        String childGrade = document.getString("grade");
+
+                        if (childName != null && childGrade != null) {
+                            String childData = childName + " - " + childGrade;
+                            childList.add(childData);
+                        }
                     }
-                    childAdapter.notifyDataSetChanged();
+                    childAdapter.notifyDataSetChanged(); // Notify adapter after data is updated
                 })
-                .addOnFailureListener(e -> Log.d(TAG, "Error getting children data: ", e));
+                .addOnFailureListener(e -> Log.e(TAG, "Error getting children data", e));
     }
 
     private void fetchNotificationsFromFirestore() {
         db.collection("notifications")
-                .whereEqualTo("parentId", parentId) // Filter by parent ID
-                .orderBy("timestamp", Query.Direction.DESCENDING) // Latest first
+                .whereEqualTo("parentId", parentId)
+                .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     notificationList.clear();
@@ -88,31 +105,15 @@ public class ParentLanding extends AppCompatActivity {
                         notification.setId(document.getId());
                         notificationList.add(notification);
                     }
-                    notificationAdapter.notifyDataSetChanged();
+                    notificationAdapter.notifyDataSetChanged(); // Notify adapter after data is updated
                 })
-                .addOnFailureListener(e -> Log.d(TAG, "Error getting notifications: ", e));
-    }
-
-    private void setupRecyclerViews() {
-        // Set up child RecyclerView
-        childRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        childAdapter = new ChildAdapter(childList);
-        childRecyclerView.setAdapter(childAdapter);
-
-        // Set up notification RecyclerView
-        notificationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        notificationAdapter = new NotificationAdapter(notificationList, this::onNotificationClick); // Updated with click listener
-        notificationRecyclerView.setAdapter(notificationAdapter);
+                .addOnFailureListener(e -> Log.e(TAG, "Error getting notifications", e));
     }
 
     private void onNotificationClick(Notification notification) {
         Intent intent = new Intent(this, ChatActivity.class);
         intent.putExtra("parentId", parentId);
-        intent.putExtra("driverId", notification.getDriverId()); // Navigate to chat with driver
+        intent.putExtra("driverId", notification.getDriverId());
         startActivity(intent);
     }
 }
-
-
-
-

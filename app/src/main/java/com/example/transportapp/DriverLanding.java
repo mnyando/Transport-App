@@ -2,9 +2,7 @@ package com.example.transportapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +22,7 @@ public class DriverLanding extends AppCompatActivity {
     private TextView driverNameTextView, vehicleTextView, routeTextView;
     private RecyclerView notificationRecyclerView;
     private NotificationAdapter notificationAdapter;
-    private List<Notification> notificationList; // Correct type: List<Notification>
+    private List<Notification> notificationList;
     private FirebaseFirestore db;
     private String driverId;
 
@@ -51,27 +49,29 @@ public class DriverLanding extends AppCompatActivity {
         notificationRecyclerView = findViewById(R.id.notificationRecyclerView);
 
         // Setup RecyclerView for Notifications
-        notificationList = new ArrayList<>(); // Initialize as List<Notification>
+        notificationList = new ArrayList<>();
         notificationAdapter = new NotificationAdapter(notificationList, this::onNotificationClick);
         notificationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         notificationRecyclerView.setAdapter(notificationAdapter);
 
         // Load data
         loadDriverData();
-        loadNotifications();
     }
 
     private void loadDriverData() {
-        db.collection("drivers").document(driverId)
+        db.collection("staff").document(driverId) // Changed from "drivers" to "staff"
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        Driver driver = documentSnapshot.toObject(Driver.class);
-                        if (driver != null) {
-                            driverNameTextView.setText("Driver Name: " + driver.getDriverName());
-                            vehicleTextView.setText("Assigned Vehicle: " + driver.getAssignedVehicle());
-                            routeTextView.setText("Assigned Route: " + driver.getAssignedRoute());
-                        }
+                        String driverName = documentSnapshot.getString("staffName");
+                        String assignedVehicle = documentSnapshot.getString("assignedVehicle");
+                        String assignedRoute = documentSnapshot.getString("assignedRoute");
+
+                        driverNameTextView.setText("Driver Name: " + driverName);
+                        vehicleTextView.setText("Assigned Vehicle: " + assignedVehicle);
+                        routeTextView.setText("Assigned Route: " + assignedRoute);
+
+                        loadNotifications(driverId); // Load notifications after retrieving driver info
                     } else {
                         Toast.makeText(this, "Driver data not found", Toast.LENGTH_SHORT).show();
                     }
@@ -79,9 +79,9 @@ public class DriverLanding extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(this, "Error loading driver data: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    private void loadNotifications() {
+    private void loadNotifications(String driverId) {
         db.collection("notifications")
-                .whereEqualTo("driverId", driverId)
+                .whereEqualTo("driverId", driverId) // Ensure this matches how driverId is stored
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
@@ -103,7 +103,3 @@ public class DriverLanding extends AppCompatActivity {
         startActivity(intent);
     }
 }
-
-
-
-
