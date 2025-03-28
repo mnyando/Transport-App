@@ -138,7 +138,7 @@ public class SchoolLanding extends AppCompatActivity {
 
     // Count active and inactive drivers
     private void countDrivers() {
-        db.collection("drivers")
+        db.collection("staff")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     int activeDrivers = 0;

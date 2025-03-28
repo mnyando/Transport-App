@@ -106,7 +106,7 @@ public class AddStaff extends AppCompatActivity {
         int selectedStatusId = statusRadioGroup.getCheckedRadioButtonId();
         String status = selectedStatusId == R.id.activeRadioButton ? "Active" : "Not Active";
         int selectedRoleId = roleRadioGroup.getCheckedRadioButtonId();
-        String role = selectedRoleId == R.id.driverRadioButton ? "Driver" : "Attendant"; // Get role from RadioGroup
+        String role = selectedRoleId == R.id.driverRadioButton ? "Driver" : "Attendant";
 
         if (staffName.isEmpty() || staffPhone.isEmpty() || licenseNumber.isEmpty() ||
                 "Select Vehicle".equals(assignedVehicle) || "Select Route".equals(assignedRoute)) {
@@ -116,19 +116,18 @@ public class AddStaff extends AppCompatActivity {
 
         // Check staff count for the selected vehicle
         checkStaffCountForVehicle(assignedVehicle, () -> {
-            // Proceed with saving if staff count is less than 2
             Map<String, Object> staffData = new HashMap<>();
-            staffData.put("staffName", staffName); // Renamed for generality
+            staffData.put("staffName", staffName);
             staffData.put("phoneNumber", staffPhone);
             staffData.put("licenseNumber", licenseNumber);
             staffData.put("assignedVehicle", assignedVehicle);
             staffData.put("assignedRoute", assignedRoute);
             staffData.put("status", status);
-            staffData.put("role", role); // Add role to staff data
+            staffData.put("role", role);
 
-            db.collection("staff") // Changed to "staff" for generality
-                    .add(staffData)
-                    .addOnSuccessListener(documentReference -> {
+            db.collection("staff").document(licenseNumber) // Use license as ID
+                    .set(staffData)
+                    .addOnSuccessListener(aVoid -> {
                         Toast.makeText(this, "Staff added successfully", Toast.LENGTH_SHORT).show();
                         clearForm();
                     })

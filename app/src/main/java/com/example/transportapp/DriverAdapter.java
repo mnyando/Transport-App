@@ -31,8 +31,18 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.DriverView
     @Override
     public void onBindViewHolder(@NonNull DriverViewHolder holder, int position) {
         Driver driver = driverList.get(position);
-        holder.driverNameTextView.setText(driver.getDriverName());
-        holder.driverStatusTextView.setText("Status: " + (driver.getStatus() != null ? driver.getStatus() : "Unknown"));
+
+        // Set driver name (now staffName for consistency)
+        String driverName = driver.getStaffName() != null ? driver.getStaffName() : "Unknown Name";
+        holder.driverNameTextView.setText("Name: " + driverName);
+
+        // Set role and status
+        String role = driver.getRole() != null ? driver.getRole() : "Unknown Role";
+        String status = driver.getStatus() != null ? driver.getStatus() : "Unknown";
+
+        holder.driverStatusTextView.setText(role + " - Status: " + status);
+
+        // Handle item click event
         holder.itemView.setOnClickListener(v -> listener.onDriverClick(driver));
     }
 

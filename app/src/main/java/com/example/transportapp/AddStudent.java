@@ -168,10 +168,10 @@ public class AddStudent extends AppCompatActivity {
     private void saveStudentData(String studentName, String studentClass, String studentId, String parentName,
                                  String parentContact, String homeLocation, String route) {
         Map<String, Object> studentData = new HashMap<>();
+        studentData.put("parentName", parentName);
         studentData.put("name", studentName);
         studentData.put("studentId", studentId);
         studentData.put("route", route);
-        studentData.put("parentName", parentName);
         studentData.put("parentContact", parentContact);
         studentData.put("homeLocation", homeLocation);
 
