@@ -1,5 +1,7 @@
 package com.example.transportapp;
 
+import com.google.firebase.firestore.PropertyName;
+
 public class Student {
     private String id;
     private String name;
@@ -10,18 +12,22 @@ public class Student {
     private String parentContact;
     private String homeLocation;
     private String vehicle;
-    private String driver;
+    private String driverName;  // Changed from 'driver' to match Firestore
     private String driverPhone;
-    private String attendant;
+    private String attendantName;  // Changed from 'attendant' to match Firestore
     private String attendantPhone;
     private String pickupTime;
     private String dropOffTime;
 
-    public Student() {
-        // Required empty constructor for Firestore
-    }
+    // Required empty constructor for Firestore
+    public Student() {}
 
-    public Student(String name, String studentId, String grade, String route, String parentName, String parentContact, String homeLocation, String vehicle, String driver, String driverPhone, String attendant, String attendantPhone, String pickupTime, String dropOffTime) {
+    // Updated constructor to match new field names
+    public Student(String name, String studentId, String grade, String route,
+                   String parentName, String parentContact, String homeLocation,
+                   String vehicle, String driverName, String driverPhone,
+                   String attendantName, String attendantPhone,
+                   String pickupTime, String dropOffTime) {
         this.name = name;
         this.studentId = studentId;
         this.grade = grade;
@@ -30,9 +36,9 @@ public class Student {
         this.parentContact = parentContact;
         this.homeLocation = homeLocation;
         this.vehicle = vehicle;
-        this.driver = driver;
+        this.driverName = driverName;
         this.driverPhone = driverPhone;
-        this.attendant = attendant;
+        this.attendantName = attendantName;
         this.attendantPhone = attendantPhone;
         this.pickupTime = pickupTime;
         this.dropOffTime = dropOffTime;
@@ -111,12 +117,13 @@ public class Student {
         this.vehicle = vehicle;
     }
 
-    public String getDriver() {
-        return driver;
+    // Updated driver methods to match Firestore field
+    public String getDriverName() {
+        return driverName;
     }
 
-    public void setDriver(String driver) {
-        this.driver = driver;
+    public void setDriverName(String driverName) {
+        this.driverName = driverName;
     }
 
     public String getDriverPhone() {
@@ -127,12 +134,13 @@ public class Student {
         this.driverPhone = driverPhone;
     }
 
+    // Updated attendant methods to match Firestore field
     public String getAttendantName() {
-        return attendant;
+        return attendantName;
     }
 
-    public void setAttendantName(String attendant) {
-        this.attendant = attendant;
+    public void setAttendantName(String attendantName) {
+        this.attendantName = attendantName;
     }
 
     public String getAttendantPhone() {
@@ -157,5 +165,16 @@ public class Student {
 
     public void setDropOffTime(String dropOffTime) {
         this.dropOffTime = dropOffTime;
+    }
+
+    // Optional: Add toString() for debugging
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", grade='" + grade + '\'' +
+                ", route='" + route + '\'' +
+                ", driverName='" + driverName + '\'' +
+                '}';
     }
 }

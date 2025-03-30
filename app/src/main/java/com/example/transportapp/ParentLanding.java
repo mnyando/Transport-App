@@ -3,13 +3,13 @@ package com.example.transportapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -61,6 +61,7 @@ public class ParentLanding extends AppCompatActivity {
                         if (parentName != null) {
                             Log.d(TAG, "✅ Parent name found: " + parentName);
                             fetchChildrenFromFirestore();
+                            fetchNotificationsFromFirestore();
                         } else {
                             Log.e(TAG, "❌ Parent name not found!");
                             finish();
@@ -80,27 +81,35 @@ public class ParentLanding extends AppCompatActivity {
         Log.d(TAG, "📡 Searching for students with parentName: " + parentName);
         childList.clear();
 
-        db.collection("students")
-                .whereEqualTo("parentName", parentName) // Filter by parent name
+        db.collectionGroup("studentList")
+                .whereEqualTo("parentName", parentName)
                 .get()
-                .addOnSuccessListener(studentList -> {
-                    if (studentList.isEmpty()) {
-                        Log.w(TAG, "⚠ No students found for parent: " + parentName);
-                        Toast.makeText(this, "No students found for " + parentName, Toast.LENGTH_LONG).show();
-                        return;
-                    }
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    childList.clear();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Student student = document.toObject(Student.class);
+                        student.setId(document.getId());
 
-                    for (QueryDocumentSnapshot studentDoc : studentList) {
-                        Student student = studentDoc.toObject(Student.class);
-                        student.setId(studentDoc.getId()); // Ensure student ID is set
+                        // Extract grade from document path: students/{grade}/studentList/{studentId}
+                        String grade = document.getReference().getParent().getParent().getId();
+                        student.setGrade(grade);
+
                         childList.add(student);
-                        Log.d(TAG, "✅ Student loaded: " + student.getName() + " (ID: " + student.getId() + ")");
+                        Log.d(TAG, "✅ Student loaded: " + student.getName() +
+                                " (Grade: " + grade + ", ID: " + student.getId() + ")");
                     }
 
-                    childAdapter.updateList(childList); // Update RecyclerView with fetched students
+                    childAdapter.updateList(childList);
                     Log.d(TAG, "✅ Total students found: " + childList.size());
+
+                    if (childList.isEmpty()) {
+                        Toast.makeText(this, "No students found", Toast.LENGTH_SHORT).show();
+                    }
                 })
-                .addOnFailureListener(e -> Log.e(TAG, "❌ ERROR fetching students: ", e));
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "❌ ERROR fetching students: ", e);
+                    Toast.makeText(this, "Error loading students", Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void fetchNotificationsFromFirestore() {
@@ -122,11 +131,13 @@ public class ParentLanding extends AppCompatActivity {
     }
 
     private void setupRecyclerViews() {
+        // Setup children RecyclerView
         childRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         childAdapter = new ChildAdapter(childList);
         childRecyclerView.setAdapter(childAdapter);
         Log.d(TAG, "✅ Child RecyclerView set up successfully");
 
+        // Setup notifications RecyclerView
         notificationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         notificationAdapter = new NotificationAdapter(notificationList, this::onNotificationClick);
         notificationRecyclerView.setAdapter(notificationAdapter);

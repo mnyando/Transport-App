@@ -1,6 +1,7 @@
 package com.example.transportapp;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -10,8 +11,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +24,7 @@ import java.util.Map;
 
 public class AddStudent extends AppCompatActivity {
 
+    private static final String TAG = "AddStudent";
     private EditText studentNameInput, studentIdInput, parentNameInput, parentContactInput, homeLocationInput;
     private Spinner routeDropdown, studentClassInput;
     private Button saveStudentButton;
@@ -44,7 +49,7 @@ public class AddStudent extends AppCompatActivity {
         routeDropdown = findViewById(R.id.routeDropdown);
         saveStudentButton = findViewById(R.id.saveStudentButton);
 
-        // Setup Grade Levels Spinner (from strings.xml)
+        // Setup Grade Levels Spinner
         ArrayAdapter<CharSequence> gradeAdapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.grade_levels,
@@ -53,14 +58,14 @@ public class AddStudent extends AppCompatActivity {
         gradeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         studentClassInput.setAdapter(gradeAdapter);
 
-        // Setup Routes Spinner (from Firestore)
+        // Setup Routes Spinner
         routeList = new ArrayList<>();
         routeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, routeList);
         routeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         routeDropdown.setAdapter(routeAdapter);
         fetchRoutes();
 
-        // Handle Save Button
+        // Save Button Click Handler
         saveStudentButton.setOnClickListener(v -> checkAndSaveStudentData());
     }
 
@@ -100,25 +105,27 @@ public class AddStudent extends AppCompatActivity {
             return;
         }
 
-        // Check vehicle capacity before saving
-        checkVehicleCapacity(route, () -> saveStudentData(studentName, studentClass, studentId, parentName, parentContact, homeLocation, route));
+        checkVehicleCapacity(route);
     }
 
-    private void checkVehicleCapacity(String routeName, Runnable onSuccess) {
-        // Step 1: Get the vehicle assigned to the route
+    private void checkVehicleCapacity(String routeName) {
         db.collection("Routes")
                 .whereEqualTo("routeName", routeName)
                 .limit(1)
                 .get()
                 .addOnSuccessListener(routeQuery -> {
                     if (!routeQuery.isEmpty()) {
-                        String vehicleName = routeQuery.getDocuments().get(0).getString("vehicle");
+                        DocumentSnapshot routeDoc = routeQuery.getDocuments().get(0);
+                        String vehicleName = routeDoc.getString("vehicle");
+                        String pickupTime = routeDoc.getString("pickupTime");
+                        String dropOffTime = routeDoc.getString("dropOffTime");
+
                         if (vehicleName == null) {
                             Toast.makeText(this, "No vehicle assigned to this route", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
-                        // Step 2: Get the vehicle's capacity
+                        // Get vehicle capacity
                         db.collection("vehicle")
                                 .whereEqualTo("vehicleName", vehicleName)
                                 .limit(1)
@@ -134,7 +141,7 @@ public class AddStudent extends AppCompatActivity {
                                             return;
                                         }
 
-                                        // Step 3: Count students assigned to this vehicle
+                                        // Count students on this route
                                         db.collectionGroup("studentList")
                                                 .whereEqualTo("route", routeName)
                                                 .get()
@@ -143,31 +150,74 @@ public class AddStudent extends AppCompatActivity {
                                                     if (studentCount >= capacity) {
                                                         Toast.makeText(this, "Vehicle capacity (" + capacity + ") exceeded. Current students: " + studentCount, Toast.LENGTH_SHORT).show();
                                                     } else {
-                                                        onSuccess.run(); // Proceed with saving
+                                                        fetchStaffForVehicle(vehicleName, (driver, attendant) -> {
+                                                            saveStudentData(
+                                                                    studentNameInput.getText().toString().trim(),
+                                                                    studentClassInput.getSelectedItem().toString(),
+                                                                    studentIdInput.getText().toString().trim(),
+                                                                    parentNameInput.getText().toString().trim(),
+                                                                    parentContactInput.getText().toString().trim(),
+                                                                    homeLocationInput.getText().toString().trim(),
+                                                                    routeName,
+                                                                    vehicleName,
+                                                                    pickupTime,
+                                                                    dropOffTime,
+                                                                    driver,
+                                                                    attendant
+                                                            );
+                                                        });
                                                     }
-                                                })
-                                                .addOnFailureListener(e -> {
-                                                    Toast.makeText(this, "Error counting students: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 });
-                                    } else {
-                                        Toast.makeText(this, "Vehicle not found", Toast.LENGTH_SHORT).show();
                                     }
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(this, "Error fetching vehicle: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 });
-                    } else {
-                        Toast.makeText(this, "Route not found", Toast.LENGTH_SHORT).show();
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error fetching route: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
-    private void saveStudentData(String studentName, String studentClass, String studentId, String parentName,
-                                 String parentContact, String homeLocation, String route) {
+    private void fetchStaffForVehicle(String vehicleName, StaffFetchCallback callback) {
+        // Get driver
+        db.collection("staff")
+                .whereEqualTo("assignedVehicle", vehicleName)
+                .whereEqualTo("role", "Driver")
+                .whereEqualTo("status", "Active")
+                .limit(1)
+                .get()
+                .addOnSuccessListener(driverQuery -> {
+                    Map<String, String> driver = new HashMap<>();
+                    if (!driverQuery.isEmpty()) {
+                        DocumentSnapshot driverDoc = driverQuery.getDocuments().get(0);
+                        driver.put("name", driverDoc.getString("staffName"));
+                        driver.put("phone", driverDoc.getString("phoneNumber"));
+                    }
+
+                    // Get attendant
+                    db.collection("staff")
+                            .whereEqualTo("assignedVehicle", vehicleName)
+                            .whereEqualTo("role", "Attendant")
+                            .whereEqualTo("status", "Active")
+                            .limit(1)
+                            .get()
+                            .addOnSuccessListener(attendantQuery -> {
+                                Map<String, String> attendant = new HashMap<>();
+                                if (!attendantQuery.isEmpty()) {
+                                    DocumentSnapshot attendantDoc = attendantQuery.getDocuments().get(0);
+                                    attendant.put("name", attendantDoc.getString("staffName"));
+                                    attendant.put("phone", attendantDoc.getString("phoneNumber"));
+                                }
+
+                                callback.onStaffFetched(driver, attendant);
+                            });
+                });
+    }
+
+    private void saveStudentData(
+            String studentName, String studentClass, String studentId,
+            String parentName, String parentContact, String homeLocation,
+            String route, String vehicle, String pickupTime, String dropOffTime,
+            Map<String, String> driver, Map<String, String> attendant
+    ) {
         Map<String, Object> studentData = new HashMap<>();
+        // Basic student info
         studentData.put("parentName", parentName);
         studentData.put("name", studentName);
         studentData.put("studentId", studentId);
@@ -175,15 +225,32 @@ public class AddStudent extends AppCompatActivity {
         studentData.put("parentContact", parentContact);
         studentData.put("homeLocation", homeLocation);
 
-        db.collection("students").document(studentClass)
-                .collection("studentList").document(studentId)
+        // Route and vehicle info
+        studentData.put("vehicle", vehicle);
+        studentData.put("pickupTime", pickupTime);
+        studentData.put("dropOffTime", dropOffTime);
+
+        // Staff info
+        if (driver != null && !driver.isEmpty()) {
+            studentData.put("driverName", driver.get("name"));
+            studentData.put("driverPhone", driver.get("phone"));
+        }
+        if (attendant != null && !attendant.isEmpty()) {
+            studentData.put("attendantName", attendant.get("name"));
+            studentData.put("attendantPhone", attendant.get("phone"));
+        }
+
+        db.collection("students")
+                .document(studentClass)
+                .collection("studentList")
+                .document(studentId)
                 .set(studentData)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Student added successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "✅ Student added successfully", Toast.LENGTH_SHORT).show();
                     clearForm();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "❌ Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -195,5 +262,9 @@ public class AddStudent extends AppCompatActivity {
         homeLocationInput.setText("");
         studentClassInput.setSelection(0);
         routeDropdown.setSelection(0);
+    }
+
+    interface StaffFetchCallback {
+        void onStaffFetched(Map<String, String> driver, Map<String, String> attendant);
     }
 }

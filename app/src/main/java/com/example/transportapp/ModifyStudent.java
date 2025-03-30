@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -172,13 +173,17 @@ public class ModifyStudent extends AppCompatActivity {
 
     private void onStudentClicked(Student student) {
         selectedStudentId = student.getId();
-        originalGrade = student.getGrade() != null ? student.getGrade() : filterDropdown.getSelectedItem() != null ? filterDropdown.getSelectedItem().toString() : "";
+        originalGrade = student.getGrade() != null ? student.getGrade() :
+                filterDropdown.getSelectedItem() != null ? filterDropdown.getSelectedItem().toString() : "";
+
+        // Basic info
         studentNameInput.setText(student.getName());
         studentIdInput.setText(student.getStudentId());
         parentNameInput.setText(student.getParentName());
         parentContactInput.setText(student.getParentContact());
         homeLocationInput.setText(student.getHomeLocation());
 
+        // Class selection
         ArrayAdapter<String> classAdapter = (ArrayAdapter<String>) classDropdown.getAdapter();
         int classPosition = classAdapter.getPosition(student.getGrade());
         if (classPosition >= 0) {
@@ -190,6 +195,7 @@ public class ModifyStudent extends AppCompatActivity {
             Toast.makeText(this, "Grade " + student.getGrade() + " not found in list", Toast.LENGTH_SHORT).show();
         }
 
+        // Route selection
         int routePosition = routeAdapter.getPosition(student.getRoute());
         if (routePosition >= 0) {
             routeDropdown.setSelection(routePosition);
@@ -283,7 +289,7 @@ public class ModifyStudent extends AppCompatActivity {
         if (originalGrade == null || originalGrade.isEmpty()) {
             Log.w(TAG, "deleteStudentFromOriginalGrade: Original grade is null or empty, proceeding with save to new grade " + newGrade);
             Toast.makeText(this, "Original grade not found, saving to new grade directly", Toast.LENGTH_SHORT).show();
-            saveStudentData(studentData, newGrade, studentId); // Proceed to save without deletion
+            saveStudentData(studentData, newGrade, studentId);
             return;
         }
 
@@ -380,46 +386,109 @@ public class ModifyStudent extends AppCompatActivity {
 
     private void saveStudentData(Map<String, Object> studentData, String grade, String documentId) {
         Log.d(TAG, "saveStudentData: Saving data for grade: " + grade + ", documentId: " + documentId);
-        if (documentId == null || documentId.isEmpty()) {
-            Log.e(TAG, "saveStudentData: Invalid documentId, cannot save");
-            Toast.makeText(this, "Invalid student ID", Toast.LENGTH_SHORT).show();
+
+        // Get the selected route
+        String routeName = routeDropdown.getSelectedItem() != null ?
+                routeDropdown.getSelectedItem().toString() : "";
+
+        if (routeName.isEmpty()) {
+            Toast.makeText(this, "Please select a route", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (grade == null || grade.isEmpty()) {
-            Log.e(TAG, "saveStudentData: Invalid grade, cannot save");
-            Toast.makeText(this, "Invalid grade", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (selectedStudentId == null) {
-            // Add new student
-            db.collection("students").document(grade)
-                    .collection("studentList").document(documentId)
-                    .set(studentData)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.i(TAG, "saveStudentData: New student added successfully to grade " + grade + " with ID " + documentId);
-                        Toast.makeText(this, "Student added successfully", Toast.LENGTH_SHORT).show();
-                        fetchStudentsByGrade(grade);
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, "saveStudentData: Failed to add new student to grade " + grade + ": " + e.getMessage(), e);
-                        Toast.makeText(this, "Failed to add student: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        } else {
-            // Update existing student (or create new after deletion)
-            db.collection("students").document(grade)
-                    .collection("studentList").document(documentId)
-                    .set(studentData)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.i(TAG, "saveStudentData: Student updated/created successfully in grade " + grade + ", ID: " + documentId);
-                        Toast.makeText(this, "Student record updated successfully", Toast.LENGTH_SHORT).show();
-                        selectedStudentId = null;
-                        originalGrade = null; // Reset after successful save
-                        fetchStudentsByGrade(grade);
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, "saveStudentData: Failed to update/create student in grade " + grade + ": " + e.getMessage(), e);
-                        Toast.makeText(this, "Failed to update student: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
-        }
+
+        // Fetch route details first
+        db.collection("Routes")
+                .whereEqualTo("routeName", routeName)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(routeQuery -> {
+                    if (!routeQuery.isEmpty()) {
+                        DocumentSnapshot routeDoc = routeQuery.getDocuments().get(0);
+                        String vehicleName = routeDoc.getString("vehicle");
+                        String pickupTime = routeDoc.getString("pickupTime");
+                        String dropOffTime = routeDoc.getString("dropOffTime");
+
+                        // Add route and vehicle info to student data
+                        studentData.put("vehicle", vehicleName);
+                        studentData.put("pickupTime", pickupTime);
+                        studentData.put("dropOffTime", dropOffTime);
+
+                        // Fetch staff information
+                        fetchStaffForVehicle(vehicleName, (driver, attendant) -> {
+                            if (driver != null && !driver.isEmpty()) {
+                                studentData.put("driverName", driver.get("name"));
+                                studentData.put("driverPhone", driver.get("phone"));
+                            }
+                            if (attendant != null && !attendant.isEmpty()) {
+                                studentData.put("attendantName", attendant.get("name"));
+                                studentData.put("attendantPhone", attendant.get("phone"));
+                            }
+
+                            // Now save the complete student data
+                            performFinalSave(studentData, grade, documentId);
+                        });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching route details: " + e.getMessage());
+                    Toast.makeText(this, "Error fetching route details", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void performFinalSave(Map<String, Object> studentData, String grade, String documentId) {
+        db.collection("students").document(grade)
+                .collection("studentList").document(documentId)
+                .set(studentData)
+                .addOnSuccessListener(aVoid -> {
+                    Log.i(TAG, "Student saved successfully");
+                    Toast.makeText(this, "Student record updated successfully", Toast.LENGTH_SHORT).show();
+                    selectedStudentId = null;
+                    originalGrade = null;
+                    fetchStudentsByGrade(grade);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error saving student: " + e.getMessage());
+                    Toast.makeText(this, "Error saving student: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void fetchStaffForVehicle(String vehicleName, StaffFetchCallback callback) {
+        // Get driver
+        db.collection("staff")
+                .whereEqualTo("assignedVehicle", vehicleName)
+                .whereEqualTo("role", "Driver")
+                .whereEqualTo("status", "Active")
+                .limit(1)
+                .get()
+                .addOnSuccessListener(driverQuery -> {
+                    Map<String, String> driver = new HashMap<>();
+                    if (!driverQuery.isEmpty()) {
+                        DocumentSnapshot driverDoc = driverQuery.getDocuments().get(0);
+                        driver.put("name", driverDoc.getString("staffName"));
+                        driver.put("phone", driverDoc.getString("phoneNumber"));
+                    }
+
+                    // Get attendant
+                    db.collection("staff")
+                            .whereEqualTo("assignedVehicle", vehicleName)
+                            .whereEqualTo("role", "Attendant")
+                            .whereEqualTo("status", "Active")
+                            .limit(1)
+                            .get()
+                            .addOnSuccessListener(attendantQuery -> {
+                                Map<String, String> attendant = new HashMap<>();
+                                if (!attendantQuery.isEmpty()) {
+                                    DocumentSnapshot attendantDoc = attendantQuery.getDocuments().get(0);
+                                    attendant.put("name", attendantDoc.getString("staffName"));
+                                    attendant.put("phone", attendantDoc.getString("phoneNumber"));
+                                }
+
+                                callback.onStaffFetched(driver, attendant);
+                            });
+                });
+    }
+
+    interface StaffFetchCallback {
+        void onStaffFetched(Map<String, String> driver, Map<String, String> attendant);
     }
 }
