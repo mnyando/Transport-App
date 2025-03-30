@@ -153,36 +153,49 @@ public class Login extends AppCompatActivity {
     }
 
     private void fetchDriverId(String authUid, String email) {
-        Log.d(TAG, "📡 Fetching driver profile for UID: " + authUid);
+        Log.d(TAG, "📡 Fetching driver profile for auth UID: " + authUid);
 
-        db.collection("staff").whereEqualTo("authUid", authUid).limit(1).get()
-                .addOnSuccessListener(querySnapshot -> {
-                    if (!querySnapshot.isEmpty()) {
-                        DocumentSnapshot document = querySnapshot.getDocuments().get(0);
-                        String driverId = document.getId();
-                        String staffName = document.getString("staffName");
-                        String assignedVehicle = document.getString("assignedVehicle");
-                        String assignedRoute = document.getString("assignedRoute");
+        db.collection("staff")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                            String driverId = document.getId();
+                            String staffName = document.getString("staffName");
+                            String assignedVehicle = document.getString("assignedVehicle");
+                            String assignedRoute = document.getString("assignedRoute");
 
-                        Log.d(TAG, "✅ Driver found: ID = " + driverId);
+                            Log.d(TAG, "✅ Driver profile found - ID: " + driverId +
+                                    ", Name: " + staffName +
+                                    ", Vehicle: " + assignedVehicle +
+                                    ", Route: " + assignedRoute);
 
-                        Intent intent = new Intent(Login.this, DriverLanding.class);
-                        intent.putExtra("driverId", driverId);
-                        intent.putExtra("driverAuthUid", authUid);
-                        intent.putExtra("driverEmail", email);
-                        intent.putExtra("driverName", staffName);
-                        intent.putExtra("assignedVehicle", assignedVehicle);
-                        intent.putExtra("assignedRoute", assignedRoute);
-                        startActivity(intent);
-                        finish();
+                            // Start DriverLanding activity with all necessary data
+                            Intent intent = new Intent(Login.this, DriverLanding.class);
+                            intent.putExtra("driverId", driverId);
+                            intent.putExtra("driverAuthUid", authUid);
+                            intent.putExtra("driverEmail", email);
+                            intent.putExtra("driverName", staffName);
+                            intent.putExtra("assignedVehicle", assignedVehicle);
+                            intent.putExtra("assignedRoute", assignedRoute);
+
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Log.w(TAG, "⚠️ No driver profile found for auth UID: " + authUid);
+                            Toast.makeText(Login.this,
+                                    "Driver profile not found. Please contact administrator.",
+                                    Toast.LENGTH_LONG).show();
+                        }
                     } else {
-                        Log.w(TAG, "⚠️ Driver profile not found for UID: " + authUid);
-                        Toast.makeText(Login.this, "Driver profile not found!", Toast.LENGTH_SHORT).show();
+                        Exception e = task.getException();
+                        Log.e(TAG, "❌ Error fetching driver profile: " + (e != null ? e.getMessage() : "unknown error"), e);
+                        Toast.makeText(Login.this,
+                                "Error fetching driver data. Please try again.",
+                                Toast.LENGTH_SHORT).show();
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "❌ Failed to fetch driver data: " + e.getMessage(), e);
-                    Toast.makeText(Login.this, "Failed to fetch driver data.", Toast.LENGTH_SHORT).show();
                 });
     }
 

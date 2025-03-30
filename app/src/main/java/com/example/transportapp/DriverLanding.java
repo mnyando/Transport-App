@@ -2,31 +2,26 @@ package com.example.transportapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DriverLanding extends AppCompatActivity {
 
-    private TextView driverNameTextView, vehicleTextView, routeTextView;
-    private RecyclerView notificationRecyclerView;
-    private NotificationAdapter notificationAdapter;
-    private List<Notification> notificationList; // Correct type: List<Notification>
+    private TextView driverIdTextView, driverEmailTextView, driverNameTextView,
+            vehicleTextView, routeTextView;
+    private ImageView driverImageView;
+    private Button pickUpButton, dropOffButton;
     private FirebaseFirestore db;
-    private String driverId;
+    private String driverId, driverAuthUid, driverEmail, driverName, assignedVehicle, assignedRoute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,74 +31,62 @@ public class DriverLanding extends AppCompatActivity {
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
 
-        // Get driver ID from Intent
-        driverId = getIntent().getStringExtra("driverId");
-        if (driverId == null) {
-            Toast.makeText(this, "Driver ID not found", Toast.LENGTH_SHORT).show();
+        // Get all data from Intent
+        Intent intent = getIntent();
+        driverId = intent.getStringExtra("driverId");
+        driverAuthUid = intent.getStringExtra("driverAuthUid");
+        driverEmail = intent.getStringExtra("driverEmail");
+        driverName = intent.getStringExtra("driverName");
+        assignedVehicle = intent.getStringExtra("assignedVehicle");
+        assignedRoute = intent.getStringExtra("assignedRoute");
+
+        if (driverId == null || driverAuthUid == null) {
+            Toast.makeText(this, "Driver information not found", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // Initialize views
+        // Initialize all views
+        initializeViews();
+
+        // Set the driver information
+        displayDriverInfo();
+
+
+        // Set up button click listeners
+        setupButtonListeners();
+    }
+
+    private void initializeViews() {
+        driverIdTextView = findViewById(R.id.driverIdTextView);
+        driverEmailTextView = findViewById(R.id.driverEmailTextView);
         driverNameTextView = findViewById(R.id.driverNameTextView);
         vehicleTextView = findViewById(R.id.vehicleTextView);
         routeTextView = findViewById(R.id.routeTextView);
-        notificationRecyclerView = findViewById(R.id.notificationRecyclerView);
+        driverImageView = findViewById(R.id.driverImageView);
+        pickUpButton = findViewById(R.id.pickUpButton);
+        dropOffButton = findViewById(R.id.dropOffButton);
 
-        // Setup RecyclerView for Notifications
-        notificationList = new ArrayList<>(); // Initialize as List<Notification>
-        notificationAdapter = new NotificationAdapter(notificationList, this::onNotificationClick);
-        notificationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        notificationRecyclerView.setAdapter(notificationAdapter);
-
-        // Load data
-        loadDriverData();
-        loadNotifications();
     }
 
-    private void loadDriverData() {
-        db.collection("drivers").document(driverId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Driver driver = documentSnapshot.toObject(Driver.class);
-                        if (driver != null) {
-                            driverNameTextView.setText("Driver Name: " + driver.getStaffName());
-                            vehicleTextView.setText("Assigned Vehicle: " + driver.getAssignedVehicle());
-                            routeTextView.setText("Assigned Route: " + driver.getAssignedRoute());
-                        }
-                    } else {
-                        Toast.makeText(this, "Driver data not found", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error loading driver data: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    private void displayDriverInfo() {
+        // Set all the driver information in the appropriate TextViews
+        driverIdTextView.setText("Driver ID: " + (driverId != null ? driverId : "N/A"));
+        driverEmailTextView.setText("Email: " + (driverEmail != null ? driverEmail : "N/A"));
+        driverNameTextView.setText("Driver Name: " + (driverName != null ? driverName : "N/A"));
+        vehicleTextView.setText("Assigned Vehicle: " + (assignedVehicle != null ? assignedVehicle : "N/A"));
+        routeTextView.setText("Assigned Route: " + (assignedRoute != null ? assignedRoute : "N/A"));
     }
 
-    private void loadNotifications() {
-        db.collection("notifications")
-                .whereEqualTo("driverId", driverId)
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    notificationList.clear();
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        Notification notification = doc.toObject(Notification.class);
-                        notification.setId(doc.getId());
-                        notificationList.add(notification);
-                    }
-                    notificationAdapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error loading notifications: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
+    private void setupButtonListeners() {
+        pickUpButton.setOnClickListener(v -> {
+            // Handle pick up button click
+            Toast.makeText(this, "Pick Up button clicked", Toast.LENGTH_SHORT).show();
+        });
 
-    private void onNotificationClick(Notification notification) {
-        Intent intent = new Intent(this, ChatActivity.class);
-        intent.putExtra("parentId", notification.getParentId());
-        intent.putExtra("driverId", driverId);
-        startActivity(intent);
+        dropOffButton.setOnClickListener(v -> {
+            // Handle drop off button click
+            Toast.makeText(this, "Drop Off button clicked", Toast.LENGTH_SHORT).show();
+        });
     }
 }
-
-
-
-
