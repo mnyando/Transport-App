@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.List;
-
 public class DriverLanding extends AppCompatActivity {
 
     private TextView driverIdTextView, driverEmailTextView, driverNameTextView,
@@ -52,7 +50,6 @@ public class DriverLanding extends AppCompatActivity {
         // Set the driver information
         displayDriverInfo();
 
-
         // Set up button click listeners
         setupButtonListeners();
     }
@@ -66,7 +63,6 @@ public class DriverLanding extends AppCompatActivity {
         driverImageView = findViewById(R.id.driverImageView);
         pickUpButton = findViewById(R.id.pickUpButton);
         dropOffButton = findViewById(R.id.dropOffButton);
-
     }
 
     private void displayDriverInfo() {
@@ -80,13 +76,57 @@ public class DriverLanding extends AppCompatActivity {
 
     private void setupButtonListeners() {
         pickUpButton.setOnClickListener(v -> {
-            // Handle pick up button click
-            Toast.makeText(this, "Pick Up button clicked", Toast.LENGTH_SHORT).show();
+            if (assignedVehicle == null || assignedVehicle.isEmpty()) {
+                Toast.makeText(this, "No vehicle assigned to you", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Start PickUp activity with necessary data
+            Intent pickUpIntent = new Intent(DriverLanding.this, PickUp.class);
+            pickUpIntent.putExtra("assignedVehicle", assignedVehicle);
+            pickUpIntent.putExtra("driverId", driverId);
+            pickUpIntent.putExtra("driverName", driverName);
+            pickUpIntent.putExtra("assignedRoute", assignedRoute);
+            startActivity(pickUpIntent);
         });
 
         dropOffButton.setOnClickListener(v -> {
-            // Handle drop off button click
-            Toast.makeText(this, "Drop Off button clicked", Toast.LENGTH_SHORT).show();
+            if (assignedVehicle == null || assignedVehicle.isEmpty()) {
+                Toast.makeText(this, "No vehicle assigned to you", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            //Start DropOff activity (similar to PickUp)
+            Intent dropOffIntent = new Intent(DriverLanding.this, DropOff.class);
+            dropOffIntent.putExtra("assignedVehicle", assignedVehicle);
+            dropOffIntent.putExtra("driverId", driverId);
+            dropOffIntent.putExtra("driverName", driverName);
+            dropOffIntent.putExtra("assignedRoute", assignedRoute);
+            startActivity(dropOffIntent);
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh driver info in case it was updated
+        refreshDriverInfo();
+    }
+
+    private void refreshDriverInfo() {
+        if (driverId != null) {
+            db.collection("drivers").document(driverId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            assignedVehicle = documentSnapshot.getString("assignedVehicle");
+                            assignedRoute = documentSnapshot.getString("assignedRoute");
+                            displayDriverInfo();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(this, "Failed to refresh driver info", Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 }
