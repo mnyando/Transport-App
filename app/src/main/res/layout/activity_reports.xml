@@ -45,7 +45,7 @@
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/ic_driver"/>
+                android:src="@drawable/driver"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -78,7 +78,7 @@
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/ic_student"/>
+                android:src="@drawable/students_enrolled"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -111,7 +111,7 @@
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/ic_route"/>
+                android:src="@drawable/route_icon"/>
 
             <TextView
                 android:layout_width="wrap_content"

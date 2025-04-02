@@ -869,8 +869,35 @@
                         android:gravity="center"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
+
+
             </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/dropOffButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="@color/green"
+                android:text="Drop Off"
+                android:textColor="@android:color/white" />
         </LinearLayout>
+
+
+        <Button
+            android:id="@+id/reportsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/edit_text_background"
+            android:text="Reports"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <!-- Footer Section -->
         <LinearLayout

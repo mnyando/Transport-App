@@ -3,6 +3,7 @@ package com.example.transportapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,8 @@ public class SchoolLanding extends AppCompatActivity {
     private CardView addVehicle, modifyVehicle, deleteVehicle;
 
     private TextView studentsEnrolledText, routesTraveledText, activeVehiclesText, inactiveVehiclesText, activeDriversText, inactiveDriversText;
+
+    private Button reportsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,8 @@ public class SchoolLanding extends AppCompatActivity {
         activeDriversText = findViewById(R.id.activeDriversText);
         inactiveDriversText = findViewById(R.id.inactiveDriversText);
 
+        reportsButton = findViewById(R.id.reportsButton);
+
         // Fetch data from Firestore
         countTotalStudents();
         countRoutes();
@@ -80,6 +85,8 @@ public class SchoolLanding extends AppCompatActivity {
         addVehicle.setOnClickListener(v -> openActivity(AddVehicle.class));
         modifyVehicle.setOnClickListener(v -> openActivity(ModifyVehicle.class));
         deleteVehicle.setOnClickListener(v -> openActivity(DeleteVehicle.class));
+
+        reportsButton.setOnClickListener(v -> openActivity(Reports.class));
     }
 
     // Function to open another activity
