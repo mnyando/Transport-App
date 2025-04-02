@@ -9,4 +9,5 @@
     <color name="gold">#FFD700</color> <!-- Gold -->
     <color name="gray">#707070</color> <!-- Medium Gray -->
     <color name="light_gray">#D3D3D3</color> <!-- Light Gray -->
+    <color name="gray_light">#EEEEEE</color>
 </resources>

@@ -13,4 +13,57 @@
     </string-array>
 
     <string name="parent">Parent Dashboard</string>
+
+    <string name="back_button_desc">Navigate back</string>
+    <string name="driver_performance">Driver Performance</string>
+    <string name="total_trips">Total Trips</string>
+    <string name="this_month">this month</string>
+    <string name="avg_duration">Avg Duration</string>
+    <string name="zero_minutes">0m</string>
+    <string name="zero_percent_vs_avg">+0% vs avg</string>
+    <string name="on_time_rate">On-Time Rate</string>
+    <string name="zero_percent">0%</string>
+    <string name="zero_percent_vs_last">+0% vs last</string>
+    <string name="students">Students</string>
+    <string name="avg_zero_per_trip">avg 0/trip</string>
+    <string name="recent_trips">Recent Trips</string>
+    <string name="recent_trips_list_desc">List of recent trips for selected driver</string>
+
+    <!-- Route Report Specific -->
+    <string name="route_analytics">Route Analytics</string>
+    <string name="avg_route_duration">Avg Duration</string>
+    <string name="trips_completed">Trips Completed</string>
+    <string name="peak_time">Peak Time</string>
+    <string name="am_pm">AM</string>
+    <string name="pm">PM</string>
+    <string name="avg_students">Avg Students</string>
+    <string name="recent_route_trips">Recent Route Trips</string>
+    <string name="route_efficiency_chart_desc">Bar chart showing route efficiency metrics including trips count, average duration, and student capacity</string>
+    <string name="trip_item_desc">Trip details including route, time, duration and number of students</string>
+
+    <!-- Time Periods -->
+    <string name="time_period_early_morning">6-8 AM</string>
+    <string name="time_period_morning">8-10 AM</string>
+    <string name="time_period_midday">10 AM-12 PM</string>
+    <string name="time_period_afternoon">12-2 PM</string>
+    <string name="time_period_late_afternoon">2-4 PM</string>
+    <string name="time_period_evening">4-6 PM</string>
+
+    <!-- Chart Labels -->
+    <string name="chart_label_trips">Trips</string>
+    <string name="chart_label_duration">Duration (mins)</string>
+    <string name="chart_label_students">Students</string>
+
+    <!-- Empty States -->
+    <string name="empty_route_data">No trip data available for this route</string>
+    <string name="loading_routes">Loading route information…</string>
+
+    <string name="student_report">Student Report</string>
+    <string name="search_student">Search student</string>
+    <string name="student_avatar_desc">Student profile picture</string>
+    <string name="pickup_time">Pickup Time:</string>
+    <string name="dropoff_time">Dropoff Time:</string>
+    <string name="attendance_stats">Attendance Stats</string>
+    <string name="present">Present</string>
+    <string name="absent">Absent</string>
 </resources>
