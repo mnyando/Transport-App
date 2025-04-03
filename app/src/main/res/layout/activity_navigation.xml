@@ -113,10 +113,10 @@
 
                     <ImageView
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:src="@drawable/landing_image"
+                        android:layout_height="237dp"
+                        android:layout_marginBottom="8dp"
                         android:scaleType="centerCrop"
-                        android:layout_marginBottom="8dp"/>
+                        android:src="@drawable/student_image" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -164,7 +164,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:src="@drawable/landing_image"
+                        android:src="@drawable/driver_image"
                         android:scaleType="centerCrop"
                         android:layout_marginBottom="8dp"/>
 

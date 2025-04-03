@@ -216,6 +216,12 @@ public class Login extends AppCompatActivity {
                 intent.putExtra("parentId", id);
                 intent.putExtra("parentEmail", email);
                 break;
+
+            case "driver":
+                intent = new Intent(Login.this, DriverLanding.class);
+                intent.putExtra("driverId", id);
+                intent.putExtra("driverEmail", email);
+                break;
             default:
                 Log.w(TAG, "⚠️ Unknown role: " + role);
                 Toast.makeText(this, "Unknown role: " + role, Toast.LENGTH_SHORT).show();
