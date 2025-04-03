@@ -48,10 +48,7 @@ public class Login extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         tvSignUp = findViewById(R.id.tvSignUp);
 
-        // Initialize progress dialog
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Logging in...");
-        progressDialog.setCancelable(false);
+
 
         // Login button click listener
         btnLogin.setOnClickListener(v -> loginUser());
@@ -76,11 +73,10 @@ public class Login extends AppCompatActivity {
         }
 
         Log.d(TAG, "🔑 Attempting to login with email: " + email);
-        progressDialog.show();
+
 
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
-                    progressDialog.dismiss();
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
