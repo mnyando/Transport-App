@@ -63,7 +63,7 @@ public class ParentLanding extends AppCompatActivity {
                         if (parentName != null) {
                             Log.d(TAG, "✅ Parent name found: " + parentName);
                             fetchChildrenFromFirestore();
-                            fetchNotificationsFromFirestore();
+                            fetchNotificationsFromFirestore(); // Fetch notifications after parentName is available
                         } else {
                             Log.e(TAG, "❌ Parent name not found!");
                             finish();
@@ -115,11 +115,11 @@ public class ParentLanding extends AppCompatActivity {
     }
 
     private void fetchNotificationsFromFirestore() {
-        Log.d(TAG, "📡 Fetching notifications for parentId: " + parentId);
+        Log.d(TAG, "📡 Fetching notifications for parentName: " + parentName);
 
         // Listen to real-time updates on notifications
         notificationListener = db.collection("notifications")
-                .whereEqualTo("parentId", parentId)
+                .whereEqualTo("parentName", parentName)  // Changed to parentName
                 .addSnapshotListener((snapshots, e) -> {
                     if (e != null) {
                         Log.e(TAG, "❌ ERROR fetching notifications: ", e);
