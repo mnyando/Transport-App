@@ -207,11 +207,16 @@ public class PickUp extends AppCompatActivity {
 
     private void sendNotificationToParents() {
         for (Student student : students) {
-            String parentId = student.getParentId(); // Assuming you have a parentId in the Student object
+            String parentName = student.getParentName(); // Assuming you have a parentName in the Student object
+
+            if (parentName == null || parentName.isEmpty()) {
+                Log.e(TAG, "Parent name not found for student: " + student.getName());
+                continue; // Skip this student if no parent name is available
+            }
 
             // Create a notification for the parent
             Map<String, Object> notificationData = new HashMap<>();
-            notificationData.put("parentId", parentId);
+            notificationData.put("parentName", parentName);
             notificationData.put("message", "Your child's trip has been completed.");
             notificationData.put("driverId", driverId);
             notificationData.put("timestamp", System.currentTimeMillis());
@@ -219,7 +224,7 @@ public class PickUp extends AppCompatActivity {
             // Save the notification in Firestore
             db.collection("notifications").add(notificationData)
                     .addOnSuccessListener(documentReference -> {
-                        Log.d(TAG, "Notification sent to parent: " + parentId);
+                        Log.d(TAG, "Notification sent to parent: " + parentName);
                     })
                     .addOnFailureListener(e -> {
                         Log.e(TAG, "Failed to send notification to parent", e);

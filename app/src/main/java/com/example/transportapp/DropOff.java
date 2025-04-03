@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -120,11 +123,6 @@ public class DropOff extends AppCompatActivity {
                 });
     }
 
-    private void handleStudentLoadError(Exception exception) {
-        Log.e(TAG, "Error loading students", exception);
-        showToast("Error loading students: " + exception.getMessage());
-    }
-
     private void createNewTrip() {
         long currentTimeMillis = System.currentTimeMillis();
         Map<String, Object> tripData = createTripData(currentTimeMillis);
@@ -209,8 +207,42 @@ public class DropOff extends AppCompatActivity {
     private void handleTripCompletionSuccess(long endTimeMillis, String duration) {
         Log.i(TAG, "Drop-off trip completed: " + tripId);
         showToast("Drop-off completed at " + formatTimestamp(endTimeMillis) + "\nDuration: " + duration);
+
+        sendDropOffNotificationToParent();  // Send notifications to the parents of the students
+
         clearStudentsTripId();
         finish();
+    }
+
+    private void sendDropOffNotificationToParent() {
+        for (Student student : students) {
+            String parentName = student.getParentName();  // Assuming parentName is a field in Student class
+            sendNotificationToParent(parentName, "Drop-off completed", "The drop-off for your child " + student.getName() + " has been completed.");
+        }
+    }
+
+    private void sendNotificationToParent(String parentName, String title, String message) {
+        db.collection("parents")
+                .whereEqualTo("name", parentName)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        String parentToken = queryDocumentSnapshots.getDocuments().get(0).getString("deviceToken");
+                        sendFCMNotification(parentToken, title, message);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching parent device token", e);
+                });
+    }
+
+    private void sendFCMNotification(String deviceToken, String title, String message) {
+        FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(deviceToken + "@fcm.googleapis.com")
+                .setMessageId(Integer.toString(new Random().nextInt()))
+                .addData("title", title)
+                .addData("message", message)
+                .build());
+        Log.d(TAG, "Notification sent to parent: " + deviceToken);
     }
 
     private void updateStudentsWithTripId() {
@@ -242,7 +274,6 @@ public class DropOff extends AppCompatActivity {
         }
     }
 
-    // Helper methods
     private String formatTimestamp(long millis) {
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d yyyy 'at' hh:mm a", Locale.getDefault());
         sdf.setTimeZone(TimeZone.getDefault());
