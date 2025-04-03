@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class ParentLanding extends AppCompatActivity {
     private NotificationAdapter notificationAdapter;
     private FirebaseFirestore db;
     private String parentId, parentName;
+    private ListenerRegistration notificationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,20 +116,26 @@ public class ParentLanding extends AppCompatActivity {
 
     private void fetchNotificationsFromFirestore() {
         Log.d(TAG, "📡 Fetching notifications for parentId: " + parentId);
-        db.collection("notifications")
+
+        // Listen to real-time updates on notifications
+        notificationListener = db.collection("notifications")
                 .whereEqualTo("parentId", parentId)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
+                .addSnapshotListener((snapshots, e) -> {
+                    if (e != null) {
+                        Log.e(TAG, "❌ ERROR fetching notifications: ", e);
+                        return;
+                    }
+
                     notificationList.clear();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                    for (QueryDocumentSnapshot document : snapshots) {
                         Notification notification = document.toObject(Notification.class);
                         notification.setId(document.getId());
                         notificationList.add(notification);
                         Log.d(TAG, "✅ Notification received: " + notification.getMessage());
                     }
+
                     notificationAdapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> Log.e(TAG, "❌ ERROR fetching notifications: ", e));
+                });
     }
 
     private void setupRecyclerViews() {
@@ -150,5 +158,13 @@ public class ParentLanding extends AppCompatActivity {
         intent.putExtra("parentId", parentId);
         intent.putExtra("driverId", notification.getDriverId());
         startActivity(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (notificationListener != null) {
+            notificationListener.remove(); // Remove listener to prevent memory leaks
+        }
     }
 }

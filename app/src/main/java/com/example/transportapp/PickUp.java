@@ -189,6 +189,7 @@ public class PickUp extends AppCompatActivity {
                                 .addOnSuccessListener(aVoid -> {
                                     Log.i(TAG, "Trip completed: " + tripId);
                                     showToast("Trip completed at " + formattedEndTime + "\nDuration: " + duration);
+                                    sendNotificationToParents();
                                     clearStudentsTripId();
                                     finish();
                                 })
@@ -202,6 +203,28 @@ public class PickUp extends AppCompatActivity {
                     Log.e(TAG, "Failed to get trip details", e);
                     showToast("Error completing trip");
                 });
+    }
+
+    private void sendNotificationToParents() {
+        for (Student student : students) {
+            String parentId = student.getParentId(); // Assuming you have a parentId in the Student object
+
+            // Create a notification for the parent
+            Map<String, Object> notificationData = new HashMap<>();
+            notificationData.put("parentId", parentId);
+            notificationData.put("message", "Your child's trip has been completed.");
+            notificationData.put("driverId", driverId);
+            notificationData.put("timestamp", System.currentTimeMillis());
+
+            // Save the notification in Firestore
+            db.collection("notifications").add(notificationData)
+                    .addOnSuccessListener(documentReference -> {
+                        Log.d(TAG, "Notification sent to parent: " + parentId);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Failed to send notification to parent", e);
+                    });
+        }
     }
 
     private void clearStudentsTripId() {

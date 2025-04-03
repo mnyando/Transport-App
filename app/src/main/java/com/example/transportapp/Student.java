@@ -19,6 +19,7 @@ public class Student {
     private String pickupTime;
     private String dropOffTime;
     private PickupStatus pickupStatus;
+    private String parentId; // New field for parentId
 
     // Required empty constructor for Firestore
     public Student() {}
@@ -28,7 +29,7 @@ public class Student {
                    String parentName, String parentContact, String homeLocation,
                    String vehicle, String driverName, String driverPhone,
                    String attendantName, String attendantPhone,
-                   String pickupTime, String dropOffTime) {
+                   String pickupTime, String dropOffTime, String parentId) { // Updated constructor
         this.name = name;
         this.studentId = studentId;
         this.grade = grade;
@@ -43,6 +44,7 @@ public class Student {
         this.attendantPhone = attendantPhone;
         this.pickupTime = pickupTime;
         this.dropOffTime = dropOffTime;
+        this.parentId = parentId; // Initialize parentId
     }
 
     // PickupStatus inner class
@@ -106,6 +108,10 @@ public class Student {
     // New pickup status methods
     public PickupStatus getPickupStatus() { return pickupStatus; }
     public void setPickupStatus(PickupStatus pickupStatus) { this.pickupStatus = pickupStatus; }
+
+    // Getter and Setter for parentId
+    public String getParentId() { return parentId; }
+    public void setParentId(String parentId) { this.parentId = parentId; }
 
     public void updatePickupStatus(boolean isPicked, String tripId) {
         if (this.pickupStatus == null) {
