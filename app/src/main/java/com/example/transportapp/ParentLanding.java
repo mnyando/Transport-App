@@ -115,7 +115,7 @@ public class ParentLanding extends AppCompatActivity {
     }
 
     private void fetchNotificationsFromFirestore() {
-        Log.d(TAG, "📡 Fetching notifications for parentName: " + parentName);
+        Log.d(TAG, "📡 Fetching notifications for parentNamee: " + parentName);
 
         // Listen to real-time updates on notifications
         notificationListener = db.collection("notifications")

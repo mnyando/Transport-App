@@ -217,7 +217,7 @@ public class DropOff extends AppCompatActivity {
     private void sendDropOffNotificationToParent() {
         for (Student student : students) {
             String parentName = student.getParentName();  // Assuming parentName is a field in Student class
-            sendNotificationToParent(parentName, "Drop-off completed", "The drop-off for your child " + student.getName() + " has been completed.");
+            sendNotificationToParent(parentName, "Drop off completed", "The drop-off for your child " + student.getName() + " has been completed.");
         }
     }
 
