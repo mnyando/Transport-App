@@ -32,9 +32,10 @@ class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.Notif
     @Override
     public void onBindViewHolder(NotificationViewHolder holder, int position) {
         Notification notification = notificationList.get(position);
-        holder.text1.setText("From Parent: " + notification.getParentId()); // Replace with parent name if available
+        holder.text1.setText(notification.getParentName() != null ?
+                "To: " + notification.getParentName() :
+                "System Notification");
         holder.text2.setText(notification.getMessage());
-        holder.itemView.setOnClickListener(v -> listener.onNotificationClick(notification));
     }
 
     @Override

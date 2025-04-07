@@ -75,7 +75,7 @@ public class DropOff extends AppCompatActivity {
         studentListRecyclerView = findViewById(R.id.studentListRecyclerView);
         tripCompleteButton = findViewById(R.id.tripCompleteButton);
 
-        adapter = new StudentStatusAdapter(students, "", false); // Initialize with empty tripId
+        adapter = new StudentStatusAdapter(students, "", false);
         studentListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         studentListRecyclerView.setAdapter(adapter);
 
@@ -96,7 +96,6 @@ public class DropOff extends AppCompatActivity {
                                 Student student = document.toObject(Student.class);
                                 student.setId(document.getId());
 
-                                // Extract grade from document path
                                 String[] pathParts = document.getReference().getPath().split("/");
                                 if (pathParts.length >= 2) {
                                     String grade = pathParts[1];
@@ -208,17 +207,70 @@ public class DropOff extends AppCompatActivity {
         Log.i(TAG, "Drop-off trip completed: " + tripId);
         showToast("Drop-off completed at " + formatTimestamp(endTimeMillis) + "\nDuration: " + duration);
 
-        sendDropOffNotificationToParent();  // Send notifications to the parents of the students
-
+        sendDropOffNotificationToParent();
         clearStudentsTripId();
         finish();
     }
 
     private void sendDropOffNotificationToParent() {
         for (Student student : students) {
-            String parentName = student.getParentName();  // Assuming parentName is a field in Student class
-            sendNotificationToParent(parentName, "Drop off completed", "The drop-off for your child " + student.getName() + " has been completed.");
+            String parentName = student.getParentName();
+
+            if (parentName == null || parentName.isEmpty()) {
+                Log.e(TAG, "Parent name not found for student: " + student.getName());
+                continue;
+            }
+
+            // 1. Save notification to Firestore (for in-app notifications)
+            Map<String, Object> notificationData = new HashMap<>();
+            notificationData.put("parentName", parentName);
+            notificationData.put("driverName", driverName);
+            notificationData.put("message", "Your child " + student.getName() + " has been dropped off.");
+            notificationData.put("timestamp", System.currentTimeMillis());
+            notificationData.put("type", "dropoff");
+
+            db.collection("notifications").add(notificationData)
+                    .addOnSuccessListener(documentReference -> {
+                        Log.d(TAG, "Notification saved to Firestore for: " + parentName);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Failed to save notification to Firestore", e);
+                    });
+
+            // 2. Send FCM push notification
+            sendFCMPushNotification(parentName,
+                    "Drop Off Complete",
+                    "Your child " + student.getName() + " has been dropped off.");
         }
+    }
+
+    private void sendFCMPushNotification(String parentName, String title, String message) {
+        db.collection("parents")
+                .whereEqualTo("name", parentName)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        String parentToken = queryDocumentSnapshots.getDocuments().get(0).getString("deviceToken");
+                        if (parentToken != null && !parentToken.isEmpty()) {
+                            try {
+                                FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(parentToken + "@fcm.googleapis.com")
+                                        .setMessageId(Integer.toString(new Random().nextInt()))
+                                        .addData("title", title)
+                                        .addData("message", message)
+                                        .addData("type", "dropoff")  // Add type for notification handling
+                                        .build());
+                                Log.d(TAG, "FCM notification sent to parent: " + parentName);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Failed to send FCM notification", e);
+                            }
+                        } else {
+                            Log.w(TAG, "No device token found for parent: " + parentName);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error fetching parent device token", e);
+                });
     }
 
     private void sendNotificationToParent(String parentName, String title, String message) {
@@ -228,7 +280,11 @@ public class DropOff extends AppCompatActivity {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         String parentToken = queryDocumentSnapshots.getDocuments().get(0).getString("deviceToken");
-                        sendFCMNotification(parentToken, title, message);
+                        if (parentToken != null && !parentToken.isEmpty()) {
+                            sendFCMNotification(parentToken, title, message);
+                        } else {
+                            Log.w(TAG, "No device token found for parent: " + parentName);
+                        }
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -237,12 +293,16 @@ public class DropOff extends AppCompatActivity {
     }
 
     private void sendFCMNotification(String deviceToken, String title, String message) {
-        FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(deviceToken + "@fcm.googleapis.com")
-                .setMessageId(Integer.toString(new Random().nextInt()))
-                .addData("title", title)
-                .addData("message", message)
-                .build());
-        Log.d(TAG, "Notification sent to parent: " + deviceToken);
+        try {
+            FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(deviceToken + "@fcm.googleapis.com")
+                    .setMessageId(Integer.toString(new Random().nextInt()))
+                    .addData("title", title)
+                    .addData("message", message)
+                    .build());
+            Log.d(TAG, "Notification sent to parent: " + deviceToken);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to send FCM notification", e);
+        }
     }
 
     private void updateStudentsWithTripId() {

@@ -217,7 +217,7 @@ public class PickUp extends AppCompatActivity {
             // Create a notification for the parent
             Map<String, Object> notificationData = new HashMap<>();
             notificationData.put("parentName", parentName);
-            notificationData.put("message", "Your child has been picked.");
+            notificationData.put("message", "Your child has" + student.getName() + " been picked.");
             notificationData.put("driverId", driverId);
             notificationData.put("timestamp", System.currentTimeMillis());
 

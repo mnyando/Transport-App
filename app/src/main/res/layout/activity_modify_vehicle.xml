@@ -60,7 +60,7 @@
                     android:layout_height="217dp"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginBottom="10dp"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="true" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

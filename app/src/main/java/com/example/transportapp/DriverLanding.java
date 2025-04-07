@@ -32,13 +32,12 @@ public class DriverLanding extends AppCompatActivity {
         // Get all data from Intent
         Intent intent = getIntent();
         driverId = intent.getStringExtra("driverId");
-        driverAuthUid = intent.getStringExtra("driverAuthUid");
         driverEmail = intent.getStringExtra("driverEmail");
         driverName = intent.getStringExtra("driverName");
         assignedVehicle = intent.getStringExtra("assignedVehicle");
         assignedRoute = intent.getStringExtra("assignedRoute");
 
-        if (driverId == null || driverAuthUid == null) {
+        if (driverId == null ) {
             Toast.makeText(this, "Driver information not found", Toast.LENGTH_SHORT).show();
             finish();
             return;
