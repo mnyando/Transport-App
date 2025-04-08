@@ -66,4 +66,6 @@
     <string name="attendance_stats">Attendance Stats</string>
     <string name="present">Present</string>
     <string name="absent">Absent</string>
+
+    <string name="driver_avatar_desc">Absent</string>
 </resources>

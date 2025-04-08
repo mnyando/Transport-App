@@ -18,7 +18,7 @@ public class Reports extends AppCompatActivity {
         // Initialize card views
         CardView driverCard = findViewById(R.id.driverCard);
         CardView studentCard = findViewById(R.id.studentCard);
-        CardView routeCard = findViewById(R.id.routeCard);
+        //CardView routeCard = findViewById(R.id.routeCard);
 
         // Set click listeners
         driverCard.setOnClickListener(v -> {
@@ -31,9 +31,9 @@ public class Reports extends AppCompatActivity {
             startActivity(intent);
         });
 
-        routeCard.setOnClickListener(v -> {
-            Intent intent = new Intent(Reports.this, RouteReportActivity.class);
-            startActivity(intent);
-        });
+       // routeCard.setOnClickListener(v -> {
+           // Intent intent = new Intent(Reports.this, RouteReportActivity.class);
+           // startActivity(intent);
+       // });
     }
 }

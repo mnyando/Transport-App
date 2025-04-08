@@ -5,7 +5,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -26,6 +25,7 @@ public class DriverReportActivity extends AppCompatActivity {
     private static final String TAG = "DriverReportActivity";
     private FirebaseFirestore db;
     private TextView totalTripsText, avgDurationText, onTimeRateText, studentsTransportedText;
+    private TextView driverNameText, driverRouteText;
     private RecyclerView recentTripsRecyclerView;
     private EditText searchEditText;
     private List<Map<String, Object>> driverList = new ArrayList<>();
@@ -41,7 +41,7 @@ public class DriverReportActivity extends AppCompatActivity {
         initViews();
         setupBackButton();
         setupSearch();
-        loadDrivers();
+        clearAllData(); // Clear all data by default
     }
 
     private void initViews() {
@@ -52,6 +52,9 @@ public class DriverReportActivity extends AppCompatActivity {
         studentsTransportedText = findViewById(R.id.studentsTransportedText);
         recentTripsRecyclerView = findViewById(R.id.recentTripsRecyclerView);
         searchEditText = findViewById(R.id.searchEditText);
+
+        driverNameText = findViewById(R.id.driverNameText);
+        driverRouteText = findViewById(R.id.driverRouteText);
 
         recentTripsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         recentTripsRecyclerView.setAdapter(new TripAdapter(recentTrips));
@@ -86,8 +89,8 @@ public class DriverReportActivity extends AppCompatActivity {
                                 Log.d(TAG, "Performing search for: " + s);
                                 performDriverSearch(s.toString());
                             } else if (s.length() == 0) {
-                                Log.d(TAG, "Search cleared, loading all drivers");
-                                loadDrivers();
+                                Log.d(TAG, "Search cleared");
+                                clearAllData(); // Clear all data when search is empty
                             }
                         });
                     }
@@ -117,40 +120,15 @@ public class DriverReportActivity extends AppCompatActivity {
                         if (!driverList.isEmpty()) {
                             String driverId = driverList.get(0).get("id").toString();
                             Log.d(TAG, "Auto-selecting first driver in search results: " + driverId);
+                            updateDriverInfoCard(driverList.get(0));
                             loadDriverData(driverId);
                         } else {
                             Log.d(TAG, "No drivers found in search");
-                            clearDriverData();
+                            clearAllData();
                         }
                     } else {
                         Log.e(TAG, "Driver search failed", task.getException());
-                        clearDriverData();
-                    }
-                });
-    }
-
-    private void loadDrivers() {
-        Log.d(TAG, "Loading all drivers");
-        db.collection("staff")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "Loaded " + task.getResult().size() + " drivers");
-                        driverList.clear();
-
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Map<String, Object> driver = document.getData();
-                            driver.put("id", document.getId());
-                            driverList.add(driver);
-                        }
-
-                        if (!driverList.isEmpty()) {
-                            // Load data for the first driver by default
-                            String driverId = driverList.get(0).get("id").toString();
-                            loadDriverData(driverId);
-                        }
-                    } else {
-                        Log.e(TAG, "Error loading drivers", task.getException());
+                        clearAllData();
                     }
                 });
     }
@@ -203,12 +181,30 @@ public class DriverReportActivity extends AppCompatActivity {
                 });
     }
 
-    private void clearDriverData() {
-        Log.d(TAG, "Clearing driver data");
-        totalTripsText.setText("0");
-        avgDurationText.setText("0m");
-        onTimeRateText.setText("0%");
-        studentsTransportedText.setText("0");
+    private void updateDriverInfoCard(Map<String, Object> driver) {
+        Log.d(TAG, "Updating driver info card");
+        if (driver != null) {
+            String name = (String) driver.get("staffName");
+            String route = (String) driver.get("assignedRoute");
+
+            driverNameText.setText(name != null ? name : "Unknown Driver");
+            driverRouteText.setText(route != null ? route : "No route assigned");
+        }
+    }
+
+    private void clearAllData() {
+        Log.d(TAG, "Clearing all data");
+        // Clear stats
+        totalTripsText.setText("");
+        avgDurationText.setText("");
+        onTimeRateText.setText("");
+        studentsTransportedText.setText("");
+
+        // Clear driver info
+        driverNameText.setText("");
+        driverRouteText.setText("");
+
+        // Clear recent trips
         recentTrips.clear();
         recentTripsRecyclerView.getAdapter().notifyDataSetChanged();
     }
