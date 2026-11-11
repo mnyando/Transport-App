@@ -116,6 +116,53 @@ public final class TripAlerts {
         return summary;
     }
 
+    /**
+     * Emergency from the driver: one urgent school alert, plus a notification (and therefore a
+     * push message) to every parent with a child on this bus.
+     *
+     * @return how many parents were notified
+     */
+    public static int sendSos(FirebaseFirestore db, List<Student> studentsOnBus, String vehicle,
+                              String driverId, String driverName, String details) {
+        String message = "Emergency reported on bus " + vehicle
+                + (details == null || details.isEmpty() ? "" : ": " + details)
+                + ". The school has been alerted and will contact you.";
+
+        Map<String, Object> alert = new HashMap<>();
+        alert.put("type", "sos");
+        alert.put("status", "emergency");
+        alert.put("vehicle", vehicle);
+        alert.put("driverId", driverId);
+        alert.put("driverName", driverName);
+        alert.put("message", "SOS from " + (driverName != null ? driverName : "the driver")
+                + " on bus " + vehicle + (details == null || details.isEmpty() ? "" : ": " + details));
+        alert.put("resolved", false);
+        alert.put("timestamp", System.currentTimeMillis());
+        alert.put("createdAt", FieldValue.serverTimestamp());
+        db.collection(COLLECTION_SCHOOL_ALERTS).add(alert)
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to save SOS alert", e));
+
+        java.util.Set<String> notified = new java.util.HashSet<>();
+        for (Student student : studentsOnBus) {
+            String parentEmail = ParentEmails.normalize(student.getParentEmail());
+            if (parentEmail.isEmpty() || !notified.add(parentEmail)) continue;
+            Map<String, Object> notification = new HashMap<>();
+            notification.put("parentEmail", parentEmail);
+            notification.put("type", "sos");
+            notification.put("status", "emergency");
+            notification.put("title", "Emergency on the school bus");
+            notification.put("message", message);
+            notification.put("vehicle", vehicle);
+            notification.put("driverId", driverId);
+            notification.put("driverName", driverName);
+            notification.put("timestamp", System.currentTimeMillis());
+            notification.put("createdAt", FieldValue.serverTimestamp());
+            db.collection(COLLECTION_NOTIFICATIONS).add(notification)
+                    .addOnFailureListener(e -> Log.e(TAG, "Failed to save SOS notification", e));
+        }
+        return notified.size();
+    }
+
     static String titleFor(boolean isPickup, String statusKey) {
         if (STATUS_DONE.equals(statusKey)) {
             return isPickup ? "Picked up" : "Dropped off";

@@ -5,7 +5,22 @@
     <!-- Needed on Android 13+ to show pick-up / drop-off push alerts -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!-- Live bus location, shared only while a trip is running (TripLocationService) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+
+    <!-- Opening the bus location in a maps app (Android 11+ package visibility) -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="geo" />
+        </intent>
+    </queries>
+
     <application
+        android:name=".TransportApp"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -24,6 +39,11 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".TripLocationService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"

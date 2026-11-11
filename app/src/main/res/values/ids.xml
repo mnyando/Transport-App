@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- View tag key used by TransportApp to wire toolbar back arrows only once -->
+    <item name="back_button_wired" type="id" />
+</resources>

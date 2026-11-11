@@ -451,6 +451,12 @@ public class ModifyStudent extends AppCompatActivity {
                 .set(studentData)
                 .addOnSuccessListener(aVoid -> {
                     Log.i(TAG, "Student saved successfully");
+                    // Lets this parent see the bus location and join the bus chat.
+                    Object vehicle = studentData.get("vehicle");
+                    Object email = studentData.get("parentEmail");
+                    if (vehicle != null && email != null) {
+                        BusGroups.addParent(db, vehicle.toString(), email.toString());
+                    }
                     Toast.makeText(this, "Student record updated successfully", Toast.LENGTH_SHORT).show();
                     selectedStudentId = null;
                     originalGrade = null;

@@ -258,6 +258,8 @@ public class AddStudent extends AppCompatActivity {
                 .document(studentId)
                 .set(studentData)
                 .addOnSuccessListener(aVoid -> {
+                    // Lets this parent see the bus location and join the bus chat.
+                    BusGroups.addParent(db, vehicle, parentEmail);
                     Toast.makeText(this, "✅ Student added successfully", Toast.LENGTH_SHORT).show();
                     clearForm();
                 })

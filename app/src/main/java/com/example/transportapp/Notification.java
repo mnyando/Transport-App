@@ -9,6 +9,7 @@ public class Notification {
     private String parentEmail;
     private String studentId;
     private String studentName;
+    private String vehicle;
     private String title;
     private String status;  // "done", "not_done" or "unmarked"
     private String message;
@@ -41,6 +42,9 @@ public class Notification {
 
     public String getStudentName() { return studentName; }
     public void setStudentName(String studentName) { this.studentName = studentName; }
+
+    public String getVehicle() { return vehicle; }
+    public void setVehicle(String vehicle) { this.vehicle = vehicle; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }

@@ -5,6 +5,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
+import android.Manifest;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,6 +41,7 @@ public class DropOff extends AppCompatActivity {
     private String assignedVehicle, tripId, driverId, driverName, assignedRoute;
     private List<Student> students = new ArrayList<>();
     private StudentStatusAdapter adapter;
+    private boolean locationSharing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +141,8 @@ public class DropOff extends AppCompatActivity {
                     Log.i(TAG, "Created new trip: " + tripId);
                     showToast("Drop-off trip started at " + formatTimestamp(currentTimeMillis));
                     updateStudentsWithTripId();
+                    BusGroups.syncParents(db, assignedVehicle, students);
+                    startLocationSharing();
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Failed to create trip", e);
@@ -229,6 +236,7 @@ public class DropOff extends AppCompatActivity {
         Log.i(TAG, "Drop-off trip completed: " + tripId);
         showToast("Drop-off completed at " + formatTimestamp(endTimeMillis) + "\nDuration: " + duration);
 
+        stopLocationSharing();
         sendDropOffNotificationToParent();
         clearStudentsTripId();
         finish();
@@ -293,6 +301,43 @@ public class DropOff extends AppCompatActivity {
 
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    // ---------- live bus location ----------
+
+    private final ActivityResultLauncher<String[]> locationPermission =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+                if (TripLocationService.hasLocationPermission(this)) {
+                    startLocationSharing();
+                } else {
+                    showToast("Location is off, so parents won't see the bus on the map for this trip.");
+                }
+            });
+
+    /** Shares the bus location with parents for as long as this trip runs. */
+    private void startLocationSharing() {
+        if (tripId == null) return;
+        if (!TripLocationService.hasLocationPermission(this)) {
+            locationPermission.launch(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION});
+            return;
+        }
+        TripLocationService.start(this, assignedVehicle, tripId, "dropoff");
+        locationSharing = true;
+    }
+
+    private void stopLocationSharing() {
+        if (!locationSharing) return;
+        locationSharing = false;
+        TripLocationService.stop(this, assignedVehicle);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Never keep sharing the location after the trip screen is gone.
+        stopLocationSharing();
     }
 
     private void showToastAndFinish(String message) {
