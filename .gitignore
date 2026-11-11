@@ -13,3 +13,11 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Always track the Gradle wrapper
+!gradle/wrapper/gradle-wrapper.jar
+
+# Release signing secrets
+keystore.properties
+*.jks
+*.keystore
