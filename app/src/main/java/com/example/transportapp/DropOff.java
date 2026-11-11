@@ -5,14 +5,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -45,7 +43,9 @@ public class DropOff extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drop_off);
         initializeFirestore();
-        getIntentData();
+        if (!getIntentData()) {
+            return;
+        }
         initializeViews();
         loadStudentsForVehicle();
     }
@@ -54,7 +54,8 @@ public class DropOff extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
     }
 
-    private void getIntentData() {
+    /** Returns false (and closes the screen) when the driver or vehicle is missing. */
+    private boolean getIntentData() {
         Intent intent = getIntent();
         assignedVehicle = intent.getStringExtra("assignedVehicle");
         driverId = intent.getStringExtra("driverId");
@@ -63,12 +64,14 @@ public class DropOff extends AppCompatActivity {
 
         if (assignedVehicle == null || assignedVehicle.isEmpty()) {
             showToastAndFinish("Vehicle information not found");
-            return;
+            return false;
         }
 
         if (driverId == null || driverId.isEmpty()) {
             showToastAndFinish("Driver information not found");
+            return false;
         }
+        return true;
     }
 
     private void initializeViews() {
@@ -79,7 +82,7 @@ public class DropOff extends AppCompatActivity {
         studentListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         studentListRecyclerView.setAdapter(adapter);
 
-        tripCompleteButton.setOnClickListener(v -> completeTrip());
+        tripCompleteButton.setOnClickListener(v -> confirmAndCompleteTrip());
     }
 
     private void loadStudentsForVehicle() {
@@ -103,7 +106,6 @@ public class DropOff extends AppCompatActivity {
                                 }
 
                                 students.add(student);
-                                Log.d(TAG, "Added student: " + student.getName());
                             } catch (Exception e) {
                                 Log.e(TAG, "Error parsing student document", e);
                             }
@@ -117,7 +119,7 @@ public class DropOff extends AppCompatActivity {
                         }
                     } else {
                         Log.e(TAG, "Error loading students", task.getException());
-                        showToast("Error loading students: " + task.getException().getMessage());
+                        showToast("Could not load the students for this vehicle. Check your connection and try again.");
                     }
                 });
     }
@@ -153,6 +155,26 @@ public class DropOff extends AppCompatActivity {
         tripData.put("studentCount", students.size());
         tripData.put("tripType", TRIP_TYPE);
         return tripData;
+    }
+
+    /** Warns the driver about children left unmarked before the trip is closed. */
+    private void confirmAndCompleteTrip() {
+        int unmarked = 0;
+        for (Student student : students) {
+            if (adapter.getStatus(student) == null) unmarked++;
+        }
+        if (unmarked == 0) {
+            completeTrip();
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle("Some children are not marked")
+                .setMessage(unmarked + (unmarked == 1 ? " child has" : " children have")
+                        + " not been marked as dropped off or not dropped. If you complete the trip now, "
+                        + "their parents and the school will be told the drop-off was not confirmed.")
+                .setPositiveButton("Complete trip", (d, w) -> completeTrip())
+                .setNegativeButton("Go back", null)
+                .show();
     }
 
     private void completeTrip() {
@@ -213,95 +235,14 @@ public class DropOff extends AppCompatActivity {
     }
 
     private void sendDropOffNotificationToParent() {
-        for (Student student : students) {
-            String parentName = student.getParentName();
-
-            if (parentName == null || parentName.isEmpty()) {
-                Log.e(TAG, "Parent name not found for student: " + student.getName());
-                continue;
-            }
-
-            // 1. Save notification to Firestore (for in-app notifications)
-            Map<String, Object> notificationData = new HashMap<>();
-            notificationData.put("parentName", parentName);
-            notificationData.put("driverName", driverName);
-            notificationData.put("message", "Your child " + student.getName() + " has been dropped off.");
-            notificationData.put("timestamp", System.currentTimeMillis());
-            notificationData.put("type", "dropoff");
-
-            db.collection("notifications").add(notificationData)
-                    .addOnSuccessListener(documentReference -> {
-                        Log.d(TAG, "Notification saved to Firestore for: " + parentName);
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, "Failed to save notification to Firestore", e);
-                    });
-
-            // 2. Send FCM push notification
-            sendFCMPushNotification(parentName,
-                    "Drop Off Complete",
-                    "Your child " + student.getName() + " has been dropped off.");
-        }
-    }
-
-    private void sendFCMPushNotification(String parentName, String title, String message) {
-        db.collection("parents")
-                .whereEqualTo("name", parentName)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        String parentToken = queryDocumentSnapshots.getDocuments().get(0).getString("deviceToken");
-                        if (parentToken != null && !parentToken.isEmpty()) {
-                            try {
-                                FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(parentToken + "@fcm.googleapis.com")
-                                        .setMessageId(Integer.toString(new Random().nextInt()))
-                                        .addData("title", title)
-                                        .addData("message", message)
-                                        .addData("type", "dropoff")  // Add type for notification handling
-                                        .build());
-                                Log.d(TAG, "FCM notification sent to parent: " + parentName);
-                            } catch (Exception e) {
-                                Log.e(TAG, "Failed to send FCM notification", e);
-                            }
-                        } else {
-                            Log.w(TAG, "No device token found for parent: " + parentName);
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error fetching parent device token", e);
-                });
-    }
-
-    private void sendNotificationToParent(String parentName, String title, String message) {
-        db.collection("parents")
-                .whereEqualTo("name", parentName)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        String parentToken = queryDocumentSnapshots.getDocuments().get(0).getString("deviceToken");
-                        if (parentToken != null && !parentToken.isEmpty()) {
-                            sendFCMNotification(parentToken, title, message);
-                        } else {
-                            Log.w(TAG, "No device token found for parent: " + parentName);
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error fetching parent device token", e);
-                });
-    }
-
-    private void sendFCMNotification(String deviceToken, String title, String message) {
-        try {
-            FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(deviceToken + "@fcm.googleapis.com")
-                    .setMessageId(Integer.toString(new Random().nextInt()))
-                    .addData("title", title)
-                    .addData("message", message)
-                    .build());
-            Log.d(TAG, "Notification sent to parent: " + deviceToken);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to send FCM notification", e);
+        // Each parent is told what the driver actually recorded for their own child.
+        // Writing the notification document triggers the push message (functions/index.js);
+        // the old client-side FirebaseMessaging.send() upstream API never reached other phones.
+        TripAlerts.Summary summary = TripAlerts.sendTripAlerts(db, students, adapter::getStatus,
+                false, tripId, assignedVehicle, driverId, driverName);
+        if (summary.skippedNoParentEmail > 0) {
+            showToast(summary.skippedNoParentEmail + " student record(s) have no parent email, "
+                    + "so those parents were not notified. Ask the school to add it.");
         }
     }
 
@@ -318,19 +259,18 @@ public class DropOff extends AppCompatActivity {
     }
 
     private void clearStudentsTripId() {
-        String dropOffTime = formatTimestamp(System.currentTimeMillis());
+        // Only children confirmed as dropped off have their trip cleared (the adapter already
+        // stamped their drop-off time). Anyone else keeps currentTripId so the school can see
+        // which trip they were last on.
         for (Student student : students) {
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("currentTripId", null);
-            updates.put("dropOffTime", dropOffTime);
-
+            if (!Boolean.TRUE.equals(adapter.getStatus(student))) continue;
             db.collection("students")
                     .document(student.getGrade())
                     .collection("studentList")
                     .document(student.getId())
-                    .update(updates)
+                    .update("currentTripId", null)
                     .addOnFailureListener(e ->
-                            Log.e(TAG, "Failed to clear student trip ID: " + student.getId(), e));
+                            Log.e(TAG, "Failed to clear a student's trip ID", e));
         }
     }
 

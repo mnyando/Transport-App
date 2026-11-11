@@ -21,3 +21,17 @@ local.properties
 keystore.properties
 *.jks
 *.keystore
+
+# Firebase Cloud Functions
+functions/node_modules/
+.firebase/
+*-debug.log
+
+# Kept local only (not pushed)
+firestore.rules
+*.md
+app/src/test/
+app/src/androidTest/
+functions/test/
+**/*.test.js
+**/*.spec.js

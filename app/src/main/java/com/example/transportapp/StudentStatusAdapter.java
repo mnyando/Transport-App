@@ -1,7 +1,5 @@
 package com.example.transportapp;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,21 +19,40 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Pick-up / drop-off checklist for one trip.
+ *
+ * Every child starts unmarked for the trip. The status the driver sets is kept in
+ * {@link #statusByStudent} (keyed by the student's document ID), not read from an earlier
+ * trip, so a child picked up this morning is not pre-ticked as dropped off.
+ *
+ * Rows are recycled while scrolling, so listeners are detached before the checkboxes are set
+ * and the listener looks up the row's current position when it fires. That stops a recycled
+ * row from writing one child's status against another child.
+ */
 public class StudentStatusAdapter extends RecyclerView.Adapter<StudentStatusAdapter.StudentStatusViewHolder> {
-    private List<Student> studentList;
-    private FirebaseFirestore db;
+    private static final String TAG = "StudentStatusAdapter";
+
+    private final List<Student> studentList;
+    private final FirebaseFirestore db;
     private String tripId;
-    private boolean isPickup; // Added to distinguish between pickup/dropoff
+    private final boolean isPickup;
+    private final Map<String, Boolean> statusByStudent = new HashMap<>();
 
     public StudentStatusAdapter(List<Student> studentList, String tripId, boolean isPickup) {
         this.studentList = studentList;
         this.db = FirebaseFirestore.getInstance();
         this.tripId = tripId;
-        this.isPickup = isPickup; // Store the mode
+        this.isPickup = isPickup;
     }
 
     public void setTripId(String tripId) {
         this.tripId = tripId;
+    }
+
+    /** TRUE = picked/dropped, FALSE = marked not picked/not dropped, null = not marked yet. */
+    public Boolean getStatus(Student student) {
+        return student.getId() == null ? null : statusByStudent.get(student.getId());
     }
 
     @NonNull
@@ -43,7 +60,19 @@ public class StudentStatusAdapter extends RecyclerView.Adapter<StudentStatusAdap
     public StudentStatusViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_student_status, parent, false);
-        return new StudentStatusViewHolder(view);
+        StudentStatusViewHolder holder = new StudentStatusViewHolder(view);
+
+        // Listeners are attached once and always resolve the child from the row's *current*
+        // position, so a recycled row can never act on the child it showed before.
+        holder.pickedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (holder.settingState) return; // ignore changes made by showStatus()
+            onStatusChosen(holder, isChecked ? Boolean.TRUE : null);
+        });
+        holder.notPickedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (holder.settingState) return;
+            onStatusChosen(holder, isChecked ? Boolean.FALSE : null);
+        });
+        return holder;
     }
 
     @Override
@@ -51,7 +80,6 @@ public class StudentStatusAdapter extends RecyclerView.Adapter<StudentStatusAdap
         Student student = studentList.get(position);
         holder.studentNameTextView.setText(student.getName());
 
-        // Update checkbox labels based on mode
         if (isPickup) {
             holder.pickedCheckBox.setText("Picked Up");
             holder.notPickedCheckBox.setText("Not Picked");
@@ -59,75 +87,79 @@ public class StudentStatusAdapter extends RecyclerView.Adapter<StudentStatusAdap
             holder.pickedCheckBox.setText("Dropped Off");
             holder.notPickedCheckBox.setText("Not Dropped");
         }
+        showStatus(holder, getStatus(student));
+    }
 
-        // Initialize checkboxes based on current status
-        boolean isCompleted = student.getPickupStatus() != null &&
-                student.getPickupStatus().isPicked();
-        holder.pickedCheckBox.setChecked(isCompleted);
-        holder.notPickedCheckBox.setChecked(!isCompleted);
+    private void showStatus(StudentStatusViewHolder holder, Boolean status) {
+        holder.settingState = true;
+        holder.pickedCheckBox.setChecked(Boolean.TRUE.equals(status));
+        holder.notPickedCheckBox.setChecked(Boolean.FALSE.equals(status));
+        holder.settingState = false;
+    }
 
-        holder.pickedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                student.updatePickupStatus(true, tripId);
-                holder.notPickedCheckBox.setChecked(false);
-                updateStudentInFirestore(student, true);
+    private void onStatusChosen(StudentStatusViewHolder holder, Boolean status) {
+        int position = holder.getBindingAdapterPosition();
+        if (position == RecyclerView.NO_POSITION || position >= studentList.size()) return;
+        Student student = studentList.get(position);
+        if (student.getId() == null) return;
+
+        if (status == null) {
+            // Driver unticked the box: back to "not marked". Nothing is written, and the trip
+            // summary will treat the child as unconfirmed.
+            statusByStudent.remove(student.getId());
+        } else {
+            statusByStudent.put(student.getId(), status);
+            if (isPickup) {
+                student.updatePickupStatus(status, tripId);
             }
-        });
-
-        holder.notPickedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                student.updatePickupStatus(false, tripId);
-                holder.pickedCheckBox.setChecked(false);
-                updateStudentInFirestore(student, false);
-            }
-        });
+            updateStudentInFirestore(student, status);
+        }
+        showStatus(holder, status);
     }
 
     private void updateStudentInFirestore(Student student, boolean isCompleted) {
+        if (student.getGrade() == null || student.getId() == null) {
+            Log.e(TAG, "Student record is missing its grade or ID; status not saved");
+            return;
+        }
         Map<String, Object> updates = new HashMap<>();
         long currentTime = System.currentTimeMillis();
 
         if (isPickup) {
-            // PICKUP UPDATES
-            updates.put("pickupStatus", new HashMap<String, Object>() {{
-                put("isPicked", isCompleted);
-                put("timestamp", currentTime);
-                put("tripId", tripId);
-                put("type", "pickup");
-            }});
-            updates.put("pickupTime", formatTimestamp(currentTime));
-            updates.put("currentTripId", tripId);  // Critical for tracking active trips
-
-
+            Map<String, Object> pickupStatus = new HashMap<>();
+            pickupStatus.put("isPicked", isCompleted);
+            pickupStatus.put("timestamp", currentTime);
+            pickupStatus.put("tripId", tripId);
+            pickupStatus.put("type", "pickup");
+            updates.put("pickupStatus", pickupStatus);
+            if (isCompleted) {
+                updates.put("pickupTime", formatTimestamp(currentTime));
+            }
+            updates.put("currentTripId", tripId);
         } else {
-            // DROPOFF UPDATES
-            updates.put("dropoffStatus", new HashMap<String, Object>() {{
-                put("isDropped", isCompleted);
-                put("timestamp", currentTime);
-                put("tripId", tripId);
-                put("type", "dropoff");
-            }});
-            updates.put("dropOffTime", formatTimestamp(currentTime));
-            updates.put("currentTripId", null);  // Clear trip reference
-
-            // Maintain pickup reference for history
+            Map<String, Object> dropoffStatus = new HashMap<>();
+            dropoffStatus.put("isDropped", isCompleted);
+            dropoffStatus.put("timestamp", currentTime);
+            dropoffStatus.put("tripId", tripId);
+            dropoffStatus.put("type", "dropoff");
+            updates.put("dropoffStatus", dropoffStatus);
+            if (isCompleted) {
+                updates.put("dropOffTime", formatTimestamp(currentTime));
+                updates.put("currentTripId", null);
+            }
             if (student.getPickupStatus() != null) {
                 updates.put("lastPickupTripId", student.getPickupStatus().getTripId());
             }
         }
 
-        // Update student document
         db.collection("students")
                 .document(student.getGrade())
                 .collection("studentList")
                 .document(student.getId())
                 .update(updates)
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error updating student document", e);
-                });
+                .addOnFailureListener(e -> Log.e(TAG, "Error updating student document", e));
 
-        // Update trip's student status (separate collections for clarity)
-        if (tripId != null) {
+        if (tripId != null && !tripId.isEmpty()) {
             String statusCollection = isPickup ? "pickupStatus" : "dropoffStatus";
 
             Map<String, Object> statusData = new HashMap<>();
@@ -137,15 +169,12 @@ public class StudentStatusAdapter extends RecyclerView.Adapter<StudentStatusAdap
             statusData.put("status", isCompleted);
             statusData.put("timestamp", currentTime);
 
-
             db.collection("trips")
                     .document(tripId)
                     .collection(statusCollection)
                     .document(student.getId())
                     .set(statusData)
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, "Error updating trip status collection", e);
-                    });
+                    .addOnFailureListener(e -> Log.e(TAG, "Error updating trip status collection", e));
         }
     }
 
@@ -162,6 +191,7 @@ public class StudentStatusAdapter extends RecyclerView.Adapter<StudentStatusAdap
     static class StudentStatusViewHolder extends RecyclerView.ViewHolder {
         TextView studentNameTextView;
         CheckBox pickedCheckBox, notPickedCheckBox;
+        boolean settingState;
 
         public StudentStatusViewHolder(@NonNull View itemView) {
             super(itemView);

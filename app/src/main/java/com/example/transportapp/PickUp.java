@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.util.Log;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,7 +72,7 @@ public class PickUp extends AppCompatActivity {
         studentListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         studentListRecyclerView.setAdapter(adapter);
 
-        tripCompleteButton.setOnClickListener(v -> completeTrip());
+        tripCompleteButton.setOnClickListener(v -> confirmAndCompleteTrip());
     }
 
     private void loadStudentsForVehicle() {
@@ -96,7 +97,6 @@ public class PickUp extends AppCompatActivity {
                                 }
 
                                 students.add(student);
-                                Log.d(TAG, "Added student: " + student.getName());
                             } catch (Exception e) {
                                 Log.e(TAG, "Error parsing student document", e);
                             }
@@ -110,7 +110,7 @@ public class PickUp extends AppCompatActivity {
                         }
                     } else {
                         Log.e(TAG, "Error loading students", task.getException());
-                        showToast("Error loading students: " + task.getException().getMessage());
+                        showToast("Could not load the students for this vehicle. Check your connection and try again.");
                     }
                 });
     }
@@ -160,6 +160,26 @@ public class PickUp extends AppCompatActivity {
         }
     }
 
+    /** Warns the driver about children left unmarked before the trip is closed. */
+    private void confirmAndCompleteTrip() {
+        int unmarked = 0;
+        for (Student student : students) {
+            if (adapter.getStatus(student) == null) unmarked++;
+        }
+        if (unmarked == 0) {
+            completeTrip();
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle("Some children are not marked")
+                .setMessage(unmarked + (unmarked == 1 ? " child has" : " children have")
+                        + " not been marked as picked up or not picked. If you complete the trip now, "
+                        + "their parents and the school will be told the pick-up was not confirmed.")
+                .setPositiveButton("Complete trip", (d, w) -> completeTrip())
+                .setNegativeButton("Go back", null)
+                .show();
+    }
+
     private void completeTrip() {
         if (tripId == null) {
             showToast("Trip not initialized");
@@ -181,7 +201,9 @@ public class PickUp extends AppCompatActivity {
                         updates.put("endTimeMillis", endTimeMillis);
                         updates.put("endTimeFormatted", formattedEndTime);
                         updates.put("completed", true);
-                        updates.put("durationMillis", endTimeMillis - startMillis);
+                        if (startMillis != null) {
+                            updates.put("durationMillis", endTimeMillis - startMillis);
+                        }
                         updates.put("durationFormatted", duration);
 
                         db.collection("trips").document(tripId)
@@ -206,29 +228,12 @@ public class PickUp extends AppCompatActivity {
     }
 
     private void sendNotificationToParents() {
-        for (Student student : students) {
-            String parentName = student.getParentName(); // Assuming you have a parentName in the Student object
-
-            if (parentName == null || parentName.isEmpty()) {
-                Log.e(TAG, "Parent name not found for student: " + student.getName());
-                continue; // Skip this student if no parent name is available
-            }
-
-            // Create a notification for the parent
-            Map<String, Object> notificationData = new HashMap<>();
-            notificationData.put("parentName", parentName);
-            notificationData.put("message", "Your child has" + student.getName() + " been picked.");
-            notificationData.put("driverId", driverId);
-            notificationData.put("timestamp", System.currentTimeMillis());
-
-            // Save the notification in Firestore
-            db.collection("notifications").add(notificationData)
-                    .addOnSuccessListener(documentReference -> {
-                        Log.d(TAG, "Notification sent to parent: " + parentName);
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, "Failed to send notification to parent", e);
-                    });
+        // Each parent is told what the driver actually recorded for their own child.
+        TripAlerts.Summary summary = TripAlerts.sendTripAlerts(db, students, adapter::getStatus,
+                true, tripId, assignedVehicle, driverId, driverName);
+        if (summary.skippedNoParentEmail > 0) {
+            showToast(summary.skippedNoParentEmail + " student record(s) have no parent email, "
+                    + "so those parents were not notified. Ask the school to add it.");
         }
     }
 

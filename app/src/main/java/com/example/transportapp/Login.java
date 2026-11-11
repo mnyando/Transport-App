@@ -68,7 +68,6 @@ public class Login extends AppCompatActivity {
     }
 
     private void fetchUserRole(String authUid, String email) {
-        Log.d(TAG, "Fetching user role for UID: " + authUid);
 
         db.collection("users").document(authUid).get()
                 .addOnSuccessListener(document -> {
@@ -86,13 +85,13 @@ public class Login extends AppCompatActivity {
                                 Log.w(TAG, "Driver name missing in user profile");
                             }
                         } else if ("parent".equalsIgnoreCase(role)) {
-                            fetchParentId(authUid, email);
+                            requireVerifiedEmailThen(() -> fetchParentId(authUid, email));
                         } else {
                             navigateToRoleBasedPage(role, authUid, email);
                         }
                     } else {
                         Toast.makeText(this, "User data not found!", Toast.LENGTH_SHORT).show();
-                        Log.w(TAG, "User data not found for UID: " + authUid);
+                        Log.w(TAG, "User data not found");
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -101,8 +100,30 @@ public class Login extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Parents can only see children whose record holds their email, so we must know the email
+     * really belongs to them. Unverified accounts get a fresh link and are signed out.
+     */
+    private void requireVerifiedEmailThen(Runnable onVerified) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) return;
+        user.reload().addOnCompleteListener(r -> {
+            FirebaseUser fresh = mAuth.getCurrentUser();
+            if (fresh != null && fresh.isEmailVerified()) {
+                onVerified.run();
+                return;
+            }
+            if (fresh != null) {
+                fresh.sendEmailVerification();
+            }
+            mAuth.signOut();
+            Toast.makeText(this,
+                    "Please verify your email first. We sent a new link to your inbox.",
+                    Toast.LENGTH_LONG).show();
+        });
+    }
+
     private void findDriverInStaffCollection(String fullName, String email) {
-        Log.d(TAG, "Searching staff records for: " + fullName);
 
         db.collection("staff")
                 .whereEqualTo("staffName", fullName)
@@ -117,7 +138,7 @@ public class Login extends AppCompatActivity {
                                 "No staff record found for: " + fullName,
                                 Toast.LENGTH_LONG).show();
                         mAuth.signOut();
-                        Log.w(TAG, "No staff record found for driver: " + fullName);
+                        Log.w(TAG, "No staff record found for this driver");
                     }
                 });
     }
@@ -133,7 +154,7 @@ public class Login extends AppCompatActivity {
                     "Incomplete driver profile. Contact administrator.",
                     Toast.LENGTH_LONG).show();
             mAuth.signOut();
-            Log.w(TAG, "Incomplete driver profile for: " + staffName);
+            Log.w(TAG, "Incomplete driver profile");
             return;
         }
 
@@ -152,23 +173,21 @@ public class Login extends AppCompatActivity {
             intent.putExtra("phoneNumber", staffDoc.getString("phoneNumber"));
         }
 
+        PushTokens.registerCurrentDevice();
         startActivity(intent);
         finish();
-        Log.d(TAG, "Driver logged in successfully: " + staffName);
     }
 
     private void fetchParentId(String authUid, String email) {
-        Log.d(TAG, "Fetching parent profile for UID: " + authUid);
 
         db.collection("users").document(authUid).get()
                 .addOnSuccessListener(parentDoc -> {
                     if (parentDoc.exists()) {
                         String parentId = parentDoc.getId();
-                        Log.d(TAG, "Parent found: ID = " + parentId);
                         navigateToRoleBasedPage("parent", parentId, email);
                     } else {
                         Toast.makeText(this, "Parent profile not found!", Toast.LENGTH_SHORT).show();
-                        Log.w(TAG, "Parent profile not found for UID: " + authUid);
+                        Log.w(TAG, "Parent profile not found");
                     }
                 })
                 .addOnFailureListener(e -> {
@@ -194,8 +213,8 @@ public class Login extends AppCompatActivity {
                 Log.w(TAG, "Unauthorized role access attempt: " + role);
                 return;
         }
+        PushTokens.registerCurrentDevice();
         startActivity(intent);
         finish();
-        Log.d(TAG, "Navigating to " + role + " landing page");
     }
 }

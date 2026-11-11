@@ -124,6 +124,20 @@
                 android:textColor="@color/black"
                 android:textSize="20sp"/>
 
+            <!-- Parent Email: links the parent's verified login to this student -->
+            <EditText
+                android:id="@+id/parentEmailInput"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="@drawable/edittext_background"
+                android:hint="Parent Email (used to sign in)"
+                android:inputType="textEmailAddress"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"/>
+
             <!-- Home Location -->
             <EditText
                 android:id="@+id/homeLocationInput"

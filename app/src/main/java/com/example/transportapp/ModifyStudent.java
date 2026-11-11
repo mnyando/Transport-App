@@ -27,7 +27,7 @@ public class ModifyStudent extends AppCompatActivity {
     private static final String TAG = "ModifyStudent";
     private FirebaseFirestore db;
     private Spinner filterDropdown, classDropdown, routeDropdown;
-    private EditText studentNameInput, studentIdInput, parentNameInput, parentContactInput, homeLocationInput;
+    private EditText studentNameInput, studentIdInput, parentNameInput, parentContactInput, parentEmailInput, homeLocationInput;
     private Button saveStudentButton;
     private RecyclerView studentRecyclerView;
     private StudentAdapter studentAdapter;
@@ -54,6 +54,7 @@ public class ModifyStudent extends AppCompatActivity {
         studentIdInput = findViewById(R.id.studentIdInput);
         parentNameInput = findViewById(R.id.parentNameInput);
         parentContactInput = findViewById(R.id.parentContactInput);
+        parentEmailInput = findViewById(R.id.parentEmailInput);
         homeLocationInput = findViewById(R.id.homeLocationInput);
         saveStudentButton = findViewById(R.id.saveStudentButton);
         studentRecyclerView = findViewById(R.id.studentRecyclerView);
@@ -181,6 +182,7 @@ public class ModifyStudent extends AppCompatActivity {
         studentIdInput.setText(student.getStudentId());
         parentNameInput.setText(student.getParentName());
         parentContactInput.setText(student.getParentContact());
+        parentEmailInput.setText(student.getParentEmail());
         homeLocationInput.setText(student.getHomeLocation());
 
         // Class selection
@@ -227,6 +229,13 @@ public class ModifyStudent extends AppCompatActivity {
             return;
         }
 
+        String parentEmail = ParentEmails.normalize(parentEmailInput.getText().toString());
+        if (!ParentEmails.isValid(parentEmail)) {
+            parentEmailInput.setError("Enter the email the parent will sign in with");
+            parentEmailInput.requestFocus();
+            return;
+        }
+
         Map<String, Object> studentData = new HashMap<>();
         studentData.put("name", name);
         studentData.put("studentId", studentId);
@@ -234,8 +243,9 @@ public class ModifyStudent extends AppCompatActivity {
         studentData.put("route", route);
         studentData.put("parentName", parentName);
         studentData.put("parentContact", parentContact);
+        // The parent's login email is what links their account to this child.
+        studentData.put("parentEmail", parentEmail);
         studentData.put("homeLocation", homeLocation);
-        Log.d(TAG, "checkAndSaveStudentData: Student data prepared: " + studentData.toString());
 
         // Check vehicle capacity before saving
         Log.i(TAG, "checkAndSaveStudentData: Checking vehicle capacity for route: " + route);

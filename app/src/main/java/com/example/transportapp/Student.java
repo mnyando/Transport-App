@@ -10,6 +10,10 @@ public class Student {
     private String route;
     private String parentName;
     private String parentContact;
+    // Lower-cased email of the parent's login. This is what links a parent account to the
+    // student (never the typed parent name). Firestore rules check it against the verified
+    // email on the signed-in user's token.
+    private String parentEmail;
     private String homeLocation;
     private String vehicle;
     private String driverName;
@@ -88,6 +92,8 @@ public class Student {
     public void setParentName(String parentName) { this.parentName = parentName; }
     public String getParentContact() { return parentContact; }
     public void setParentContact(String parentContact) { this.parentContact = parentContact; }
+    public String getParentEmail() { return parentEmail; }
+    public void setParentEmail(String parentEmail) { this.parentEmail = parentEmail; }
     public String getHomeLocation() { return homeLocation; }
     public void setHomeLocation(String homeLocation) { this.homeLocation = homeLocation; }
     public String getVehicle() { return vehicle; }

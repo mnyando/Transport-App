@@ -30,3 +30,11 @@
 
 # Keep line numbers so release crash reports are readable.
 -keepattributes SourceFile,LineNumberTable,Signature,*Annotation*
+
+# Release builds: strip debug/verbose/info logging so names, emails and IDs never reach
+# the device log. Warnings and errors are kept.
+-assumenosideeffects class android.util.Log {
+    public static int d(...);
+    public static int v(...);
+    public static int i(...);
+}

@@ -25,7 +25,7 @@ import java.util.Map;
 public class AddStudent extends AppCompatActivity {
 
     private static final String TAG = "AddStudent";
-    private EditText studentNameInput, studentIdInput, parentNameInput, parentContactInput, homeLocationInput;
+    private EditText studentNameInput, studentIdInput, parentNameInput, parentContactInput, parentEmailInput, homeLocationInput;
     private Spinner routeDropdown, studentClassInput;
     private Button saveStudentButton;
     private FirebaseFirestore db;
@@ -45,6 +45,7 @@ public class AddStudent extends AppCompatActivity {
         studentIdInput = findViewById(R.id.studentIdInput);
         parentNameInput = findViewById(R.id.parentNameInput);
         parentContactInput = findViewById(R.id.parentContactInput);
+        parentEmailInput = findViewById(R.id.parentEmailInput);
         homeLocationInput = findViewById(R.id.homeLocationInput);
         routeDropdown = findViewById(R.id.routeDropdown);
         saveStudentButton = findViewById(R.id.saveStudentButton);
@@ -105,6 +106,13 @@ public class AddStudent extends AppCompatActivity {
             return;
         }
 
+        String parentEmail = ParentEmails.normalize(parentEmailInput.getText().toString());
+        if (!ParentEmails.isValid(parentEmail)) {
+            parentEmailInput.setError("Enter the email the parent will sign in with");
+            parentEmailInput.requestFocus();
+            return;
+        }
+
         checkVehicleCapacity(route);
     }
 
@@ -157,6 +165,7 @@ public class AddStudent extends AppCompatActivity {
                                                                     studentIdInput.getText().toString().trim(),
                                                                     parentNameInput.getText().toString().trim(),
                                                                     parentContactInput.getText().toString().trim(),
+                                                                    ParentEmails.normalize(parentEmailInput.getText().toString()),
                                                                     homeLocationInput.getText().toString().trim(),
                                                                     routeName,
                                                                     vehicleName,
@@ -212,7 +221,7 @@ public class AddStudent extends AppCompatActivity {
 
     private void saveStudentData(
             String studentName, String studentClass, String studentId,
-            String parentName, String parentContact, String homeLocation,
+            String parentName, String parentContact, String parentEmail, String homeLocation,
             String route, String vehicle, String pickupTime, String dropOffTime,
             Map<String, String> driver, Map<String, String> attendant
     ) {
@@ -223,6 +232,9 @@ public class AddStudent extends AppCompatActivity {
         studentData.put("studentId", studentId);
         studentData.put("route", route);
         studentData.put("parentContact", parentContact);
+        // The parent's login email is what links their account to this child (see ParentLanding
+        // and firestore.rules). The typed parent name is only for display.
+        studentData.put("parentEmail", parentEmail);
         studentData.put("homeLocation", homeLocation);
 
         // Route and vehicle info
@@ -250,7 +262,8 @@ public class AddStudent extends AppCompatActivity {
                     clearForm();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "❌ Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to save student", e);
+                    Toast.makeText(this, "Could not save the student. Please try again.", Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -259,6 +272,7 @@ public class AddStudent extends AppCompatActivity {
         studentIdInput.setText("");
         parentNameInput.setText("");
         parentContactInput.setText("");
+        parentEmailInput.setText("");
         homeLocationInput.setText("");
         studentClassInput.setSelection(0);
         routeDropdown.setSelection(0);

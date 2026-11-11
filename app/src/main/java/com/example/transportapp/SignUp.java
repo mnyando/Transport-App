@@ -71,7 +71,7 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String fullName = etFullName.getText().toString().trim();
-                String email = etEmail.getText().toString().trim();
+                String email = ParentEmails.normalize(etEmail.getText().toString());
                 String password = etPassword.getText().toString().trim();
 
                 // Input validation
@@ -102,7 +102,6 @@ public class SignUp extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 if (user != null) {
-                                    Log.d(TAG, "User created successfully: " + user.getUid());
                                     // Store user information in Firestore
                                     Map<String, Object> userData = new HashMap<>();
                                     userData.put("fullName", fullName);
@@ -112,25 +111,32 @@ public class SignUp extends AppCompatActivity {
                                     db.collection("users").document(user.getUid())
                                             .set(userData)
                                             .addOnSuccessListener(aVoid -> {
-                                                Log.d(TAG, "User data saved to Firestore with role: parent");
-                                                Toast.makeText(SignUp.this, "Sign-up successful!", Toast.LENGTH_SHORT).show();
-
-                                                // Navigate to the parent landing page
-                                                Intent intent = new Intent(SignUp.this, ParentLanding.class);
-                                                startActivity(intent);
-                                                finish();
+                                                // Parents are linked to children by their *verified*
+                                                // email, so the account must be verified before the
+                                                // parent dashboard will open.
+                                                user.sendEmailVerification()
+                                                        .addOnCompleteListener(verifyTask -> {
+                                                            mAuth.signOut();
+                                                            Toast.makeText(SignUp.this,
+                                                                    "Account created. We sent a verification link to "
+                                                                            + email + ". Open it, then sign in.",
+                                                                    Toast.LENGTH_LONG).show();
+                                                            Intent intent = new Intent(SignUp.this, Login.class);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        });
                                             })
                                             .addOnFailureListener(e -> {
-                                                Log.e(TAG, "Failed to save user data to Firestore: " + e.getMessage());
-                                                Toast.makeText(SignUp.this, "Failed to save user data: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                                Log.e(TAG, "Failed to save user data to Firestore", e);
+                                                Toast.makeText(SignUp.this, "Could not finish creating your account. Please try again.", Toast.LENGTH_LONG).show();
                                             });
                                 } else {
                                     Log.e(TAG, "User is null after creation");
                                     Toast.makeText(SignUp.this, "User creation failed.", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Log.e(TAG, "Sign-up failed: " + task.getException().getMessage());
-                                Toast.makeText(SignUp.this, "Sign-up failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                Log.e(TAG, "Sign-up failed", task.getException());
+                                Toast.makeText(SignUp.this, "Sign-up failed. Check your email address, or sign in if you already have an account.", Toast.LENGTH_LONG).show();
                             }
                         });
             }

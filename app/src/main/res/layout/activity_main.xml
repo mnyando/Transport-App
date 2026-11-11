@@ -140,7 +140,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Live Bus Tracking"
+                            android:text="Bus Tracking"
                             android:textStyle="bold"
                             android:textSize="16sp"
                             android:textColor="@color/black"/>
@@ -148,7 +148,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Parents can see the real-time location of the bus to ensure timely pickups and drop-offs."
+                            android:text="Parents can get timely pickups and drop-offs notifications."
                             android:textSize="14sp"
                             android:textColor="@color/gray"/>
                     </LinearLayout>
