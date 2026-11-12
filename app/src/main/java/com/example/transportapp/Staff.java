@@ -1,8 +1,9 @@
 package com.example.transportapp;
 
 
+
 class Staff {
-    private String id, staffName, phoneNumber, licenseNumber, assignedVehicle, assignedRoute, status, role;
+    private String id, staffName, phoneNumber, email, licenseNumber, assignedVehicle, assignedRoute, status, role;
 
     public Staff() {} // Empty constructor for Firestore
 
@@ -13,6 +14,8 @@ class Staff {
     public void setStaffName(String staffName) { this.staffName = staffName; }
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
     public String getLicenseNumber() { return licenseNumber; }
     public void setLicenseNumber(String licenseNumber) { this.licenseNumber = licenseNumber; }
     public String getAssignedVehicle() { return assignedVehicle; }

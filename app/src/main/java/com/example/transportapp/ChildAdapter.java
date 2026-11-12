@@ -69,10 +69,10 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
             // Transportation info
             tvRoute.setText(formatLabelValue("Route", student.getRoute()));
             tvVehicle.setText(formatLabelValue("Vehicle", student.getVehicle()));
-            tvDriver.setText(formatStaffInfo("Driver",
-                    student.getDriverName(), student.getDriverPhone()));
-            tvAttendant.setText(formatStaffInfo("Attendant",
-                    student.getAttendantName(), student.getAttendantPhone()));
+            // Names only: staff phone numbers are not shown to parents (review section 3).
+            // Parents contact the driver and attendant through the bus chat.
+            tvDriver.setText(formatLabelValue("Driver", student.getDriverName()));
+            tvAttendant.setText(formatLabelValue("Attendant", student.getAttendantName()));
             tvPickup.setText(formatLabelValue("Pickup", student.getPickupTime()));
             tvDropoff.setText(formatLabelValue("Drop-off", student.getDropOffTime()));
         }
@@ -85,14 +85,5 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
             return String.format("%s: %s", label, formatValue(value));
         }
 
-        private String formatStaffInfo(String role, String name, String phone) {
-            if (TextUtils.isEmpty(name) && TextUtils.isEmpty(phone)) {
-                return String.format("%s: N/A", role);
-            }
-            return String.format("%s: %s (%s)",
-                    role,
-                    formatValue(name),
-                    formatValue(phone));
-        }
     }
 }

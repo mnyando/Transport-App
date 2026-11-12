@@ -5,33 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:padding="16dp">
 
     <!-- Navigation Bar -->
-    <androidx.appcompat.widget.Toolbar
+    <include
+        layout="@layout/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/green"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_margin="8dp"
-            android:background="@null"
-            android:contentDescription="Back"
-            android:src="@drawable/baseline_arrow_back_24" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Modify Route"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </androidx.appcompat.widget.Toolbar>
+        android:layout_height="wrap_content" />
 
     <!-- RecyclerView for route items -->
     <androidx.recyclerview.widget.RecyclerView
@@ -42,7 +23,7 @@
         android:background="@android:color/white" />
 
     <!-- Beautified Modify Route Form Section inside CardView -->
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -61,7 +42,7 @@
                 android:id="@+id/routeNameInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Route ID/Name"
+                android:hint="@string/hint_route_id_name"
                 android:padding="12dp"
                 android:layout_marginTop="6dp"
                 android:background="@drawable/edittext_background"
@@ -73,7 +54,7 @@
                 android:id="@+id/totalDistanceInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Total Distance"
+                android:hint="@string/hint_total_distance"
                 android:layout_marginTop="16dp"
                 android:padding="12dp"
                 android:background="@drawable/edittext_background"
@@ -86,7 +67,7 @@
                 android:id="@+id/routeDescriptionInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Route Description"
+                android:hint="@string/hint_route_description"
                 android:layout_marginTop="16dp"
                 android:padding="12dp"
                 android:background="@drawable/edittext_background"
@@ -107,7 +88,7 @@
                 android:id="@+id/deleteRouteButton"
                 android:layout_width="280dp"
                 android:layout_height="wrap_content"
-                android:text="Delete Route"
+                android:text="@string/title_delete_route"
                 android:layout_gravity="center"
                 android:textSize="16sp"
                 android:textColor="@color/white"
@@ -116,5 +97,5 @@
                 android:padding="16dp"
                 android:drawablePadding="8dp" />
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

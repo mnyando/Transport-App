@@ -100,3 +100,104 @@ exports.sendParentPush = onDocumentCreated("notifications/{notificationId}", asy
     failure: response.failureCount,
   });
 });
+
+// ---------------------------------------------------------------------------
+// Driver accounts (review section 3: "the role comes from the server account").
+//
+// A driver signs up in the app like anyone else (as a parent). When the school saves that
+// person's login email on their staff record (role "Driver"), this links the two:
+//   users/{uid}.role    = "driver"
+//   users/{uid}.staffId = the staff document ID (licence number)
+// firestore.rules then lets the driver see only the bus on that staff record. Removing the
+// email, changing the role or deleting the staff record turns the account back into a
+// parent account, so access ends straight away.
+// ---------------------------------------------------------------------------
+const { onDocumentWritten } = require("firebase-functions/v2/firestore");
+const { onSchedule } = require("firebase-functions/v2/scheduler");
+
+function normEmail(value) {
+  return (value || "").trim().toLowerCase();
+}
+
+function isDriverStaff(data) {
+  return !!data && (data.role || "").toLowerCase() === "driver"
+    && (data.status || "Active") !== "Not Active" && !!normEmail(data.email);
+}
+
+async function unlinkStaff(db, staffId, keepUid) {
+  const linked = await db.collection("users").where("staffId", "==", staffId).get();
+  await Promise.all(linked.docs
+    .filter((doc) => doc.id !== keepUid)
+    .map((doc) => doc.ref.update({
+      role: "parent",
+      staffId: admin.firestore.FieldValue.delete(),
+    })));
+}
+
+async function linkUser(db, uid, staffId) {
+  await db.collection("users").doc(uid).set({ role: "driver", staffId }, { merge: true });
+}
+
+exports.linkStaffAccount = onDocumentWritten("staff/{staffId}", async (event) => {
+  const db = admin.firestore();
+  const staffId = event.params.staffId;
+  const after = event.data && event.data.after.exists ? event.data.after.data() : null;
+
+  if (!isDriverStaff(after)) {
+    await unlinkStaff(db, staffId, null);
+    return;
+  }
+
+  let authUser;
+  try {
+    authUser = await admin.auth().getUserByEmail(normEmail(after.email));
+  } catch (err) {
+    // The driver has not signed up yet; onUserProfileCreated links them when they do.
+    await unlinkStaff(db, staffId, null);
+    logger.info("No account yet for staff email", { staffId });
+    return;
+  }
+
+  await unlinkStaff(db, staffId, authUser.uid);
+  const profile = await db.collection("users").doc(authUser.uid).get();
+  if (!profile.exists) return; // linked when the profile is created
+  await linkUser(db, authUser.uid, staffId);
+  logger.info("Linked driver account", { staffId });
+});
+
+exports.onUserProfileCreated = onDocumentCreated("users/{uid}", async (event) => {
+  const db = admin.firestore();
+  const email = normEmail(event.data && event.data.get("email"));
+  if (!email) return;
+  const staff = await db.collection("staff").where("email", "==", email).limit(5).get();
+  const driver = staff.docs.find((doc) => isDriverStaff(doc.data()));
+  if (!driver) return;
+  await unlinkStaff(db, driver.id, event.params.uid);
+  await linkUser(db, event.params.uid, driver.id);
+  logger.info("Linked new driver account", { staffId: driver.id });
+});
+
+// ---------------------------------------------------------------------------
+// Location retention (review section 3: "share the bus location only during an active trip").
+// The app removes the position when a trip ends. If the driver's phone dies or loses signal
+// mid-trip, this clears any position that has not been updated for STALE_LOCATION_MINUTES.
+// ---------------------------------------------------------------------------
+const STALE_LOCATION_MINUTES = 30;
+
+exports.clearStaleBusLocations = onSchedule("every 15 minutes", async () => {
+  const db = admin.firestore();
+  const cutoff = Date.now() - STALE_LOCATION_MINUTES * 60 * 1000;
+  const stale = await db.collection("busGroups")
+    .where("active", "==", true)
+    .where("updatedAtMillis", "<", cutoff)
+    .get();
+  const del = admin.firestore.FieldValue.delete();
+  await Promise.all(stale.docs.map((doc) => doc.ref.update({
+    active: false,
+    lat: del,
+    lng: del,
+    accuracy: del,
+    endedAt: admin.firestore.FieldValue.serverTimestamp(),
+  })));
+  if (stale.size) logger.info("Cleared stale bus locations", { count: stale.size });
+});

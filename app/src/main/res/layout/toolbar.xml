@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shared top bar (review section 4: one toolbar instead of a copy in every layout).
+     Use with <include layout="@layout/toolbar" />. The title is the activity's android:label,
+     filled in by TransportApp; the back arrow is wired by TransportApp unless the screen sets
+     its own click listener on R.id.backButton. -->
+<com.google.android.material.appbar.MaterialToolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/green"
+    android:elevation="4dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="12dp"
+        android:background="@null"
+        android:contentDescription="@string/back_button_desc"
+        android:src="@drawable/baseline_arrow_back_24"
+        app:tint="@android:color/white" />
+
+    <TextView
+        android:id="@+id/toolbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+</com.google.android.material.appbar.MaterialToolbar>

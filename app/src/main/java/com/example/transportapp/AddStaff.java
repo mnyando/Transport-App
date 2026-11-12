@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class AddStaff extends AppCompatActivity {
 
-    private EditText driverNameInput, driverPhoneInput, licenseNumberInput;
+    private EditText driverNameInput, driverPhoneInput, staffEmailInput, licenseNumberInput;
     private Spinner vehicleDropdown, routeDropdown;
     private RadioGroup statusRadioGroup, roleRadioGroup; // Added roleRadioGroup
     private RadioButton driverRadioButton, attendantRadioButton; // For role selection
@@ -42,6 +42,7 @@ public class AddStaff extends AppCompatActivity {
         // Bind UI elements
         driverNameInput = findViewById(R.id.driverNameInput);
         driverPhoneInput = findViewById(R.id.driverPhoneInput);
+        staffEmailInput = findViewById(R.id.staffEmailInput);
         licenseNumberInput = findViewById(R.id.licenseNumberInput);
         vehicleDropdown = findViewById(R.id.vehicleDropdown);
         routeDropdown = findViewById(R.id.routeDropdown);
@@ -100,6 +101,7 @@ public class AddStaff extends AppCompatActivity {
     private void saveStaffData() {
         String staffName = driverNameInput.getText().toString().trim();
         String staffPhone = driverPhoneInput.getText().toString().trim();
+        String staffEmail = ParentEmails.normalize(staffEmailInput.getText().toString());
         String licenseNumber = licenseNumberInput.getText().toString().trim();
         String assignedVehicle = vehicleDropdown.getSelectedItem() != null ? vehicleDropdown.getSelectedItem().toString() : "";
         String assignedRoute = routeDropdown.getSelectedItem() != null ? routeDropdown.getSelectedItem().toString() : "";
@@ -114,11 +116,24 @@ public class AddStaff extends AppCompatActivity {
             return;
         }
 
+        // A driver's login email links their app account to this record (and only this bus).
+        if ("Driver".equals(role) && !ParentEmails.isValid(staffEmail)) {
+            staffEmailInput.setError(getString(R.string.staff_email_required));
+            staffEmailInput.requestFocus();
+            return;
+        }
+        if (!staffEmail.isEmpty() && !ParentEmails.isValid(staffEmail)) {
+            staffEmailInput.setError(getString(R.string.staff_email_invalid));
+            staffEmailInput.requestFocus();
+            return;
+        }
+
         // Check staff count for the selected vehicle
         checkStaffCountForVehicle(assignedVehicle, () -> {
             Map<String, Object> staffData = new HashMap<>();
             staffData.put("staffName", staffName);
             staffData.put("phoneNumber", staffPhone);
+            staffData.put("email", staffEmail);
             staffData.put("licenseNumber", licenseNumber);
             staffData.put("assignedVehicle", assignedVehicle);
             staffData.put("assignedRoute", assignedRoute);
@@ -158,6 +173,7 @@ public class AddStaff extends AppCompatActivity {
     private void clearForm() {
         driverNameInput.setText("");
         driverPhoneInput.setText("");
+        staffEmailInput.setText("");
         licenseNumberInput.setText("");
         vehicleDropdown.setSelection(0);
         routeDropdown.setSelection(0);

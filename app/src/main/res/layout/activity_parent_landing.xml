@@ -3,35 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:orientation="vertical">
 
     <!-- Navigation Bar (Fixed at the top) -->
-    <androidx.appcompat.widget.Toolbar
+    <include
+        layout="@layout/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/green"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <ImageButton
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="12dp"
-            android:background="@null"
-            android:contentDescription="Back"
-            android:src="@drawable/baseline_arrow_back_24"
-            app:tint="@android:color/white" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/parent"
-            android:textColor="@android:color/white"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-    </androidx.appcompat.widget.Toolbar>
+        android:layout_height="?attr/actionBarSize" />
 
     <!-- ScrollView for scrollable content -->
     <ScrollView
@@ -60,7 +39,7 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
                     android:backgroundTint="@color/green"
-                    android:text="Where is the bus?"
+                    android:text="@string/where_is_the_bus"
                     android:textColor="@android:color/white" />
 
                 <Button
@@ -70,7 +49,7 @@
                     android:layout_weight="1"
                     android:layout_marginStart="4dp"
                     android:backgroundTint="@color/blue"
-                    android:text="Message the bus"
+                    android:text="@string/message_the_bus"
                     android:textColor="@android:color/white" />
             </LinearLayout>
 
@@ -80,12 +59,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:layout_marginTop="4dp"
-                android:textColor="#424242"
+                android:textColor="@color/text_dark"
                 android:textSize="14sp"
                 android:visibility="gone" />
 
             <!-- Child Assignment Section -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
@@ -104,7 +83,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="12dp"
-                        android:text="Your Children"
+                        android:text="@string/your_children"
                         android:textColor="@android:color/black"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -121,14 +100,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingVertical="16dp"
-                        android:text="Loading your children..."
-                        android:textColor="#616161"
+                        android:text="@string/loading_your_children"
+                        android:textColor="@color/text_secondary"
                         android:textSize="16sp" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Notification Center -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
@@ -147,7 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="12dp"
-                        android:text="Notifications"
+                        android:text="@string/notifications"
                         android:textColor="@android:color/black"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -165,27 +144,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingVertical="16dp"
-                        android:text="No notifications yet"
-                        android:textColor="#616161"
+                        android:text="@string/no_notifications_yet"
+                        android:textColor="@color/text_secondary"
                         android:textSize="16sp" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </ScrollView>
 
     <!-- Footer Section (Fixed at the bottom) -->
-    <LinearLayout
+    <include
+        layout="@layout/footer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#228B22"
-        android:gravity="center"
-        android:paddingVertical="12dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="© 2025 School Transport Solutions"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp" />
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 </LinearLayout>

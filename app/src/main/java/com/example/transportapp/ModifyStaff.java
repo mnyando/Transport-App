@@ -26,7 +26,7 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
 
     private static final String TAG = "ModifyStaff"; // For logging
 
-    private EditText staffNameInput, staffPhoneInput, licenseNumberInput;
+    private EditText staffNameInput, staffPhoneInput, staffEmailInput, licenseNumberInput;
     private Spinner vehicleDropdown, routeDropdown;
     private RadioGroup statusRadioGroup, roleRadioGroup;
     private Button updateStaffButton;
@@ -51,6 +51,7 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
         // Initialize Views
         staffNameInput = findViewById(R.id.driverNameInput);
         staffPhoneInput = findViewById(R.id.driverPhoneInput);
+        staffEmailInput = findViewById(R.id.staffEmailInput);
         licenseNumberInput = findViewById(R.id.licenseNumberInput);
         vehicleDropdown = findViewById(R.id.vehicleDropdown);
         routeDropdown = findViewById(R.id.routeDropdown);
@@ -154,6 +155,7 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
         selectedStaffId = staff.getId();
         staffNameInput.setText(staff.getStaffName());
         staffPhoneInput.setText(staff.getPhoneNumber());
+        staffEmailInput.setText(staff.getEmail());
         licenseNumberInput.setText(staff.getLicenseNumber());
 
         int vehiclePosition = vehicleAdapter.getPosition(staff.getAssignedVehicle());
@@ -187,6 +189,7 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
 
         String updatedName = staffNameInput.getText().toString().trim();
         String updatedPhone = staffPhoneInput.getText().toString().trim();
+        String updatedEmail = ParentEmails.normalize(staffEmailInput.getText().toString());
         String updatedLicense = licenseNumberInput.getText().toString().trim();
         String updatedVehicle = vehicleDropdown.getSelectedItem() != null ? vehicleDropdown.getSelectedItem().toString() : "";
         String updatedRoute = routeDropdown.getSelectedItem() != null ? routeDropdown.getSelectedItem().toString() : "";
@@ -201,9 +204,21 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
             return;
         }
 
+        if ("Driver".equals(updatedRole) && !ParentEmails.isValid(updatedEmail)) {
+            staffEmailInput.setError(getString(R.string.staff_email_required));
+            staffEmailInput.requestFocus();
+            return;
+        }
+        if (!updatedEmail.isEmpty() && !ParentEmails.isValid(updatedEmail)) {
+            staffEmailInput.setError(getString(R.string.staff_email_invalid));
+            staffEmailInput.requestFocus();
+            return;
+        }
+
         Map<String, Object> updatedData = new HashMap<>();
         updatedData.put("staffName", updatedName);
         updatedData.put("phoneNumber", updatedPhone);
+        updatedData.put("email", updatedEmail);
         updatedData.put("licenseNumber", updatedLicense);
         updatedData.put("assignedVehicle", updatedVehicle);
         updatedData.put("assignedRoute", updatedRoute);
@@ -226,6 +241,7 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
     private void clearForm() {
         staffNameInput.setText("");
         staffPhoneInput.setText("");
+        staffEmailInput.setText("");
         licenseNumberInput.setText("");
         vehicleDropdown.setSelection(0);
         routeDropdown.setSelection(0);
@@ -234,5 +250,4 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
         selectedStaffId = null;
     }
 }
-
 

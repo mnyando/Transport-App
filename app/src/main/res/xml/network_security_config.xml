@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Review section 3: all traffic (Firebase, maps links) must use HTTPS; plain HTTP is refused.
+     Only the system's trusted certificate authorities are accepted, never user-installed ones. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

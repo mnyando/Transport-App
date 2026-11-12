@@ -14,7 +14,7 @@
         android:background="@drawable/bg_gradient">
 
         <!-- Card for Sign-Up Form -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -41,7 +41,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Create an Account"
+                    android:text="@string/create_an_account"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     android:textColor="@color/green"
@@ -69,7 +69,7 @@
                         android:id="@+id/etFullName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Full Name"
+                        android:hint="@string/hint_full_name"
                         android:textSize="16sp"
                         android:inputType="textPersonName"
                         android:textColorHint="@color/gray"
@@ -97,7 +97,7 @@
                         android:id="@+id/etEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Email"
+                        android:hint="@string/hint_email"
                         android:textSize="16sp"
                         android:inputType="textEmailAddress"
                         android:textColorHint="@color/gray"
@@ -126,7 +126,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:hint="Password"
+                        android:hint="@string/hint_password"
                         android:textSize="16sp"
                         android:inputType="textPassword"
                         android:textColorHint="@color/gray"
@@ -143,12 +143,37 @@
                         app:tint="@color/gray" />
                 </LinearLayout>
 
+                <!-- Consent (review section 3): required before an account is created -->
+                <CheckBox
+                    android:id="@+id/cbConsent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:minHeight="48dp"
+                    android:text="@string/consent_checkbox"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvPrivacyNotice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:minHeight="48dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="32dp"
+                    android:paddingEnd="0dp"
+                    android:text="@string/privacy_notice_link"
+                    android:textColor="@color/green"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
                 <!-- Sign-Up Button -->
                 <Button
                     android:id="@+id/btnSignUp"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="Sign Up"
+                    android:text="@string/sign_up"
                     android:textSize="16sp"
                     android:backgroundTint="@color/green"
                     android:textColor="@android:color/white"
@@ -161,13 +186,13 @@
                     android:id="@+id/tvSignIn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Already have an account? Sign in"
+                    android:text="@string/already_have_an_account_sign_in"
                     android:textSize="14sp"
                     android:textColor="@color/green"
                     android:gravity="center"
                     android:layout_marginTop="12dp"
                     android:clickable="true"/>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 </RelativeLayout>

@@ -69,7 +69,11 @@ public class TripLocationService extends Service implements LocationListener {
         ContextCompat.startForegroundService(context, intent);
     }
 
-    /** Stops sharing and marks the bus as no longer on a trip. */
+    /**
+     * Stops sharing, marks the bus as no longer on a trip and removes its last position, so the
+     * location of the bus is only stored while a trip is running (review section 3). The
+     * clearStaleBusLocations Cloud Function does the same if this phone goes offline mid-trip.
+     */
     public static void stop(Context context, String vehicle) {
         context.stopService(new Intent(context, TripLocationService.class));
         String id = BusGroups.docId(vehicle);
@@ -77,6 +81,9 @@ public class TripLocationService extends Service implements LocationListener {
         Map<String, Object> data = new HashMap<>();
         data.put("active", false);
         data.put("endedAt", FieldValue.serverTimestamp());
+        data.put("lat", FieldValue.delete());
+        data.put("lng", FieldValue.delete());
+        data.put("accuracy", FieldValue.delete());
         FirebaseFirestore.getInstance().collection(BusGroups.COLLECTION).document(id)
                 .set(data, SetOptions.merge())
                 .addOnFailureListener(e -> Log.w(TAG, "Could not mark trip inactive", e));

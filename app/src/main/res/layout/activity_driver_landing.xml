@@ -4,35 +4,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/screen_background"
     android:orientation="vertical">
 
     <!-- Navigation Bar -->
-    <androidx.appcompat.widget.Toolbar
+    <include
+        layout="@layout/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/green"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <ImageButton
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="12dp"
-            android:background="@null"
-            android:contentDescription="Back"
-            android:src="@drawable/baseline_arrow_back_24"
-            app:tint="@android:color/white" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Driver Dashboard"
-            android:textColor="@android:color/white"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-    </androidx.appcompat.widget.Toolbar>
+        android:layout_height="?attr/actionBarSize" />
 
     <!-- Content Container -->
     <LinearLayout
@@ -43,7 +22,7 @@
         android:padding="16dp">
 
         <!-- Trip Summary Section -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
@@ -61,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="12dp"
-                    android:text="Driver Details"
+                    android:text="@string/driver_details"
                     android:textColor="@android:color/black"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -81,8 +60,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="6dp"
-                    android:text="Driver ID: [ID]"
-                    android:textColor="#212121"
+                    android:text="@string/driver_id_id"
+                    android:textColor="@color/text_primary"
                     android:textSize="20sp" />
 
                 <TextView
@@ -90,8 +69,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="6dp"
-                    android:text="Email: [Email]"
-                    android:textColor="#212121"
+                    android:text="@string/email_email"
+                    android:textColor="@color/text_primary"
                     android:textSize="20sp" />
 
                 <TextView
@@ -99,8 +78,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="6dp"
-                    android:text="Driver Name: [Name]"
-                    android:textColor="#212121"
+                    android:text="@string/driver_name_name"
+                    android:textColor="@color/text_primary"
                     android:textSize="20sp" />
 
                 <TextView
@@ -108,8 +87,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="6dp"
-                    android:text="Assigned Vehicle: [Vehicle]"
-                    android:textColor="#212121"
+                    android:text="@string/assigned_vehicle_vehicle"
+                    android:textColor="@color/text_primary"
                     android:textSize="20sp"/>
 
                 <TextView
@@ -117,8 +96,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="6dp"
-                    android:text="Assigned Route: [Route]"
-                    android:textColor="#212121"
+                    android:text="@string/assigned_route_route"
+                    android:textColor="@color/text_primary"
                     android:textSize="20sp" />
 
                 <LinearLayout
@@ -136,7 +115,7 @@
                         android:layout_weight="1"
                         android:layout_marginEnd="8dp"
                         android:backgroundTint="@color/green"
-                        android:text="Pick Up"
+                        android:text="@string/pick_up"
                         android:textColor="@android:color/white" />
 
                     <Button
@@ -146,7 +125,7 @@
                         android:layout_weight="1"
                         android:layout_marginStart="8dp"
                         android:backgroundTint="@color/green"
-                        android:text="Drop Off"
+                        android:text="@string/drop_off"
                         android:textColor="@android:color/white" />
                 </LinearLayout>
 
@@ -156,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:backgroundTint="@color/blue"
-                    android:text="Messages from parents"
+                    android:text="@string/messages_from_parents"
                     android:textColor="@android:color/white" />
 
                 <!-- Emergency: alerts the school and every parent on this bus -->
@@ -165,29 +144,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
                     android:layout_marginTop="16dp"
-                    android:backgroundTint="#C62828"
-                    android:text="SOS - Emergency"
+                    android:backgroundTint="@color/error_red"
+                    android:text="@string/sos_emergency"
                     android:textColor="@android:color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <!-- Footer Section -->
-    <LinearLayout
+    <include
+        layout="@layout/footer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#228B22"
-        android:gravity="center"
-        android:paddingVertical="12dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="© 2025 School Transport Solutions"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:textStyle="normal" />
-    </LinearLayout>
+        android:layout_height="wrap_content" />
 </LinearLayout>

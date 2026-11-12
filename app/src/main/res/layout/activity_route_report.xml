@@ -67,7 +67,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <!-- Avg Duration Card -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="120dp"
                 android:layout_weight="1"
@@ -107,10 +107,10 @@
                         android:textColor="@color/green"
                         android:layout_marginTop="4dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Trips Count Card -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="120dp"
                 android:layout_weight="1"
@@ -135,7 +135,7 @@
                         android:id="@+id/tripsCompletedText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="@string/n_0"
                         android:textSize="32sp"
                         android:textColor="@color/blue"
                         android:layout_marginTop="8dp"/>
@@ -149,7 +149,7 @@
                         android:textColor="@color/gray"
                         android:layout_marginTop="4dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
         <!-- Stats Cards Row 2 -->
@@ -164,7 +164,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <!-- Peak Time Card -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="120dp"
                 android:layout_weight="1"
@@ -190,7 +190,7 @@
                         android:id="@+id/peakTimeText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="--:--"
+                        android:text="@string/text"
                         android:textSize="32sp"
                         android:textColor="@color/blue"
                         android:layout_marginTop="8dp"/>
@@ -204,10 +204,10 @@
                         android:textColor="@color/gray"
                         android:layout_marginTop="4dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Students Card -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="120dp"
                 android:layout_weight="1"
@@ -232,7 +232,7 @@
                         android:id="@+id/avgStudentsText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="@string/n_0"
                         android:textSize="32sp"
                         android:textColor="@color/blue"
                         android:layout_marginTop="8dp"/>
@@ -246,7 +246,7 @@
                         android:textColor="@color/green"
                         android:layout_marginTop="4dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
         <!-- Route Efficiency Chart -->

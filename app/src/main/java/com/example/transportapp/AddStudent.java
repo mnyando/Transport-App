@@ -2,7 +2,6 @@ package com.example.transportapp;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,11 +10,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -244,12 +241,12 @@ public class AddStudent extends AppCompatActivity {
 
         // Staff info
         if (driver != null && !driver.isEmpty()) {
+            // Staff phone numbers are not copied onto the child record: every parent on the
+            // bus can read it. Parents reach the driver and attendant through the bus chat.
             studentData.put("driverName", driver.get("name"));
-            studentData.put("driverPhone", driver.get("phone"));
         }
         if (attendant != null && !attendant.isEmpty()) {
             studentData.put("attendantName", attendant.get("name"));
-            studentData.put("attendantPhone", attendant.get("phone"));
         }
 
         db.collection("students")

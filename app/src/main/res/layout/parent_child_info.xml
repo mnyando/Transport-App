@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
                     android:id="@+id/tvChildName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="John Doe"
+                    android:text="@string/john_doe"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/black" />
@@ -47,7 +47,7 @@
                     android:id="@+id/tvGrade"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Grade: 3"
+                    android:text="@string/grade_3"
                     android:textSize="16sp"
                     android:textColor="@color/gray" />
             </LinearLayout>
@@ -77,7 +77,7 @@
                 android:id="@+id/tvRoute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Route: A - Westside"
+                android:text="@string/route_a_westside"
                 android:textSize="16sp"
                 android:textColor="@color/black" />
         </LinearLayout>
@@ -100,7 +100,7 @@
                 android:id="@+id/tvVehicle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Vehicle: Bus 101"
+                android:text="@string/vehicle_bus_101"
                 android:textSize="16sp"
                 android:textColor="@color/black" />
         </LinearLayout>
@@ -123,7 +123,7 @@
                 android:id="@+id/tvDriver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Driver: John Doe (123-456-7890)"
+                android:text="@string/driver_john_doe_123_456_7890"
                 android:textSize="16sp"
                 android:textColor="@color/black" />
         </LinearLayout>
@@ -146,7 +146,7 @@
                 android:id="@+id/tvAttendant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Attendant: Jane Smith (987-654-3210)"
+                android:text="@string/attendant_jane_smith_987_654_3210"
                 android:textSize="16sp"
                 android:textColor="@color/black" />
         </LinearLayout>
@@ -182,7 +182,7 @@
                     android:id="@+id/tvPickupTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pickup: 07:30 AM"
+                    android:text="@string/pickup_07_30_am"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -206,7 +206,7 @@
                     android:id="@+id/tvDropOffTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Drop-off: 03:45 PM"
+                    android:text="@string/drop_off_03_45_pm"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -214,4 +214,4 @@
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

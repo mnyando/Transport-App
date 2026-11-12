@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
-    android:background="#F4F4F4">
+    android:background="@color/surface_light">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,38 +11,14 @@
         android:orientation="vertical">
 
         <!-- Toolbar with Back Button and Title -->
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/top_navigation_bar"
+        <include
+            layout="@layout/toolbar"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="#228B22"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="24dp"
-            android:elevation="4dp">
-
-            <ImageButton
-                android:id="@+id/back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_android_black_24dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
-                android:padding="12dp"
-                android:layout_gravity="start" />
-
-            <TextView
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ABCD Academy"
-                android:textSize="22sp"
-                android:textColor="#FFFFFF"
-                android:layout_gravity="center" />
-        </androidx.appcompat.widget.Toolbar>
+            android:layout_marginTop="24dp" />
 
         <!-- Hero Section with CardView widget -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
@@ -61,16 +37,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:src="@drawable/landing_image"
-                    android:scaleType="centerCrop"
-                    app:cardCornerRadius="12dp" />
+                    android:scaleType="centerCrop" />
 
                 <!-- Text Below Image -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Safe. Reliable. Transparent School Transport Solutions."
+                    android:text="@string/safe_reliable_transparent_school_transpo"
                     android:textSize="18sp"
-                    android:textColor="#333333"
+                    android:textColor="@color/text_strong"
                     android:gravity="center"
                     android:layout_marginTop="12dp"
                     android:paddingStart="16dp"
@@ -81,13 +56,13 @@
                     android:id="@+id/get_started"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Get Started"
-                    android:backgroundTint="#FF9800"
-                    android:textColor="#FFFFFF"
+                    android:text="@string/get_started"
+                    android:backgroundTint="@color/accent_orange"
+                    android:textColor="@color/white"
                     android:layout_marginTop="16dp"
                     android:layout_gravity="center" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -100,7 +75,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Why Choose Our App?"
+                android:text="@string/why_choose_our_app"
                 android:textSize="22sp"
                 android:textColor="@color/green"
                 android:textStyle="bold"
@@ -130,7 +105,7 @@
                         android:layout_height="50dp"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/tracking"
-                        android:contentDescription="Live Tracking Icon" />
+                        android:contentDescription="@string/desc_live_tracking_icon" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -140,7 +115,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Bus Tracking"
+                            android:text="@string/bus_tracking"
                             android:textStyle="bold"
                             android:textSize="16sp"
                             android:textColor="@color/black"/>
@@ -148,7 +123,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Parents can get timely pickups and drop-offs notifications."
+                            android:text="@string/parents_can_get_timely_pickups_and"
                             android:textSize="14sp"
                             android:textColor="@color/gray"/>
                     </LinearLayout>
@@ -167,7 +142,7 @@
                         android:layout_height="50dp"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/ic_notification"
-                        android:contentDescription="Notification Icon" />
+                        android:contentDescription="@string/desc_notification_icon" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -177,7 +152,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Instant Notifications"
+                            android:text="@string/instant_notifications"
                             android:textStyle="bold"
                             android:textSize="16sp"
                             android:textColor="@color/black"/>
@@ -185,7 +160,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Receive timely updates about the pickup and drop-off status of your child."
+                            android:text="@string/receive_timely_updates_about_the_pickup"
                             android:textSize="14sp"
                             android:textColor="@color/gray"/>
                     </LinearLayout>
@@ -203,7 +178,7 @@
                         android:layout_height="50dp"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/dashboard"
-                        android:contentDescription="Dashboard Icon" />
+                        android:contentDescription="@string/desc_dashboard_icon" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -213,7 +188,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Comprehensive Dashboards"
+                            android:text="@string/comprehensive_dashboards"
                             android:textStyle="bold"
                             android:textSize="16sp"
                             android:textColor="@color/black"/>
@@ -221,7 +196,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Custom dashboards tailored for parents, drivers, and school admins to simplify operations."
+                            android:text="@string/custom_dashboards_tailored_for_parents_d"
                             android:textSize="14sp"
                             android:textColor="@color/gray"/>
                     </LinearLayout>
@@ -243,7 +218,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="What Our Users Say"
+                android:text="@string/what_our_users_say"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/green"
@@ -251,7 +226,7 @@
                 android:paddingBottom="12dp" />
 
             <!-- John Doe Testimonial -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
@@ -270,7 +245,7 @@
                         android:layout_height="50dp"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/baseline_perm_identity_24"
-                        android:contentDescription="John Doe Profile"
+                        android:contentDescription="@string/desc_john_doe_profile"
                         android:scaleType="centerCrop"
                         />
 
@@ -282,7 +257,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="John Doe"
+                            android:text="@string/john_doe"
                             android:textStyle="bold"
                             android:textSize="16sp"
                             android:textColor="@color/black"/>
@@ -290,15 +265,15 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="This app has transformed our school transport experience."
+                            android:text="@string/this_app_has_transformed_our_school"
                             android:textSize="14sp"
                             android:textColor="@color/gray"/>
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Jane Smith Testimonial -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
@@ -317,7 +292,7 @@
                         android:layout_height="50dp"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/baseline_perm_identity_24"
-                        android:contentDescription="Jane Smith Profile"
+                        android:contentDescription="@string/desc_jane_smith_profile"
                         android:scaleType="centerCrop" />
 
                     <LinearLayout
@@ -328,7 +303,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Jane Smith"
+                            android:text="@string/jane_smith"
                             android:textStyle="bold"
                             android:textSize="16sp"
                             android:textColor="@color/black"/>
@@ -336,15 +311,15 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Reliable updates and peace of mind for parents!"
+                            android:text="@string/reliable_updates_and_peace_of_mind"
                             android:textSize="14sp"
                             android:textColor="@color/gray"/>
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Michael Lee Testimonial -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardElevation="4dp"
@@ -362,7 +337,7 @@
                         android:layout_height="50dp"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/baseline_perm_identity_24"
-                        android:contentDescription="Michael Lee Profile"
+                        android:contentDescription="@string/desc_michael_lee_profile"
                         android:scaleType="centerCrop" />
 
                     <LinearLayout
@@ -373,7 +348,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Michael Lee"
+                            android:text="@string/michael_lee"
                             android:textStyle="bold"
                             android:textSize="16sp"
                             android:textColor="@color/black"/>
@@ -381,30 +356,20 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="A must-have app for schools and parents alike."
+                            android:text="@string/a_must_have_app_for_schools"
                             android:textSize="14sp"
                             android:textColor="@color/gray"/>
                     </LinearLayout>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
         <!-- Footer Section -->
-        <LinearLayout
+        <include
+            layout="@layout/footer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#228B22"
-            android:padding="16dp"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="© 2025 School Transport Solutions"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
-        </LinearLayout>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

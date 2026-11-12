@@ -73,16 +73,18 @@ public class Login extends AppCompatActivity {
                 .addOnSuccessListener(document -> {
                     if (document.exists()) {
                         String role = document.getString("role");
-                        String fullName = document.getString("fullName");
                         Log.d(TAG, "User role fetched: " + role);
 
                         if ("driver".equalsIgnoreCase(role)) {
-                            if (fullName != null && !fullName.isEmpty()) {
-                                findDriverInStaffCollection(fullName, email);
-                            } else {
-                                Toast.makeText(this, "Driver name not found in profile", Toast.LENGTH_LONG).show();
+                            // staffId is set on the server (linkStaffAccount) when the school saves
+                            // this email on the driver's staff record; it decides which bus they see.
+                            String staffId = document.getString("staffId");
+                            if (staffId == null || staffId.isEmpty()) {
+                                Toast.makeText(this, R.string.driver_not_linked, Toast.LENGTH_LONG).show();
                                 mAuth.signOut();
-                                Log.w(TAG, "Driver name missing in user profile");
+                                Log.w(TAG, "Driver account has no linked staff record");
+                            } else {
+                                requireVerifiedEmailThen(() -> loadDriverStaffRecord(staffId, email));
                             }
                         } else if ("parent".equalsIgnoreCase(role)) {
                             requireVerifiedEmailThen(() -> fetchParentId(authUid, email));
@@ -101,8 +103,9 @@ public class Login extends AppCompatActivity {
     }
 
     /**
-     * Parents can only see children whose record holds their email, so we must know the email
-     * really belongs to them. Unverified accounts get a fresh link and are signed out.
+     * Parents see children whose record holds their email, and drivers are linked to their staff
+     * record by email, so we must know the email really belongs to them. Unverified accounts get
+     * a fresh link and are signed out.
      */
     private void requireVerifiedEmailThen(Runnable onVerified) {
         FirebaseUser user = mAuth.getCurrentUser();
@@ -110,7 +113,9 @@ public class Login extends AppCompatActivity {
         user.reload().addOnCompleteListener(r -> {
             FirebaseUser fresh = mAuth.getCurrentUser();
             if (fresh != null && fresh.isEmailVerified()) {
-                onVerified.run();
+                // The Firestore rules read email_verified from the ID token, which still says
+                // "false" until it is refreshed after the user clicks the link.
+                fresh.getIdToken(true).addOnCompleteListener(t -> onVerified.run());
                 return;
             }
             if (fresh != null) {
@@ -123,23 +128,21 @@ public class Login extends AppCompatActivity {
         });
     }
 
-    private void findDriverInStaffCollection(String fullName, String email) {
-
-        db.collection("staff")
-                .whereEqualTo("staffName", fullName)
-                .limit(1)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        DocumentSnapshot staffDoc = task.getResult().getDocuments().get(0);
+    private void loadDriverStaffRecord(String staffId, String email) {
+        db.collection("staff").document(staffId).get()
+                .addOnSuccessListener(staffDoc -> {
+                    if (staffDoc.exists()) {
                         processDriverProfile(staffDoc, email);
                     } else {
-                        Toast.makeText(this,
-                                "No staff record found for: " + fullName,
-                                Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, R.string.driver_not_linked, Toast.LENGTH_LONG).show();
                         mAuth.signOut();
-                        Log.w(TAG, "No staff record found for this driver");
+                        Log.w(TAG, "Linked staff record no longer exists");
                     }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, R.string.driver_profile_error, Toast.LENGTH_LONG).show();
+                    mAuth.signOut();
+                    Log.e(TAG, "Could not load driver staff record", e);
                 });
     }
 

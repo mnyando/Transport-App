@@ -54,7 +54,23 @@ On Windows use `gradlew.bat` instead of `./gradlew`.
 2. Enable **Email/Password** sign-in under Authentication, and create a **Cloud Firestore** database.
 3. Download the new `google-services.json` and replace `app/google-services.json`.
 
-The app reads and writes these Firestore collections: `users`, `parents`, `drivers`, `staff`, `students`, `studentList`, `vehicle`, `Routes`, `routes`, `trips`, `attendance`, `records`, `notifications`. The `users` documents hold each account's `role` (`school`, `parent` or `driver`), which decides where login sends the user.
+The app reads and writes these Firestore collections: `users`, `staff`, `students/{grade}/studentList`, `vehicle`, `Routes`, `routes`, `trips`, `attendance`, `notifications`, `schoolAlerts` and `busGroups` (live bus location and bus chat). The `users` documents hold each account's `role` (`school`, `parent` or `driver`), which decides where login sends the user.
+
+#### Accounts and access
+
+The role always comes from `users/{uid}.role` on the server, never from the role picker, and `firestore.rules` enforces it:
+
+- **Parents** sign up in the app (role `parent`, with recorded consent to the privacy notice), must verify their email, and see only the children whose record holds that email.
+- **Drivers** also sign up in the app. The school then enters the driver's sign-in email on their staff record (Add/Modify Staff). The `linkStaffAccount` Cloud Function sets `role: driver` and `staffId` on the account, and the driver sees only the children, trips, alerts and chat of the bus on that staff record. Removing the email, setting the staff member to Not Active or deleting the record ends access.
+- **School** accounts are set up by an administrator in the Firebase console (`role: school`).
+
+Deploy the rules, indexes and functions together (functions need the Blaze plan):
+
+```
+firebase deploy --only firestore:rules,firestore:indexes,functions
+```
+
+Existing driver accounts keep working only after their email is added to their staff record, because login no longer matches drivers by name.
 
 ## Release builds
 
@@ -83,26 +99,35 @@ keyPassword=...
 
 `app/src/androidTest/.../LaunchAndNavigationTest.java` checks that the app launches and that **Get Started** opens the role picker. This catches problems such as an activity missing from the manifest. Run it with `./gradlew connectedAndroidTest` while an emulator or device is connected.
 
+`app/src/test/.../ParentDashboardViewModelTest.java` unit-tests the parent dashboard's ViewModel with a fake repository. Run it with `./gradlew testDebugUnitTest`.
+
 ## Project structure
 
 ```
 app/src/main/
 ├── AndroidManifest.xml
 ├── java/com/example/transportapp/
-│   ├── MainActivity, Navigation, Login, SignUp       # entry flow and auth
+│   ├── MainActivity, RoleSelectActivity, Login, SignUp, PrivacyNotice   # entry flow and auth
 │   ├── SchoolLanding, Add*/Modify*/Delete*           # school management screens
 │   ├── Reports, *ReportActivity                      # reports and charts
-│   ├── DriverLanding, PickUp, DropOff                # driver screens
-│   ├── ParentLanding, ChatActivity                   # parent screens
+│   ├── DriverLanding, PickUp, DropOff, TripLocationService   # driver screens
+│   ├── ParentLanding, ParentDashboardViewModel, *ParentRepository, ChatActivity   # parent screens
 │   ├── Student, Staff, Driver, Vehicle, Route, Notification   # Firestore models
 │   └── *Adapter                                      # RecyclerView adapters
 └── res/
-    ├── layout/        # screen layouts
+    ├── layout/        # screen layouts; toolbar.xml and footer.xml are shared with <include>
     ├── drawable/      # images and vector icons
     ├── mipmap-*/      # launcher icon
-    └── xml/           # backup and data extraction rules
+    └── xml/           # backup, data extraction and network security rules
 ```
+
+Screen titles are each activity's `android:label` in the manifest; `TransportApp` shows it in the shared toolbar. Text and colours live in `values/strings.xml` and `values/colors.xml`, not in layouts.
 
 ## Privacy
 
 The app handles children's personal data. Android backup is disabled (`allowBackup="false"`), and the backup and data extraction rules exclude all app data from cloud backup and device-to-device transfer.
+
+- Only HTTPS traffic is allowed (`res/xml/network_security_config.xml`).
+- The bus location is stored only while a trip is running. The app deletes it when the trip ends, and the `clearStaleBusLocations` function clears any position not updated for 30 minutes (for example when the driver's phone goes offline).
+- Staff phone numbers are not copied onto child records or shown to parents; parents use the bus chat.
+- Sign-up requires accepting the privacy notice (`privacy_notice_text` in `strings.xml`). The text is a draft: the school must fill in the bracketed details and check it against local data-protection law. Raise `PrivacyNotice.VERSION` when it changes.

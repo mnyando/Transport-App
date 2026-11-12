@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textSize="16sp"
-        android:textColor="#212121" />
+        android:textColor="@color/text_primary" />
 
     <!-- Picked Checkbox -->
     <CheckBox
@@ -21,8 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Picked"
-        android:textColor="#212121" />
+        android:text="@string/picked"
+        android:textColor="@color/text_primary" />
 
     <!-- Not Picked Checkbox -->
     <CheckBox
@@ -31,6 +31,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="Not Picked"
-        android:textColor="#212121" />
+        android:text="@string/not_picked"
+        android:textColor="@color/text_primary" />
 </LinearLayout>

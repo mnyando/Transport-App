@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="true"
-    android:background="#F5F5F5">
+    android:background="@color/screen_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,37 +12,13 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/top_navigation_bar"
+        <include
+            layout="@layout/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="#228B22"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            android:elevation="4dp">
-
-            <ImageButton
-                android:id="@+id/back_button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/baseline_arrow_back_24"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
-                android:padding="12dp"
-                android:layout_gravity="start" />
-
-            <TextView
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="School"
-                android:textSize="22sp"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:layout_gravity="center" />
-        </androidx.appcompat.widget.Toolbar>
+            android:layout_height="60dp" />
 
         <!-- General Information Section -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/general_info_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,10 +37,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="General Information"
+                    android:text="@string/general_information"
                     android:textSize="22sp"
                     android:textStyle="bold"
-                    android:textColor="#006400"
+                    android:textColor="@color/dark_green"
                     android:gravity="center"
                     android:paddingBottom="12dp"/>
 
@@ -74,7 +50,7 @@
                     android:layout_width="333dp"
                     android:layout_height="189dp"
                     android:layout_gravity="center"
-                    android:contentDescription="Transport Information"
+                    android:contentDescription="@string/desc_transport_information"
                     android:paddingBottom="12dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/landing_image" />
@@ -91,7 +67,7 @@
                     android:background="@color/white">
 
                     <!-- Students Enrolled -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/students_enrolled_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -112,12 +88,12 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/students_enrolled"
-                                android:contentDescription="Students Enrolled"/>
+                                android:contentDescription="@string/desc_students_enrolled"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Students Enrolled"
+                                android:text="@string/students_enrolled"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:gravity="center"
@@ -127,16 +103,16 @@
                                 android:id="@+id/studentsEnrolledText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="-"
+                                android:text="@string/text_2"
                                 android:textSize="26sp"
-                                android:textColor="#228B22"
+                                android:textColor="@color/green"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
                     <!-- Routes Travelled -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/routes_travelled_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -157,12 +133,12 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/routes_travelled"
-                                android:contentDescription="Routes"/>
+                                android:contentDescription="@string/desc_routes"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Routes Travelled"
+                                android:text="@string/routes_travelled"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:gravity="center"
@@ -172,16 +148,16 @@
                                 android:id="@+id/routesTraveledText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="-"
+                                android:text="@string/text_2"
                                 android:textSize="26sp"
-                                android:textColor="#228B22"
+                                android:textColor="@color/green"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
                     <!-- Active Vehicles -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/active_vehicles_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -201,12 +177,12 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/active_vehicles"
-                                android:contentDescription="Active Vehicles"/>
+                                android:contentDescription="@string/desc_active_vehicles"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Active Vehicles"
+                                android:text="@string/active_vehicles"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:gravity="center"
@@ -216,16 +192,16 @@
                                 android:id="@+id/activeVehiclesText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="-"
+                                android:text="@string/text_2"
                                 android:textSize="26sp"
-                                android:textColor="#228B22"
+                                android:textColor="@color/green"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
                     <!-- Inactive Vehicles -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/inactive_vehicles_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -245,12 +221,12 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/inactive_vehicles"
-                                android:contentDescription="Inactive Vehicles"/>
+                                android:contentDescription="@string/desc_inactive_vehicles"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Inactive Vehicles"
+                                android:text="@string/inactive_vehicles"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:gravity="center"
@@ -260,16 +236,16 @@
                                 android:id="@+id/inactiveVehiclesText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="-"
+                                android:text="@string/text_2"
                                 android:textSize="26sp"
-                                android:textColor="#FF4500"
+                                android:textColor="@color/red"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
                     <!-- Active Drivers -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/active_drivers_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -289,12 +265,12 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/active_driverr"
-                                android:contentDescription="Active Drivers"/>
+                                android:contentDescription="@string/desc_active_drivers"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Active Drivers"
+                                android:text="@string/active_drivers"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:gravity="center"
@@ -304,16 +280,16 @@
                                 android:id="@+id/activeDriversText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="-"
+                                android:text="@string/text_2"
                                 android:textSize="26sp"
-                                android:textColor="#228B22"
+                                android:textColor="@color/green"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
 
                     <!-- Inactive Drivers -->
-                    <androidx.cardview.widget.CardView
+                    <com.google.android.material.card.MaterialCardView
                         android:id="@+id/inactive_drivers_card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -334,12 +310,12 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/inactive_driver"
-                                android:contentDescription="Inactive Drivers" />
+                                android:contentDescription="@string/desc_inactive_drivers" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Inactive Drivers"
+                                android:text="@string/inactive_drivers"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:gravity="center"
@@ -349,23 +325,23 @@
                                 android:id="@+id/inactiveDriversText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="-"
+                                android:text="@string/text_2"
                                 android:textSize="26sp"
-                                android:textColor="#C62828"
+                                android:textColor="@color/error_red"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
                         </LinearLayout>
-                    </androidx.cardview.widget.CardView>
+                    </com.google.android.material.card.MaterialCardView>
                 </GridLayout>
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Title for Student Record Actions Section -->
         <TextView
             android:id="@+id/tvStudentRecordTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Student Record Actions"
+            android:text="@string/student_record_actions"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -383,7 +359,7 @@
             android:weightSum="3">
 
             <!-- Add Student Record -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/addStudent"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -404,21 +380,21 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/add_student"
-                        android:contentDescription="Add Student" />
+                        android:contentDescription="@string/title_add_student" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add Student        Record"
+                        android:text="@string/add_student_record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Modify Student Record -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/modifyStudent"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -439,21 +415,21 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/modify_student"
-                        android:contentDescription="Modify Student" />
+                        android:contentDescription="@string/title_modify_student" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Modify Student Record"
+                        android:text="@string/modify_student_record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Delete Student Record -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/deleteStudent"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -474,18 +450,18 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/delete_student"
-                        android:contentDescription="Delete Student" />
+                        android:contentDescription="@string/title_delete_student" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Delete Student Record"
+                        android:text="@string/delete_student_record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
         <!-- Title for Vehicle Record Actions Section -->
@@ -493,7 +469,7 @@
             android:id="@+id/ManageVehicle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vehicle Management"
+            android:text="@string/vehicle_management"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -511,7 +487,7 @@
             android:weightSum="3">
 
             <!-- Add Vehicle Record -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/AddVehicle"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -532,21 +508,21 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/add_vehicle"
-                        android:contentDescription="Add Student" />
+                        android:contentDescription="@string/title_add_student" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add Vehicle       Record"
+                        android:text="@string/add_vehicle_record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Modify Vehicle Record -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/ModifyVehicle"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -567,21 +543,21 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/modify_vehicle"
-                        android:contentDescription="Modify Student" />
+                        android:contentDescription="@string/title_modify_student" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Modify Vehicle Record"
+                        android:text="@string/modify_vehicle_record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Delete Vehicle Record -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/DeleteVehicle"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -602,18 +578,18 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/delete_vehicle"
-                        android:contentDescription="Delete Student" />
+                        android:contentDescription="@string/title_delete_student" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Delete Vehicle Record"
+                        android:text="@string/delete_vehicle_record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
         <!-- Title for Route Record Actions Section -->
@@ -621,7 +597,7 @@
             android:id="@+id/RouteRecordTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Route Management"
+            android:text="@string/route_management"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -639,7 +615,7 @@
             android:weightSum="3">
 
             <!-- Add Route Record -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/AddRoute"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -660,21 +636,21 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/add_route"
-                        android:contentDescription="Add Route" />
+                        android:contentDescription="@string/title_add_route" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add Route       Record"
+                        android:text="@string/add_route_record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Modify Route Record -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/ModifyRoute"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -695,21 +671,21 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/modify_route"
-                        android:contentDescription="Modify Route" />
+                        android:contentDescription="@string/title_modify_route" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Modify Route Record"
+                        android:text="@string/modify_route_record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Delete Route Record -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/DeleteRoute"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -730,18 +706,18 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/delete_routee"
-                        android:contentDescription="Delete Route" />
+                        android:contentDescription="@string/title_delete_route" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Delete Route Record"
+                        android:text="@string/delete_route_record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 
         <!-- Title for Staff Record Actions Section -->
@@ -749,7 +725,7 @@
             android:id="@+id/StaffRecordTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Staff Management"
+            android:text="@string/staff_management"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -767,7 +743,7 @@
             android:weightSum="3">
 
             <!-- Add Staff Record -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/AddStaffRecord"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -788,21 +764,21 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/add_staff"
-                        android:contentDescription="Add Staff" />
+                        android:contentDescription="@string/title_add_staff" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Add Staff       Record"
+                        android:text="@string/add_staff_record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Modify Staff Record -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/ModifyStaffRecord"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -823,21 +799,21 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/modify_staff"
-                        android:contentDescription="Modify Staff" />
+                        android:contentDescription="@string/title_modify_staff" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Modify Staff       Record"
+                        android:text="@string/modify_staff_record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Delete Staff Record -->
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/DeleteStaffRecord"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -858,12 +834,12 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/delete_staff"
-                        android:contentDescription="Delete Staff" />
+                        android:contentDescription="@string/title_delete_staff" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Delete Staff      Record"
+                        android:text="@string/delete_staff_record"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:gravity="center"
@@ -871,7 +847,7 @@
                 </LinearLayout>
 
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
             <Button
                 android:id="@+id/dropOffButton"
@@ -880,7 +856,7 @@
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 android:backgroundTint="@color/green"
-                android:text="Drop Off"
+                android:text="@string/drop_off"
                 android:textColor="@android:color/white" />
         </LinearLayout>
 
@@ -894,26 +870,16 @@
             android:layout_marginRight="32dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/edit_text_background"
-            android:text="Reports"
-            android:textColor="#FFFFFF"
+            android:text="@string/reports"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <!-- Footer Section -->
-        <LinearLayout
+        <include
+            layout="@layout/footer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#228B22"
-            android:padding="16dp"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="© 2025 School Transport Solutions"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"/>
-        </LinearLayout>
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </ScrollView>

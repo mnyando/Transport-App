@@ -3,14 +3,18 @@ package com.example.transportapp;
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.ComponentActivity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.util.Calendar;
 
 /**
  * Application entry point.
@@ -20,6 +24,9 @@ import androidx.annotation.Nullable;
  * its own (an ImageButton/ImageView whose id is back_button/backButton or whose content
  * description is "Back") to the normal system back action. Screens that already handle their
  * back arrow are left alone.
+ *
+ * It also fills in the shared layouts (layout/toolbar.xml and layout/footer.xml): the toolbar
+ * title is the activity's android:label from the manifest, and the footer shows the current year.
  */
 public class TransportApp extends Application {
 
@@ -35,6 +42,7 @@ public class TransportApp extends Application {
                 if (root.getTag(TAG_WIRED) != null) return;
                 root.setTag(TAG_WIRED, Boolean.TRUE);
                 wireBackButtons(activity, root);
+                fillSharedViews(activity);
             }
 
             @Override public void onActivityCreated(@NonNull Activity a, @Nullable Bundle b) {}
@@ -44,6 +52,19 @@ public class TransportApp extends Application {
             @Override public void onActivitySaveInstanceState(@NonNull Activity a, @NonNull Bundle b) {}
             @Override public void onActivityDestroyed(@NonNull Activity a) {}
         });
+    }
+
+    /** Title from the activity's android:label; copyright year from the clock. */
+    private void fillSharedViews(Activity activity) {
+        TextView title = activity.findViewById(R.id.toolbar_title);
+        if (title != null && TextUtils.isEmpty(title.getText())) {
+            title.setText(activity.getTitle());
+        }
+        TextView footer = activity.findViewById(R.id.footer_text);
+        if (footer != null) {
+            footer.setText(getString(R.string.footer_copyright,
+                    Calendar.getInstance().get(Calendar.YEAR)));
+        }
     }
 
     private void wireBackButtons(Activity activity, View view) {

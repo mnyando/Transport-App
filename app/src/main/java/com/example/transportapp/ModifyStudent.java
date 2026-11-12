@@ -426,12 +426,11 @@ public class ModifyStudent extends AppCompatActivity {
                         // Fetch staff information
                         fetchStaffForVehicle(vehicleName, (driver, attendant) -> {
                             if (driver != null && !driver.isEmpty()) {
+                                // No staff phone numbers on the child record (see AddStudent).
                                 studentData.put("driverName", driver.get("name"));
-                                studentData.put("driverPhone", driver.get("phone"));
                             }
                             if (attendant != null && !attendant.isEmpty()) {
                                 studentData.put("attendantName", attendant.get("name"));
-                                studentData.put("attendantPhone", attendant.get("phone"));
                             }
 
                             // Now save the complete student data

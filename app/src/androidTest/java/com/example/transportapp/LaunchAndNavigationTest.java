@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 
 /**
  * Guards the app's entry flow: MainActivity must launch, and "Get Started" must open the
- * Navigation role picker. Catches regressions such as an activity missing from the manifest
+ * RoleSelectActivity role picker. Catches regressions such as an activity missing from the manifest
  * (ActivityNotFoundException) or a layout that fails to inflate.
  */
 @RunWith(AndroidJUnit4.class)
