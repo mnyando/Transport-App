@@ -14,8 +14,7 @@
         <include
             layout="@layout/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="24dp" />
+            android:layout_height="?attr/actionBarSize" />
 
         <!-- Hero Section with CardView widget -->
         <com.google.android.material.card.MaterialCardView
@@ -34,6 +33,7 @@
 
                 <!-- Image View -->
                 <ImageView
+                    android:contentDescription="@null"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:src="@drawable/landing_image"
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp"
-            android:background="@android:color/white">
+            android:background="@color/surface">
 
             <!-- Header Title -->
             <TextView
@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/why_choose_our_app"
                 android:textSize="22sp"
-                android:textColor="@color/green"
+                android:textColor="@color/text_accent"
                 android:textStyle="bold"
                 android:gravity="center"
                 android:paddingBottom="12dp" />
@@ -87,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@android:color/white"
+                android:background="@color/surface"
                 android:padding="12dp"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="8dp">
@@ -105,7 +105,7 @@
                         android:layout_height="50dp"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/tracking"
-                        android:contentDescription="@string/desc_live_tracking_icon" />
+                        android:contentDescription="@null" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -118,7 +118,7 @@
                             android:text="@string/bus_tracking"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:textColor="@color/black"/>
+                            android:textColor="@color/text_primary"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -142,7 +142,7 @@
                         android:layout_height="50dp"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/ic_notification"
-                        android:contentDescription="@string/desc_notification_icon" />
+                        android:contentDescription="@null" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -155,7 +155,7 @@
                             android:text="@string/instant_notifications"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:textColor="@color/black"/>
+                            android:textColor="@color/text_primary"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -178,7 +178,7 @@
                         android:layout_height="50dp"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/dashboard"
-                        android:contentDescription="@string/desc_dashboard_icon" />
+                        android:contentDescription="@null" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -191,7 +191,7 @@
                             android:text="@string/comprehensive_dashboards"
                             android:textStyle="bold"
                             android:textSize="16sp"
-                            android:textColor="@color/black"/>
+                            android:textColor="@color/text_primary"/>
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -203,165 +203,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:background="@android:color/white">
-
-            <!-- Section Title -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/what_our_users_say"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@color/green"
-                android:gravity="center"
-                android:paddingBottom="12dp" />
-
-            <!-- John Doe Testimonial -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="12dp"
-                        android:src="@drawable/baseline_perm_identity_24"
-                        android:contentDescription="@string/desc_john_doe_profile"
-                        android:scaleType="centerCrop"
-                        />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/john_doe"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:textColor="@color/black"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/this_app_has_transformed_our_school"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Jane Smith Testimonial -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="12dp"
-                        android:src="@drawable/baseline_perm_identity_24"
-                        android:contentDescription="@string/desc_jane_smith_profile"
-                        android:scaleType="centerCrop" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/jane_smith"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:textColor="@color/black"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/reliable_updates_and_peace_of_mind"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Michael Lee Testimonial -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardElevation="4dp"
-                app:cardCornerRadius="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="12dp"
-                        android:src="@drawable/baseline_perm_identity_24"
-                        android:contentDescription="@string/desc_michael_lee_profile"
-                        android:scaleType="centerCrop" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/michael_lee"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:textColor="@color/black"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/a_must_have_app_for_schools"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 

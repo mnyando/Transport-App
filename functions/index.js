@@ -38,9 +38,16 @@ exports.sendParentPush = onDocumentCreated("notifications/{notificationId}", asy
     .where("email", "==", parentEmail)
     .get();
 
+  // Parents may turn off the routine "picked up" / "dropped off" confirmations
+  // (users/{uid}.alertPrefs, set in the app's alert settings). Alerts that a child was NOT
+  // picked up or dropped off, and SOS alerts, are always sent.
+  const routineType = n.status === "done" && (n.type === "pickup" || n.type === "dropoff")
+    ? n.type : null;
+
   const tokenOwners = new Map(); // token -> user doc ref
   for (const doc of users.docs) {
     if ((doc.get("role") || "").toLowerCase() !== "parent") continue;
+    if (routineType && (doc.get("alertPrefs") || {})[routineType] === false) continue;
     try {
       const authUser = await admin.auth().getUser(doc.id);
       if (!authUser.emailVerified) continue;

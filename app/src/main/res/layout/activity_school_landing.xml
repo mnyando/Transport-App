@@ -40,17 +40,18 @@
                     android:text="@string/general_information"
                     android:textSize="22sp"
                     android:textStyle="bold"
-                    android:textColor="@color/dark_green"
+                    android:textColor="@color/text_accent"
                     android:gravity="center"
                     android:paddingBottom="12dp"/>
 
                 <!-- Image Section -->
                 <ImageView
                     android:id="@+id/landing_image"
-                    android:layout_width="333dp"
-                    android:layout_height="189dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
                     android:layout_gravity="center"
-                    android:contentDescription="@string/desc_transport_information"
+                    android:contentDescription="@null"
                     android:paddingBottom="12dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/landing_image" />
@@ -64,7 +65,7 @@
                     android:padding="12dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
-                    android:background="@color/white">
+                    android:background="@color/surface">
 
                     <!-- Students Enrolled -->
                     <com.google.android.material.card.MaterialCardView
@@ -88,7 +89,7 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/students_enrolled"
-                                android:contentDescription="@string/desc_students_enrolled"/>
+                                android:contentDescription="@null"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -105,7 +106,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/text_2"
                                 android:textSize="26sp"
-                                android:textColor="@color/green"
+                                android:textColor="@color/text_accent"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
                         </LinearLayout>
@@ -133,7 +134,7 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/routes_travelled"
-                                android:contentDescription="@string/desc_routes"/>
+                                android:contentDescription="@null"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -150,7 +151,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/text_2"
                                 android:textSize="26sp"
-                                android:textColor="@color/green"
+                                android:textColor="@color/text_accent"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
                         </LinearLayout>
@@ -177,7 +178,7 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/active_vehicles"
-                                android:contentDescription="@string/desc_active_vehicles"/>
+                                android:contentDescription="@null"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -194,7 +195,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/text_2"
                                 android:textSize="26sp"
-                                android:textColor="@color/green"
+                                android:textColor="@color/text_accent"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
                         </LinearLayout>
@@ -221,7 +222,7 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/inactive_vehicles"
-                                android:contentDescription="@string/desc_inactive_vehicles"/>
+                                android:contentDescription="@null"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -238,7 +239,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/text_2"
                                 android:textSize="26sp"
-                                android:textColor="@color/red"
+                                android:textColor="@color/text_error"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
                         </LinearLayout>
@@ -265,7 +266,7 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/active_driverr"
-                                android:contentDescription="@string/desc_active_drivers"/>
+                                android:contentDescription="@null"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -282,7 +283,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/text_2"
                                 android:textSize="26sp"
-                                android:textColor="@color/green"
+                                android:textColor="@color/text_accent"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
                         </LinearLayout>
@@ -310,7 +311,7 @@
                                 android:layout_width="56dp"
                                 android:layout_height="56dp"
                                 android:src="@drawable/inactive_driver"
-                                android:contentDescription="@string/desc_inactive_drivers" />
+                                android:contentDescription="@null" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -327,7 +328,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/text_2"
                                 android:textSize="26sp"
-                                android:textColor="@color/error_red"
+                                android:textColor="@color/text_error"
                                 android:textStyle="bold"
                                 android:gravity="center"/>
                         </LinearLayout>
@@ -344,7 +345,7 @@
             android:text="@string/student_record_actions"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="@color/text_primary"
             android:paddingBottom="1dp"
             android:layout_marginTop="24dp"
             android:gravity="center"/>
@@ -380,7 +381,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/add_student"
-                        android:contentDescription="@string/title_add_student" />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -415,7 +416,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/modify_student"
-                        android:contentDescription="@string/title_modify_student" />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -450,7 +451,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/delete_student"
-                        android:contentDescription="@string/title_delete_student" />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -472,7 +473,7 @@
             android:text="@string/vehicle_management"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="@color/text_primary"
             android:paddingBottom="8dp"
             android:layout_marginTop="24dp"
             android:gravity="center"/>
@@ -508,7 +509,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/add_vehicle"
-                        android:contentDescription="@string/title_add_student" />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -543,7 +544,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/modify_vehicle"
-                        android:contentDescription="@string/title_modify_student" />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -578,7 +579,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/delete_vehicle"
-                        android:contentDescription="@string/title_delete_student" />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -600,7 +601,7 @@
             android:text="@string/route_management"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="@color/text_primary"
             android:paddingBottom="8dp"
             android:layout_marginTop="24dp"
             android:gravity="center"/>
@@ -636,7 +637,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/add_route"
-                        android:contentDescription="@string/title_add_route" />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -671,7 +672,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/modify_route"
-                        android:contentDescription="@string/title_modify_route" />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -706,7 +707,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/delete_routee"
-                        android:contentDescription="@string/title_delete_route" />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -728,7 +729,7 @@
             android:text="@string/staff_management"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
+            android:textColor="@color/text_primary"
             android:paddingBottom="8dp"
             android:layout_marginTop="24dp"
             android:gravity="center"/>
@@ -764,7 +765,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/add_staff"
-                        android:contentDescription="@string/title_add_staff" />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -799,7 +800,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/modify_staff"
-                        android:contentDescription="@string/title_modify_staff" />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -834,7 +835,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:src="@drawable/delete_staff"
-                        android:contentDescription="@string/title_delete_staff" />
+                        android:contentDescription="@null" />
 
                     <TextView
                         android:layout_width="wrap_content"

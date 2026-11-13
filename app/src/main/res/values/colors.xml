@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Contrast ratios are for white text on the colour (WCAG AA needs 4.5:1, review section 5).
+         Colours used for text or surfaces have dark-mode values in values-night/colors.xml. -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="green">#228B22</color>  <!-- Forest Green -->
-    <color name="blue">#1E90FF</color>   <!-- Dodger Blue -->
-    <color name="red">#FF4500</color>    <!-- Orange Red -->
-    <color name="light_green">#32CD32</color> <!-- Light Green -->
-    <color name="gold">#FFD700</color> <!-- Gold -->
-    <color name="gray">#707070</color> <!-- Medium Gray -->
-    <color name="light_gray">#D3D3D3</color> <!-- Light Gray -->
+    <color name="green">#1B6B1B</color>        <!-- Brand green for bars and buttons, 6.6:1 (was #228B22, 4.4:1) -->
+    <color name="blue">#1565C0</color>         <!-- Secondary buttons, 5.8:1 (was #1E90FF, 3.0:1) -->
+    <color name="red">#C62828</color>          <!-- 5.6:1 (was #FF4500) -->
+    <color name="light_green">#32CD32</color>
+    <color name="gold">#FFD700</color>
+    <color name="gray">#707070</color>         <!-- Secondary text, 4.9:1 on white -->
+    <color name="light_gray">#D3D3D3</color>
     <color name="gray_light">#EEEEEE</color>
 
     <!-- Moved out of the layouts (review section 4) -->
     <color name="text_primary">#212121</color>
     <color name="text_hint">#757575</color>
     <color name="screen_background">#F5F5F5</color>
-    <color name="accent_orange">#FF9800</color>
+    <color name="accent_orange">#B45309</color> <!-- Role buttons, 5.0:1 (was #FF9800, 2.2:1) -->
     <color name="text_muted">#666666</color>
     <color name="text_secondary">#616161</color>
     <color name="surface_light">#F4F4F4</color>
@@ -23,7 +25,13 @@
     <color name="dark_green">#006400</color>
     <color name="divider">#E0E0E0</color>
     <color name="border_light">#DDDDDD</color>
-    <color name="link_blue">#4285F4</color>
+    <color name="link_blue">#1A73E8</color>     <!-- 4.5:1 (was #4285F4, 3.6:1) -->
     <color name="text_dark">#424242</color>
     <color name="text_strong">#333333</color>
+
+    <!-- Semantic colours (review section 5: dark theme). Layouts use these instead of white/black. -->
+    <color name="surface">#FFFFFF</color>       <!-- Cards, inputs and panels -->
+    <color name="text_accent">#1B6B1B</color>   <!-- Green headings and numbers on a surface -->
+    <color name="text_link">#1565C0</color>
+    <color name="text_error">#C62828</color>
 </resources>

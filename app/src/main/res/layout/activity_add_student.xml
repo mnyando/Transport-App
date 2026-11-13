@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@color/surface"
         android:padding="24dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="10dp">
@@ -40,7 +40,7 @@
                 android:hint="@string/hint_student_name"
                 android:inputType="text"
                 android:padding="12dp"
-                android:textColor="@color/black"
+                android:textColor="@color/text_primary"
                 android:textSize="20sp"/>
 
             <!-- Class Dropdown -->
@@ -64,7 +64,7 @@
                 android:hint="@string/hint_student_id_number"
                 android:inputType="number"
                 android:padding="12dp"
-                android:textColor="@color/black"
+                android:textColor="@color/text_primary"
                 android:textSize="20sp"/>
 
             <!-- Assigned Route Dropdown -->
@@ -88,7 +88,7 @@
                 android:hint="@string/hint_parent_name"
                 android:inputType="text"
                 android:padding="12dp"
-                android:textColor="@color/black"
+                android:textColor="@color/text_primary"
                 android:textSize="20sp"/>
 
             <!-- Parent Contact -->
@@ -102,7 +102,7 @@
                 android:hint="@string/hint_parent_contact"
                 android:inputType="phone"
                 android:padding="12dp"
-                android:textColor="@color/black"
+                android:textColor="@color/text_primary"
                 android:textSize="20sp"/>
 
             <!-- Parent Email: links the parent's verified login to this student -->
@@ -116,7 +116,7 @@
                 android:hint="@string/hint_parent_email_used_to_sign_in"
                 android:inputType="textEmailAddress"
                 android:padding="12dp"
-                android:textColor="@color/black"
+                android:textColor="@color/text_primary"
                 android:textSize="20sp"/>
 
             <!-- Home Location -->
@@ -130,7 +130,7 @@
                 android:hint="@string/hint_home_location"
                 android:inputType="text"
                 android:padding="12dp"
-                android:textColor="@color/black"
+                android:textColor="@color/text_primary"
                 android:textSize="20sp"/>
 
             <!-- Save Button -->

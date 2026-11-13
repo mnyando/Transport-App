@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@color/white"
+    android:background="@color/surface"
     tools:context=".DriverReportActivity">
 
     <!-- Navigation Bar -->
@@ -137,7 +137,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/n_0"
                     android:textSize="32sp"
-                    android:textColor="@color/green"
+                    android:textColor="@color/text_accent"
                     android:layout_marginTop="8dp"/>
 
                 <TextView
@@ -179,7 +179,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/zero_minutes"
                     android:textSize="32sp"
-                    android:textColor="@color/green"
+                    android:textColor="@color/text_accent"
                     android:layout_marginTop="8dp"/>
 
                 <TextView
@@ -188,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/zero_percent_vs_avg"
                     android:textSize="12sp"
-                    android:textColor="@color/green"
+                    android:textColor="@color/text_accent"
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -234,7 +234,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/zero_percent"
                     android:textSize="32sp"
-                    android:textColor="@color/green"
+                    android:textColor="@color/text_accent"
                     android:layout_marginTop="8dp"/>
 
                 <TextView
@@ -243,7 +243,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/zero_percent_vs_last"
                     android:textSize="12sp"
-                    android:textColor="@color/green"
+                    android:textColor="@color/text_accent"
                     android:layout_marginTop="4dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -276,7 +276,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/n_0"
                     android:textSize="32sp"
-                    android:textColor="@color/green"
+                    android:textColor="@color/text_accent"
                     android:layout_marginTop="8dp"/>
 
                 <TextView

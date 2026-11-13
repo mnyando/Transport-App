@@ -2,7 +2,6 @@ package com.example.transportapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,7 +27,6 @@ public class SignUp extends AppCompatActivity {
     private TextView tvSignIn;
     private ImageView ivTogglePassword;
     private CheckBox cbConsent;
-    private boolean isPasswordVisible = false;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -53,19 +51,7 @@ public class SignUp extends AppCompatActivity {
         cbConsent = findViewById(R.id.cbConsent);
         findViewById(R.id.tvPrivacyNotice).setOnClickListener(v -> PrivacyNotice.show(this));
 
-        // Toggle password visibility
-        ivTogglePassword.setOnClickListener(v -> {
-            if (isPasswordVisible) {
-                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                ivTogglePassword.setImageResource(R.drawable.baseline_remove_red_eye_24);
-                isPasswordVisible = false;
-            } else {
-                etPassword.setInputType(InputType.TYPE_CLASS_TEXT);
-                ivTogglePassword.setImageResource(R.drawable.baseline_remove_red_eye_24);
-                isPasswordVisible = true;
-            }
-            etPassword.setSelection(etPassword.getText().length());
-        });
+        PasswordToggle.attach(ivTogglePassword, etPassword);
 
         // Handle sign-up button click
         btnSignUp.setOnClickListener(v -> {

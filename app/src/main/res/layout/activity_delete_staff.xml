@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:backgroundTint="@android:color/white"
+                android:backgroundTint="@color/surface"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="10dp">
 
@@ -64,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:backgroundTint="@android:color/white"
+                android:backgroundTint="@color/surface"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="10dp">
 

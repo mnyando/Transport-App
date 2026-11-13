@@ -47,6 +47,11 @@ public class DriverLanding extends AppCompatActivity {
             return;
         }
 
+        // Stop sharing the bus position if a trip is still running when the driver signs out.
+        Session.setUpHomeToolbar(this, () -> {
+            if (assignedVehicle != null) TripLocationService.stop(this, assignedVehicle);
+        });
+
         initializeViews();
         displayDriverInfo();
         setupButtonListeners();

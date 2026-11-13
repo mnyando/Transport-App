@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="8dp"
-    android:backgroundTint="@android:color/white">
+    android:backgroundTint="@color/surface">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,11 +24,12 @@
             android:paddingBottom="8dp">
 
             <ImageView
+                android:contentDescription="@null"
                 android:layout_width="61dp"
                 android:layout_height="57dp"
                 android:layout_marginEnd="12dp"
                 android:src="@drawable/baseline_perm_identity_24"
-                app:tint="@color/green" />
+                app:tint="@color/text_accent" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -38,10 +40,10 @@
                     android:id="@+id/tvChildName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/john_doe"
+                    tools:text="John Doe"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/text_primary" />
 
                 <TextView
                     android:id="@+id/tvGrade"
@@ -68,6 +70,7 @@
             android:paddingBottom="8dp">
 
             <ImageView
+                android:contentDescription="@null"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
                 android:layout_marginEnd="12dp"
@@ -79,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/route_a_westside"
                 android:textSize="16sp"
-                android:textColor="@color/black" />
+                android:textColor="@color/text_primary" />
         </LinearLayout>
 
         <!-- Assigned Vehicle -->
@@ -91,6 +94,7 @@
             android:paddingBottom="8dp">
 
             <ImageView
+                android:contentDescription="@null"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
                 android:layout_marginEnd="12dp"
@@ -102,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/vehicle_bus_101"
                 android:textSize="16sp"
-                android:textColor="@color/black" />
+                android:textColor="@color/text_primary" />
         </LinearLayout>
 
         <!-- Driver Information -->
@@ -114,6 +118,7 @@
             android:paddingBottom="8dp">
 
             <ImageView
+                android:contentDescription="@null"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
                 android:layout_marginEnd="12dp"
@@ -123,9 +128,9 @@
                 android:id="@+id/tvDriver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/driver_john_doe_123_456_7890"
+                tools:text="Driver: John Doe"
                 android:textSize="16sp"
-                android:textColor="@color/black" />
+                android:textColor="@color/text_primary" />
         </LinearLayout>
 
         <!-- Attendant Information -->
@@ -137,6 +142,7 @@
             android:paddingBottom="8dp">
 
             <ImageView
+                android:contentDescription="@null"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
                 android:layout_marginEnd="12dp"
@@ -146,9 +152,9 @@
                 android:id="@+id/tvAttendant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/attendant_jane_smith_987_654_3210"
+                tools:text="Attendant: Jane Smith"
                 android:textSize="16sp"
-                android:textColor="@color/black" />
+                android:textColor="@color/text_primary" />
         </LinearLayout>
 
         <View
@@ -173,6 +179,7 @@
                 android:paddingBottom="8dp">
 
                 <ImageView
+                    android:contentDescription="@null"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginEnd="8dp"
@@ -182,8 +189,8 @@
                     android:id="@+id/tvPickupTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/pickup_07_30_am"
-                    android:textColor="@color/black"
+                    tools:text="Pickup: 07:30 AM"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -197,6 +204,7 @@
                 android:paddingBottom="8dp">
 
                 <ImageView
+                    android:contentDescription="@null"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginEnd="8dp"
@@ -206,8 +214,8 @@
                     android:id="@+id/tvDropOffTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/drop_off_03_45_pm"
-                    android:textColor="@color/black"
+                    tools:text="Drop-off: 03:45 PM"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>

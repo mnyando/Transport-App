@@ -12,12 +12,12 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"/>
+        android:textColor="@color/text_primary"/>
 
     <TextView
         android:id="@+id/driverStatusTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:textColor="@android:color/darker_gray"/>
+        android:textColor="@color/text_secondary"/>
 </LinearLayout>

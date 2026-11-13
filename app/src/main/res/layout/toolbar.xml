@@ -30,4 +30,17 @@
         android:textColor="@android:color/white"
         android:textSize="22sp"
         android:textStyle="bold" />
+
+    <!-- Shown only on the home screens by Session.setUpHomeToolbar -->
+    <ImageButton
+        android:id="@+id/signOutButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="end"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/sign_out"
+        android:src="@drawable/baseline_logout_24"
+        android:visibility="gone"
+        app:tint="@android:color/white" />
 </com.google.android.material.appbar.MaterialToolbar>

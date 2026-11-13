@@ -86,6 +86,9 @@ public class ParentLanding extends AppCompatActivity {
             return;
         }
 
+        Session.setUpHomeToolbar(this, null);
+        findViewById(R.id.alertSettingsButton).setOnClickListener(v -> AlertPreferences.showDialog(this));
+
         childEmptyText = findViewById(R.id.childEmptyText);
         notificationEmptyText = findViewById(R.id.notificationEmptyText);
         busStatusText = findViewById(R.id.busStatusText);

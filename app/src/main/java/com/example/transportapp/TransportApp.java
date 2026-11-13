@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.ComponentActivity;
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -27,6 +28,9 @@ import java.util.Calendar;
  *
  * It also fills in the shared layouts (layout/toolbar.xml and layout/footer.xml): the toolbar
  * title is the activity's android:label from the manifest, and the footer shows the current year.
+ *
+ * Every screen is drawn edge to edge and padded by the real system bar and keyboard sizes
+ * (see {@link SystemBars}).
  */
 public class TransportApp extends Application {
 
@@ -43,9 +47,17 @@ public class TransportApp extends Application {
                 root.setTag(TAG_WIRED, Boolean.TRUE);
                 wireBackButtons(activity, root);
                 fillSharedViews(activity);
+                SystemBars.applyInsets(activity);
             }
 
-            @Override public void onActivityCreated(@NonNull Activity a, @Nullable Bundle b) {}
+            @Override
+            public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle b) {
+                // Runs inside super.onCreate(), before setContentView().
+                if (activity instanceof ComponentActivity) {
+                    EdgeToEdge.enable((ComponentActivity) activity);
+                }
+            }
+
             @Override public void onActivityResumed(@NonNull Activity a) {}
             @Override public void onActivityPaused(@NonNull Activity a) {}
             @Override public void onActivityStopped(@NonNull Activity a) {}

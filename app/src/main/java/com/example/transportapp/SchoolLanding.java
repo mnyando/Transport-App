@@ -32,6 +32,7 @@ public class SchoolLanding extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_school_landing);
+        Session.setUpHomeToolbar(this, null);
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();

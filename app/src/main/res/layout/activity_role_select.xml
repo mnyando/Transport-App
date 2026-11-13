@@ -14,8 +14,7 @@
         <include
             layout="@layout/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="24dp" />
+            android:layout_height="?attr/actionBarSize" />
 
         <!-- Role Selection Cards -->
         <LinearLayout
@@ -39,6 +38,7 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:contentDescription="@null"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:src="@drawable/landing_image"
@@ -90,6 +90,7 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:contentDescription="@null"
                         android:layout_width="match_parent"
                         android:layout_height="237dp"
                         android:layout_marginBottom="8dp"
@@ -140,6 +141,7 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:contentDescription="@null"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
                         android:src="@drawable/driver_image"

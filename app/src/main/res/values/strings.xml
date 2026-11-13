@@ -157,25 +157,13 @@
     <string name="safe_reliable_transparent_school_transpo">Safe. Reliable. Transparent School Transport Solutions.</string>
     <string name="get_started">Get Started</string>
     <string name="why_choose_our_app">Why Choose Our App?</string>
-    <string name="desc_live_tracking_icon">Live Tracking Icon</string>
     <string name="bus_tracking">Bus Tracking</string>
     <string name="parents_can_get_timely_pickups_and">Parents can get timely pickups and drop-offs notifications.</string>
-    <string name="desc_notification_icon">Notification Icon</string>
     <string name="instant_notifications">Instant Notifications</string>
     <string name="receive_timely_updates_about_the_pickup">Receive timely updates about the pickup and drop-off status of your child.</string>
-    <string name="desc_dashboard_icon">Dashboard Icon</string>
     <string name="comprehensive_dashboards">Comprehensive Dashboards</string>
     <string name="custom_dashboards_tailored_for_parents_d">Custom dashboards tailored for parents, drivers, and school admins to simplify operations.</string>
-    <string name="what_our_users_say">What Our Users Say</string>
-    <string name="desc_john_doe_profile">John Doe Profile</string>
-    <string name="john_doe">John Doe</string>
-    <string name="this_app_has_transformed_our_school">This app has transformed our school transport experience.</string>
-    <string name="desc_jane_smith_profile">Jane Smith Profile</string>
-    <string name="jane_smith">Jane Smith</string>
-    <string name="reliable_updates_and_peace_of_mind">Reliable updates and peace of mind for parents!</string>
-    <string name="desc_michael_lee_profile">Michael Lee Profile</string>
-    <string name="michael_lee">Michael Lee</string>
-    <string name="a_must_have_app_for_schools">A must-have app for schools and parents alike.</string>
+    
     <string name="update_route">Update Route</string>
     <string name="where_is_the_bus">Where is the bus?</string>
     <string name="message_the_bus">Message the bus</string>
@@ -194,19 +182,12 @@
     <string name="go_to_driver_page">Go to Driver Page</string>
     <string name="text">--:--</string>
     <string name="general_information">General Information</string>
-    <string name="desc_transport_information">Transport Information</string>
-    <string name="desc_students_enrolled">Students Enrolled</string>
     <string name="students_enrolled">Students Enrolled</string>
     <string name="text_2">-</string>
-    <string name="desc_routes">Routes</string>
     <string name="routes_travelled">Routes Travelled</string>
-    <string name="desc_active_vehicles">Active Vehicles</string>
     <string name="active_vehicles">Active Vehicles</string>
-    <string name="desc_inactive_vehicles">Inactive Vehicles</string>
     <string name="inactive_vehicles">Inactive Vehicles</string>
-    <string name="desc_active_drivers">Active Drivers</string>
     <string name="active_drivers">Active Drivers</string>
-    <string name="desc_inactive_drivers">Inactive Drivers</string>
     <string name="inactive_drivers">Inactive Drivers</string>
     <string name="student_record_actions">Student Record Actions</string>
     <string name="add_student_record">Add Student        Record</string>
@@ -234,9 +215,35 @@
     <string name="grade_3">Grade: 3</string>
     <string name="route_a_westside">Route: A - Westside</string>
     <string name="vehicle_bus_101">Vehicle: Bus 101</string>
-    <string name="driver_john_doe_123_456_7890">Driver: John Doe (123-456-7890)</string>
-    <string name="attendant_jane_smith_987_654_3210">Attendant: Jane Smith (987-654-3210)</string>
-    <string name="pickup_07_30_am">Pickup: 07:30 AM</string>
-    <string name="drop_off_03_45_pm">Drop-off: 03:45 PM</string>
-    <string name="picked_up_at_07_30_am">Picked up at: 07:30 AM</string>
+    
+    
+    
+    
+    
+
+    <!-- Review section 5: sign-in flow, sign-out and alert settings -->
+    <string name="signing_in">Signing in</string>
+    <string name="error_email_required">Email is required</string>
+    <string name="error_password_required">Password is required</string>
+    <string name="error_sign_in_failed">Sign-in failed. Check your email and password and try again.</string>
+    <string name="error_reset_needs_email">Enter your email address above, then tap Forgot password again.</string>
+    <string name="password_reset_sent">If an account uses this email, we have sent it a link to reset the password.</string>
+    <string name="error_profile_missing">Your account profile was not found. Contact the school.</string>
+    <string name="error_role_not_allowed">This account cannot use the app. Contact the school.</string>
+    <string name="error_role_lookup_failed">Could not load your account. Check your connection and tap Login to try again.</string>
+    <string name="error_verify_email_first">Please verify your email first. We sent a new link to your inbox.</string>
+    <string name="error_driver_profile_incomplete">Your driver profile is incomplete. Contact the school.</string>
+    <string name="sign_out">Sign out</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="sign_out_confirm">Sign out of this phone? You will stop getting alerts here until you sign in again.</string>
+    <string name="alert_settings">Alert settings</string>
+    <string name="alert_pref_pickup">Tell me when my child is picked up</string>
+    <string name="alert_pref_dropoff">Tell me when my child is dropped off</string>
+    <string name="alert_pref_always_on_title">Always on</string>
+    <string name="alert_pref_always_on">You will always get an alert if your child was not picked up or dropped off, and for SOS alerts from the bus. Every alert is also listed under Notifications.</string>
+    <string name="save">Save</string>
+    <string name="alert_settings_saved">Alert settings saved</string>
+    <string name="alert_settings_load_failed">Could not load your alert settings. Check your connection and try again.</string>
+    <string name="alert_settings_save_failed">Could not save your alert settings. Check your connection and try again.</string>
 </resources>
