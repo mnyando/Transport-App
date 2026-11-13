@@ -4,7 +4,7 @@
          Colours used for text or surfaces have dark-mode values in values-night/colors.xml. -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="green">#1B6B1B</color>        <!-- Brand green for bars and buttons, 6.6:1 (was #228B22, 4.4:1) -->
+    <color name="green">#1B6B1B</color>        <!-- Status/data green only (brand moved to trust blue, see brand_primary) -->
     <color name="blue">#1565C0</color>         <!-- Secondary buttons, 5.8:1 (was #1E90FF, 3.0:1) -->
     <color name="red">#C62828</color>          <!-- 5.6:1 (was #FF4500) -->
     <color name="light_green">#32CD32</color>
@@ -31,7 +31,32 @@
 
     <!-- Semantic colours (review section 5: dark theme). Layouts use these instead of white/black. -->
     <color name="surface">#FFFFFF</color>       <!-- Cards, inputs and panels -->
-    <color name="text_accent">#1B6B1B</color>   <!-- Green headings and numbers on a surface -->
+    <color name="text_accent">#1D4ED8</color>   <!-- Brand-blue headings and numbers on a surface, 6.7:1 -->
     <color name="text_link">#1565C0</color>
     <color name="text_error">#C62828</color>
+
+    <!-- ===== Design system (DESIGN_SYSTEM_AND_PLAN.md, step 1) ===== -->
+
+    <!-- Brand: trust blue. brand_primary is fixed in both themes and is used for bars and filled
+         buttons with white text (5.2:1). theme_* feed the Material colour roles and change for dark. -->
+    <color name="brand_primary">#2563EB</color>
+    <color name="brand_on_primary">#FFFFFF</color>
+    <color name="theme_primary">#2563EB</color>
+    <color name="theme_on_primary">#FFFFFF</color>
+    <color name="theme_primary_container">#DBEAFE</color>
+    <color name="theme_on_primary_container">#1E3A8A</color>
+
+    <!-- Status pairs: text/icon colour on its container meets 4.5:1 -->
+    <color name="status_success_container">#E6F4EA</color> <!-- Boarded / Arrived -->
+    <color name="status_on_success">#137333</color>
+    <color name="status_warning_container">#FEF7E0</color> <!-- En route / Pending -->
+    <color name="status_on_warning">#9A5200</color>        <!-- 5.5:1 (plan's #B06000 was 4.4:1) -->
+    <color name="status_error_container">#FCE8E6</color>   <!-- Absent / Emergency -->
+    <color name="status_on_error">#C5221F</color>
+    <color name="status_info_container">#DBEAFE</color>    <!-- Tracking / Live -->
+    <color name="status_on_info">#1E40AF</color>
+
+    <!-- Surfaces and outlines -->
+    <color name="surface_variant">#F1F3F4</color>  <!-- Nested cards, toggle tracks, headers -->
+    <color name="outline_card">#E0E0E0</color>     <!-- 1dp card border -->
 </resources>

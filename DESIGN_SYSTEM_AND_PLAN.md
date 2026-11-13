@@ -14,6 +14,32 @@
 
 ---
 
+## 1b. Design Decisions (ui-ux-pro-max review, 2026-11-13)
+
+Matched against the skill's *Logistics/Delivery* and *Ride Hailing / Transportation* profiles.
+
+- **Brand colour → trust blue `#2563EB`** (was green `#1B6B1B`). Green now only means *Boarded / Arrived*, so brand and status never collide. `brand_primary` stays `#2563EB` in both themes for bars and filled buttons (white text, 5.2:1). The Material `colorPrimary` role uses `theme_primary`, which is light blue `#93C5FD` in dark mode so primary-coloured text stays readable.
+- **Style:** minimal, flat, map-centric. Avoid AI-style purple/pink gradients, a static map that doesn't update, and extra decoration.
+- **Must-haves for Screen 2:** pulsing live-status indicator, driver card (photo / name / vehicle), and an SOS / emergency action.
+- **Status set:** success (green), warning (amber), error (red), plus **info (blue)** for *Tracking / Live*.
+- **Contrast fix:** `status_on_warning` light is `#9A5200` (5.5:1). The original `#B06000` was 4.4:1, which fails AA for 13sp badge text.
+- **Done in step 1:** `values-night/themes.xml` removed. One theme now uses day/night colour tokens, and `materialCardViewStyle` points to `Widget.Transport.Card`. All brand uses of `@color/green` (toolbar, footer, buttons, spinners, system bars, notification icon) moved to `@color/brand_primary`. The status/data uses stay green: the trip "done" tint and the route-report chart.
+- **Done in step 2 (driver screen):** status card with bus icon (live region for TalkBack), one `MaterialCardView` per child with avatar, 64dp segmented buttons with check/close icons (status isn't shown by colour alone), a muted disabled state before the trip starts, a 64dp pill action button, and an illustrated empty state with a tonal retry button. New drawables: `ic_bus_24`, `ic_check_24`, `ic_close_24`, `bg_icon_circle`.
+- **Done in step 3 (live bus map):** the map fills the screen under a floating card. The card shows the bus, driver name (`driverName` from `busGroups/{bus}`), and a live-state pill: *Locating* / *Live* (blue, pulsing dot, no pulse when system animations are off) / *Signal delayed* (amber, position 5+ min old) / *Not on trip* (grey) / *Offline* (red). It also has a **Message** button (opens the bus chat as parent) and **Centre on bus**. The map centre is offset so the bus isn't hidden behind the card. `ic_bus_marker` is now brand blue.
+- **Not built (no data yet):** ETA, the 3-step Picked up → En route → Arrived progress line, call driver, and SOS. The bus document only holds position, `active`, `updatedAtMillis` and staff names. These need a driver phone field, per-child trip status on the bus doc, and an agreed emergency flow first.
+- **Done in step 4 (school admin hub):** went from 907 to about 750 lines.
+  - The toolbar is now full width.
+  - The *Fleet overview* card shows the six live counts in a 3×2 grid (same IDs).
+  - Students / Staff / Vehicles / Routes each get a card with three tiles: **Add**, **Edit**, and **Remove** (in red). Tiles use consistent Material vector icons in place of the mixed PNG/JPG images.
+  - Each tile carries a full spoken label (e.g. "Remove student record"), and section titles are marked as headings.
+  - *More* holds **Reports** (primary) and **Parent sign-up code**.
+  - Removed the decorative `landing_image` hero and a stray, unbound "Drop Off" button that had been copied from the driver screen.
+  - Section and record strings were cleaned up (the old ones padded spaces to force line breaks).
+  - Note: the real tile IDs are `addStudent`, `AddVehicle`, `AddStaffRecord`, `AddRoute`, etc., not the `register_*_card` names listed in Screen 3 below.
+- **Pre-existing lint error (unrelated):** `activity_modify_route.xml:138` calls `showTimePickerDialog`, but no such handler exists in its activity.
+
+---
+
 ## 2. Step 1: Shared XML Design System
 
 All screens share these tokens. We configure them in `res/values/` and `res/values-night/` first so individual screen redesigns stay simple and concise.
@@ -25,7 +51,7 @@ All screens share these tokens. We configure them in `res/values/` and `res/valu
 | `status_success_container` | `#E6F4EA` | `#1E3A24` | Soft green background for Boarded / Arrived |
 | `status_on_success` | `#137333` | `#81C995` | Dark green text/icon for Boarded / Arrived |
 | `status_warning_container` | `#FEF7E0` | `#3D2E00` | Soft amber background for En Route / Pending |
-| `status_on_warning` | `#B06000` | `#FDD663` | Dark amber text/icon for En Route / Pending |
+| `status_on_warning` | `#9A5200` | `#FDD663` | Dark amber text/icon for En Route / Pending |
 | `status_error_container` | `#FCE8E6` | `#3E1C1A` | Soft red background for Absent / Emergency |
 | `status_on_error` | `#C5221F` | `#F28B82` | Dark red text/icon for Absent / Emergency |
 | `surface_variant` | `#F1F3F4` | `#2D2F31` | Nested cards, toggle tracks, headers |
@@ -195,3 +221,4 @@ Visually redesign activity_school_landing.xml from its current vertical button s
 3. Add a top fleet summary card above the action categories.
 Ensure SchoolLanding.java compiles and all click listeners bind without issues.
 ```
+

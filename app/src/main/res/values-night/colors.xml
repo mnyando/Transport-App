@@ -18,7 +18,26 @@
     <color name="text_hint">#9E9E9E</color>
     <color name="gray">#A8A8A8</color>
 
-    <color name="text_accent">#81C784</color>
+    <color name="text_accent">#93C5FD</color>
     <color name="text_link">#90CAF9</color>
     <color name="text_error">#EF9A9A</color>
+
+    <!-- Design system. brand_primary stays #2563EB (bars, filled buttons with white text);
+         the Material primary role goes light so primary-coloured text stays readable on dark. -->
+    <color name="theme_primary">#93C5FD</color>
+    <color name="theme_on_primary">#0B1F44</color>
+    <color name="theme_primary_container">#1E3A8A</color>
+    <color name="theme_on_primary_container">#DBEAFE</color>
+
+    <color name="status_success_container">#1E3A24</color>
+    <color name="status_on_success">#81C995</color>
+    <color name="status_warning_container">#3D2E00</color>
+    <color name="status_on_warning">#FDD663</color>
+    <color name="status_error_container">#3E1C1A</color>
+    <color name="status_on_error">#F28B82</color>
+    <color name="status_info_container">#1E2A44</color>
+    <color name="status_on_info">#93C5FD</color>
+
+    <color name="surface_variant">#2D2F31</color>
+    <color name="outline_card">#3C4043</color>
 </resources>

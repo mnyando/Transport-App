@@ -139,7 +139,7 @@
                     android:layout_height="60dp"
                     android:text="@string/login"
                     android:textSize="16sp"
-                    android:backgroundTint="@color/green"
+                    android:backgroundTint="@color/brand_primary"
                     android:textColor="@android:color/white"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="12dp"
@@ -152,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:contentDescription="@string/signing_in"
-                    android:indeterminateTint="@color/green"
+                    android:indeterminateTint="@color/brand_primary"
                     android:visibility="gone" />
 
                 <!-- No Account? Sign Up -->

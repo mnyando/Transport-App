@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Live bus map for parents (review #10). -->
+<!-- Live bus map for parents (review #10). Live tracking screen (DESIGN_SYSTEM_AND_PLAN.md, screen 2):
+     the map fills the screen and a floating card shows the bus, its live state and quick actions. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background"
@@ -11,31 +13,155 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize" />
 
-    <TextView
-        android:id="@+id/busMapStatus"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/surface"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="12dp"
-        android:textColor="@color/text_primary"
-        android:textSize="16sp" />
-
-    <org.osmdroid.views.MapView
-        android:id="@+id/busMap"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:contentDescription="@string/bus_map_description" />
+        android:layout_weight="1">
 
-    <!-- Required credit for OpenStreetMap map data -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/surface"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="4dp"
-        android:text="@string/osm_attribution"
-        android:textColor="@color/text_secondary"
-        android:textSize="12sp" />
+        <org.osmdroid.views.MapView
+            android:id="@+id/busMap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/bus_map_description" />
+
+        <!-- Floating trip card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/busMapCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/spacing_l"
+            app:cardElevation="@dimen/card_elevation_raised">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_l">
+
+                <!-- Bus, driver and live-state pill -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/busMapIcon"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:backgroundTint="@color/status_info_container"
+                        android:importantForAccessibility="no"
+                        android:padding="10dp"
+                        android:src="@drawable/ic_bus_24"
+                        app:tint="@color/status_on_info" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/busMapTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.Transport.Title" />
+
+                        <TextView
+                            android:id="@+id/busMapDriver"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.Transport.Subtitle"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/busMapPill"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_s"
+                        android:background="@drawable/bg_pill"
+                        android:backgroundTint="@color/status_info_container"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/spacing_m"
+                        android:paddingVertical="6dp">
+
+                        <View
+                            android:id="@+id/busMapLiveDot"
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:background="@drawable/bg_icon_circle"
+                            android:backgroundTint="@color/status_on_info" />
+
+                        <TextView
+                            android:id="@+id/busMapPillText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:maxLines="1"
+                            android:text="@string/bus_map_state_locating"
+                            android:textAppearance="@style/TextAppearance.Transport.Badge"
+                            android:textColor="@color/status_on_info" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Detail: waiting / not on a trip / updated N minutes ago -->
+                <TextView
+                    android:id="@+id/busMapStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:accessibilityLiveRegion="polite"
+                    android:textAppearance="@style/TextAppearance.Transport.Body"
+                    android:textColor="@color/text_secondary" />
+
+                <!-- Quick actions -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_l"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/busMapMessageButton"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/spacing_s"
+                        android:layout_weight="1"
+                        android:minHeight="@dimen/touch_target_driver"
+                        android:text="@string/bus_map_message"
+                        app:cornerRadius="@dimen/radius_m"
+                        app:icon="@drawable/ic_chat_24"
+                        app:iconGravity="textStart" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/busMapRecentreButton"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:enabled="false"
+                        android:minHeight="@dimen/touch_target_driver"
+                        android:text="@string/bus_map_recentre"
+                        app:cornerRadius="@dimen/radius_m"
+                        app:icon="@drawable/ic_my_location_24"
+                        app:iconGravity="textStart" />
+                </LinearLayout>
+
+                <!-- Required credit for OpenStreetMap map data -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:text="@string/osm_attribution"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
 </LinearLayout>

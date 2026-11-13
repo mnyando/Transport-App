@@ -148,7 +148,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="28dp"
-                        android:backgroundTint="@color/green"
+                        android:backgroundTint="@color/brand_primary"
                         android:padding="16dp"
                         android:text="@string/update_route"
                         android:textColor="@android:color/white"

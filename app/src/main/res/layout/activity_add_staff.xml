@@ -187,7 +187,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="10dp"
-                    android:backgroundTint="@color/green"
+                    android:backgroundTint="@color/brand_primary"
                     android:padding="16dp"
                     android:text="@string/save_staff"
                     android:textColor="@android:color/white"

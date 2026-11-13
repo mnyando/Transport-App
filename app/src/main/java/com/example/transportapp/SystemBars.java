@@ -37,7 +37,7 @@ final class SystemBars {
 
         boolean hasToolbar = activity.findViewById(R.id.toolbar) != null;
         boolean hasFooter = activity.findViewById(R.id.footer_text) != null;
-        int barColor = ContextCompat.getColor(activity, R.color.green);
+        int barColor = ContextCompat.getColor(activity, R.color.brand_primary);
 
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(activity.getWindow(), root);

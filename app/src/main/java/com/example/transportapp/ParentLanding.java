@@ -98,7 +98,7 @@ public class ParentLanding extends AppCompatActivity {
         setupRecyclerViews();
         // Pull down to reload the children (review #20).
         refreshLayout = findViewById(R.id.parentRefresh);
-        refreshLayout.setColorSchemeResources(R.color.green);
+        refreshLayout.setColorSchemeResources(R.color.brand_primary);
         refreshLayout.setOnRefreshListener(() -> viewModel.refreshChildren());
 
         viewModel = new ViewModelProvider(this, ParentDashboardViewModel.factory(

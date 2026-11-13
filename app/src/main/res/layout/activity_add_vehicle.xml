@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="24dp"
-                    android:backgroundTint="@color/green"
+                    android:backgroundTint="@color/brand_primary"
                     android:padding="16dp"
                     android:text="@string/title_add_vehicle"
                     android:textColor="@color/white"

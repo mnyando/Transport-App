@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pull down to refresh the numbers (review #20) -->
+<!-- School admin hub (DESIGN_SYSTEM_AND_PLAN.md, screen 3): a fleet overview card, then one card per
+     record type with Add / Edit / Remove tiles. Pull down to refresh the numbers (review #20).
+     Tile ids are bound as CardView in SchoolLanding.java; MaterialCardView extends CardView. -->
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/schoolRefresh"
@@ -15,886 +17,738 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
         <include
             layout="@layout/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="60dp" />
+            android:layout_height="?attr/actionBarSize" />
 
-        <!-- General Information Section -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/general_info_card"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:cardElevation="6dp"
-            app:cardCornerRadius="12dp"
-            android:padding="16dp">
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/spacing_l"
+            android:paddingBottom="@dimen/spacing_l">
+
+        <!-- Fleet overview -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_l">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:padding="@dimen/spacing_l">
 
-                <!-- Title -->
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/general_information"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_accent"
-                    android:gravity="center"
-                    android:paddingBottom="12dp"/>
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <!-- Image Section -->
-                <ImageView
-                    android:id="@+id/landing_image"
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:accessibilityHeading="true"
+                        android:text="@string/general_information"
+                        android:textAppearance="@style/TextAppearance.Transport.Header" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/school_overview_hint"
+                        android:textAppearance="@style/TextAppearance.Transport.StatLabel" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:layout_gravity="center"
-                    android:contentDescription="@null"
-                    android:paddingBottom="12dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/landing_image" />
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
 
-                <!-- Information Grid -->
-                <GridLayout
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingVertical="@dimen/spacing_s">
+
+                        <TextView
+                            android:id="@+id/studentsEnrolledText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_2"
+                            android:textAppearance="@style/TextAppearance.Transport.StatValue" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/students_enrolled"
+                            android:textAppearance="@style/TextAppearance.Transport.StatLabel" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingVertical="@dimen/spacing_s">
+
+                        <TextView
+                            android:id="@+id/routesTraveledText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_2"
+                            android:textAppearance="@style/TextAppearance.Transport.StatValue" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/routes_travelled"
+                            android:textAppearance="@style/TextAppearance.Transport.StatLabel" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingVertical="@dimen/spacing_s">
+
+                        <TextView
+                            android:id="@+id/activeVehiclesText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_2"
+                            android:textAppearance="@style/TextAppearance.Transport.StatValue" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/active_vehicles"
+                            android:textAppearance="@style/TextAppearance.Transport.StatLabel" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="@dimen/spacing_s"
+                    android:background="@color/outline_card" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:rowCount="3"
-                    android:padding="12dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@color/surface">
+                    android:orientation="horizontal">
 
-                    <!-- Students Enrolled -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/students_enrolled_card"
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="6dp"
-                        app:cardElevation="6dp"
-                        app:cardCornerRadius="12dp"
-                        android:padding="12dp">
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingVertical="@dimen/spacing_s">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/inactiveVehiclesText"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
+                            android:text="@string/text_2"
+                            android:textAppearance="@style/TextAppearance.Transport.StatValue" />
 
-                            <ImageView
-                                android:paddingTop="6dp"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:src="@drawable/students_enrolled"
-                                android:contentDescription="@null"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/inactive_vehicles"
+                            android:textAppearance="@style/TextAppearance.Transport.StatLabel" />
+                    </LinearLayout>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/students_enrolled"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:paddingTop="8dp"/>
-
-                            <TextView
-                                android:id="@+id/studentsEnrolledText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_2"
-                                android:textSize="26sp"
-                                android:textColor="@color/text_accent"
-                                android:textStyle="bold"
-                                android:gravity="center"/>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Routes Travelled -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/routes_travelled_card"
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="6dp"
-                        app:cardElevation="6dp"
-                        app:cardCornerRadius="12dp"
-                        android:padding="12dp">
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingVertical="@dimen/spacing_s">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/activeDriversText"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
+                            android:text="@string/text_2"
+                            android:textAppearance="@style/TextAppearance.Transport.StatValue" />
 
-                            <ImageView
-                                android:paddingTop="6dp"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:src="@drawable/routes_travelled"
-                                android:contentDescription="@null"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="@string/active_drivers"
+                            android:textAppearance="@style/TextAppearance.Transport.StatLabel" />
+                    </LinearLayout>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/routes_travelled"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:paddingTop="8dp"/>
-
-                            <TextView
-                                android:id="@+id/routesTraveledText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_2"
-                                android:textSize="26sp"
-                                android:textColor="@color/text_accent"
-                                android:textStyle="bold"
-                                android:gravity="center"/>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Active Vehicles -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/active_vehicles_card"
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="6dp"
-                        app:cardElevation="6dp"
-                        app:cardCornerRadius="12dp"
-                        android:padding="12dp">
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:paddingVertical="@dimen/spacing_s">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/inactiveDriversText"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
+                            android:text="@string/text_2"
+                            android:textAppearance="@style/TextAppearance.Transport.StatValue" />
 
-                            <ImageView
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:src="@drawable/active_vehicles"
-                                android:contentDescription="@null"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/active_vehicles"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:paddingTop="8dp"/>
-
-                            <TextView
-                                android:id="@+id/activeVehiclesText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_2"
-                                android:textSize="26sp"
-                                android:textColor="@color/text_accent"
-                                android:textStyle="bold"
-                                android:gravity="center"/>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Inactive Vehicles -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/inactive_vehicles_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="6dp"
-                        app:cardElevation="6dp"
-                        app:cardCornerRadius="12dp"
-                        android:padding="12dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:src="@drawable/inactive_vehicles"
-                                android:contentDescription="@null"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/inactive_vehicles"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:paddingTop="8dp"/>
-
-                            <TextView
-                                android:id="@+id/inactiveVehiclesText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_2"
-                                android:textSize="26sp"
-                                android:textColor="@color/text_error"
-                                android:textStyle="bold"
-                                android:gravity="center"/>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Active Drivers -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/active_drivers_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="6dp"
-                        app:cardElevation="6dp"
-                        app:cardCornerRadius="12dp"
-                        android:padding="12dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:src="@drawable/active_driverr"
-                                android:contentDescription="@null"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/active_drivers"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:paddingTop="8dp"/>
-
-                            <TextView
-                                android:id="@+id/activeDriversText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_2"
-                                android:textSize="26sp"
-                                android:textColor="@color/text_accent"
-                                android:textStyle="bold"
-                                android:gravity="center"/>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Inactive Drivers -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/inactive_drivers_card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:layout_margin="6dp"
-                        app:cardElevation="6dp"
-                        app:cardCornerRadius="12dp"
-                        android:padding="12dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:paddingTop="6dp"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
-                                android:src="@drawable/inactive_driver"
-                                android:contentDescription="@null" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/inactive_drivers"
-                                android:textSize="16sp"
-                                android:textStyle="bold"
-                                android:gravity="center"
-                                android:paddingTop="8dp"/>
-
-                            <TextView
-                                android:id="@+id/inactiveDriversText"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_2"
-                                android:textSize="26sp"
-                                android:textColor="@color/text_error"
-                                android:textStyle="bold"
-                                android:gravity="center"/>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                </GridLayout>
+                            android:gravity="center"
+                            android:text="@string/inactive_drivers"
+                            android:textAppearance="@style/TextAppearance.Transport.StatLabel" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Title for Student Record Actions Section -->
+        <!-- Students -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_l">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:backgroundTint="@color/theme_primary_container"
+                        android:importantForAccessibility="no"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_student"
+                        app:tint="@color/theme_on_primary_container" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:accessibilityHeading="true"
+                        android:text="@string/student_record_actions"
+                        android:textAppearance="@style/TextAppearance.Transport.Title" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/addStudent"
+                    style="@style/Widget.Transport.Tile"
+                    android:layout_marginEnd="@dimen/spacing_s"
+                    android:contentDescription="@string/add_student_record">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:minHeight="88dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            style="@style/Widget.Transport.TileIcon"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_add_24" />
+
+                        <TextView
+                            style="@style/Widget.Transport.TileLabel"
+                            android:text="@string/tile_add" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/modifyStudent"
+                    style="@style/Widget.Transport.Tile"
+                    android:layout_marginEnd="@dimen/spacing_s"
+                    android:contentDescription="@string/modify_student_record">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:minHeight="88dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            style="@style/Widget.Transport.TileIcon"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_edit_24" />
+
+                        <TextView
+                            style="@style/Widget.Transport.TileLabel"
+                            android:text="@string/tile_edit" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/deleteStudent"
+                    style="@style/Widget.Transport.Tile"
+                    android:contentDescription="@string/delete_student_record">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:minHeight="88dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            style="@style/Widget.Transport.TileIcon"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_delete_24"
+                            app:tint="@color/status_on_error" />
+
+                        <TextView
+                            style="@style/Widget.Transport.TileLabel"
+                            android:text="@string/tile_remove" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Staff -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_l">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:backgroundTint="@color/theme_primary_container"
+                        android:importantForAccessibility="no"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_driver"
+                        app:tint="@color/theme_on_primary_container" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:accessibilityHeading="true"
+                        android:text="@string/staff_management"
+                        android:textAppearance="@style/TextAppearance.Transport.Title" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/AddStaffRecord"
+                    style="@style/Widget.Transport.Tile"
+                    android:layout_marginEnd="@dimen/spacing_s"
+                    android:contentDescription="@string/add_staff_record">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:minHeight="88dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            style="@style/Widget.Transport.TileIcon"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_add_24" />
+
+                        <TextView
+                            style="@style/Widget.Transport.TileLabel"
+                            android:text="@string/tile_add" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/ModifyStaffRecord"
+                    style="@style/Widget.Transport.Tile"
+                    android:layout_marginEnd="@dimen/spacing_s"
+                    android:contentDescription="@string/modify_staff_record">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:minHeight="88dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            style="@style/Widget.Transport.TileIcon"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_edit_24" />
+
+                        <TextView
+                            style="@style/Widget.Transport.TileLabel"
+                            android:text="@string/tile_edit" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/DeleteStaffRecord"
+                    style="@style/Widget.Transport.Tile"
+                    android:contentDescription="@string/delete_staff_record">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:minHeight="88dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            style="@style/Widget.Transport.TileIcon"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_delete_24"
+                            app:tint="@color/status_on_error" />
+
+                        <TextView
+                            style="@style/Widget.Transport.TileLabel"
+                            android:text="@string/tile_remove" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Vehicles -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_l">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:backgroundTint="@color/theme_primary_container"
+                        android:importantForAccessibility="no"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_bus_24"
+                        app:tint="@color/theme_on_primary_container" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:accessibilityHeading="true"
+                        android:text="@string/vehicle_management"
+                        android:textAppearance="@style/TextAppearance.Transport.Title" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/AddVehicle"
+                    style="@style/Widget.Transport.Tile"
+                    android:layout_marginEnd="@dimen/spacing_s"
+                    android:contentDescription="@string/add_vehicle_record">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:minHeight="88dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            style="@style/Widget.Transport.TileIcon"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_add_24" />
+
+                        <TextView
+                            style="@style/Widget.Transport.TileLabel"
+                            android:text="@string/tile_add" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/ModifyVehicle"
+                    style="@style/Widget.Transport.Tile"
+                    android:layout_marginEnd="@dimen/spacing_s"
+                    android:contentDescription="@string/modify_vehicle_record">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:minHeight="88dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            style="@style/Widget.Transport.TileIcon"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_edit_24" />
+
+                        <TextView
+                            style="@style/Widget.Transport.TileLabel"
+                            android:text="@string/tile_edit" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/DeleteVehicle"
+                    style="@style/Widget.Transport.Tile"
+                    android:contentDescription="@string/delete_vehicle_record">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:minHeight="88dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            style="@style/Widget.Transport.TileIcon"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_delete_24"
+                            app:tint="@color/status_on_error" />
+
+                        <TextView
+                            style="@style/Widget.Transport.TileLabel"
+                            android:text="@string/tile_remove" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Routes -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_m">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_l">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:backgroundTint="@color/theme_primary_container"
+                        android:importantForAccessibility="no"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_route"
+                        app:tint="@color/theme_on_primary_container" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/spacing_m"
+                        android:layout_weight="1"
+                        android:accessibilityHeading="true"
+                        android:text="@string/route_management"
+                        android:textAppearance="@style/TextAppearance.Transport.Title" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/AddRoute"
+                    style="@style/Widget.Transport.Tile"
+                    android:layout_marginEnd="@dimen/spacing_s"
+                    android:contentDescription="@string/add_route_record">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:minHeight="88dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            style="@style/Widget.Transport.TileIcon"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_add_24" />
+
+                        <TextView
+                            style="@style/Widget.Transport.TileLabel"
+                            android:text="@string/tile_add" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/ModifyRoute"
+                    style="@style/Widget.Transport.Tile"
+                    android:layout_marginEnd="@dimen/spacing_s"
+                    android:contentDescription="@string/modify_route_record">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:minHeight="88dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            style="@style/Widget.Transport.TileIcon"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_edit_24" />
+
+                        <TextView
+                            style="@style/Widget.Transport.TileLabel"
+                            android:text="@string/tile_edit" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/DeleteRoute"
+                    style="@style/Widget.Transport.Tile"
+                    android:contentDescription="@string/delete_route_record">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:minHeight="88dp"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_m">
+
+                        <ImageView
+                            style="@style/Widget.Transport.TileIcon"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_delete_24"
+                            app:tint="@color/status_on_error" />
+
+                        <TextView
+                            style="@style/Widget.Transport.TileLabel"
+                            android:text="@string/tile_remove" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- More: reports and the parent sign-up code (review #2) -->
         <TextView
-            android:id="@+id/tvStudentRecordTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/student_record_actions"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:paddingBottom="1dp"
-            android:layout_marginTop="24dp"
-            android:gravity="center"/>
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:accessibilityHeading="true"
+            android:text="@string/school_more"
+            android:textAppearance="@style/TextAppearance.Transport.Title" />
 
-        <!-- Student Record Actions Section -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="16dp"
-            android:weightSum="3">
-
-            <!-- Add Student Record -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/addStudent"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                app:cardElevation="6dp"
-                app:cardCornerRadius="12dp"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:paddingTop="6dp"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/add_student"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_student_record"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Modify Student Record -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/modifyStudent"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                app:cardElevation="6dp"
-                app:cardCornerRadius="12dp"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:paddingTop="6dp"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/modify_student"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/modify_student_record"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Delete Student Record -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/deleteStudent"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                app:cardElevation="6dp"
-                app:cardCornerRadius="12dp"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:paddingTop="6dp"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/delete_student"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/delete_student_record"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-
-        <!-- Title for Vehicle Record Actions Section -->
-        <TextView
-            android:id="@+id/ManageVehicle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/vehicle_management"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:paddingBottom="8dp"
-            android:layout_marginTop="24dp"
-            android:gravity="center"/>
-
-        <!-- Vehicle Record Actions Section -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="16dp"
-            android:weightSum="3">
-
-            <!-- Add Vehicle Record -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/AddVehicle"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                app:cardElevation="6dp"
-                app:cardCornerRadius="12dp"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:paddingTop="6dp"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/add_vehicle"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_vehicle_record"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Modify Vehicle Record -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/ModifyVehicle"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                app:cardElevation="6dp"
-                app:cardCornerRadius="12dp"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:paddingTop="6dp"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/modify_vehicle"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/modify_vehicle_record"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Delete Vehicle Record -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/DeleteVehicle"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                app:cardElevation="6dp"
-                app:cardCornerRadius="12dp"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:paddingTop="6dp"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/delete_vehicle"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/delete_vehicle_record"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-
-        <!-- Title for Route Record Actions Section -->
-        <TextView
-            android:id="@+id/RouteRecordTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/route_management"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:paddingBottom="8dp"
-            android:layout_marginTop="24dp"
-            android:gravity="center"/>
-
-        <!-- Route Record Actions Section -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="16dp"
-            android:weightSum="3">
-
-            <!-- Add Route Record -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/AddRoute"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                app:cardElevation="6dp"
-                app:cardCornerRadius="12dp"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:paddingTop="6dp"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/add_route"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_route_record"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Modify Route Record -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/ModifyRoute"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                app:cardElevation="6dp"
-                app:cardCornerRadius="12dp"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:paddingTop="6dp"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/modify_route"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/modify_route_record"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Delete Route Record -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/DeleteRoute"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                app:cardElevation="6dp"
-                app:cardCornerRadius="12dp"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:paddingTop="6dp"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/delete_routee"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/delete_route_record"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-
-        <!-- Title for Staff Record Actions Section -->
-        <TextView
-            android:id="@+id/StaffRecordTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/staff_management"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:paddingBottom="8dp"
-            android:layout_marginTop="24dp"
-            android:gravity="center"/>
-
-        <!-- Staff Record Actions Section -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="16dp"
-            android:weightSum="3">
-
-            <!-- Add Staff Record -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/AddStaffRecord"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                app:cardElevation="6dp"
-                app:cardCornerRadius="12dp"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:paddingTop="6dp"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/add_staff"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_staff_record"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Modify Staff Record -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/ModifyStaffRecord"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                app:cardElevation="6dp"
-                app:cardCornerRadius="12dp"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:paddingTop="6dp"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/modify_staff"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/modify_staff_record"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Delete Staff Record -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/DeleteStaffRecord"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                app:cardElevation="6dp"
-                app:cardCornerRadius="12dp"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:paddingTop="6dp"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:src="@drawable/delete_staff"
-                        android:contentDescription="@null" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/delete_staff_record"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginTop="8dp"/>
-                </LinearLayout>
-
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <Button
-                android:id="@+id/dropOffButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:backgroundTint="@color/green"
-                android:text="@string/drop_off"
-                android:textColor="@android:color/white" />
-        </LinearLayout>
-
-
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/reportsButton"
+            style="@style/Widget.Transport.Button.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginRight="32dp"
-            android:backgroundTint="@color/green"
-            android:minHeight="56dp"
+            android:layout_marginTop="@dimen/spacing_m"
             android:text="@string/reports"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            app:icon="@drawable/ic_assessment_24"
+            app:iconGravity="textStart"
+            app:iconTint="@color/brand_on_primary" />
 
-        <!-- Review #2: the code parents need to sign up -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/inviteCodeButton"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            android:minHeight="56dp"
+            android:layout_marginTop="@dimen/spacing_s"
+            android:minHeight="@dimen/touch_target_driver"
             android:text="@string/invite_code_button"
-            android:textColor="@color/text_accent"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            app:cornerRadius="@dimen/radius_pill"
+            app:icon="@drawable/ic_person_add_24"
+            app:iconGravity="textStart" />
+        </LinearLayout>
 
         <!-- Footer Section -->
         <include

@@ -64,7 +64,7 @@ public class SchoolLanding extends AppCompatActivity {
         reportsButton = findViewById(R.id.reportsButton);
 
         refreshLayout = findViewById(R.id.schoolRefresh);
-        refreshLayout.setColorSchemeResources(R.color.green);
+        refreshLayout.setColorSchemeResources(R.color.brand_primary);
         refreshLayout.setOnRefreshListener(this::refreshCounts);
 
         // Set onClickListeners for Route actions

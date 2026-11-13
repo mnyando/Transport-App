@@ -1,13 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme. Colour roles point at theme_* tokens, which have
+         light values in values/colors.xml and dark values in values-night/colors.xml. -->
     <style name="Base.Theme.TransportApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Brand colours (review section 4: colours live in colors.xml and the theme) -->
-        <item name="colorPrimary">@color/green</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/theme_primary</item>
+        <item name="colorOnPrimary">@color/theme_on_primary</item>
+        <item name="colorPrimaryContainer">@color/theme_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/theme_on_primary_container</item>
         <item name="colorSecondary">@color/accent_orange</item>
         <item name="colorOnSecondary">@color/white</item>
-        <!-- Cards keep the raised look of the old androidx CardView -->
-        <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Elevated</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOutlineVariant">@color/outline_card</item>
+        <!-- Cards use the design-system card (16dp radius, 1dp outline) -->
+        <item name="materialCardViewStyle">@style/Widget.Transport.Card</item>
     </style>
 
     <style name="Theme.TransportApp" parent="Base.Theme.TransportApp" />

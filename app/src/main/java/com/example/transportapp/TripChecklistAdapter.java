@@ -64,8 +64,8 @@ public class TripChecklistAdapter extends RecyclerView.Adapter<TripChecklistAdap
         Row row = new Row(view);
         row.done.setText(pickup ? R.string.status_picked_up : R.string.status_dropped_off);
         row.notDone.setText(pickup ? R.string.status_not_picked : R.string.status_not_dropped);
-        tint(row.done, R.color.green);
-        tint(row.notDone, R.color.red);
+        tint(row.done, R.color.green, R.color.status_on_success);
+        tint(row.notDone, R.color.red, R.color.status_on_error);
 
         row.group.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (row.binding) return;
@@ -82,15 +82,29 @@ public class TripChecklistAdapter extends RecyclerView.Adapter<TripChecklistAdap
         return row;
     }
 
-    /** Selected buttons fill with the colour; unselected ones show it as an outline. */
-    private static void tint(MaterialButton button, int colorRes) {
-        int color = ContextCompat.getColor(button.getContext(), colorRes);
-        int white = ContextCompat.getColor(button.getContext(), R.color.white);
-        int text = ContextCompat.getColor(button.getContext(), R.color.text_primary);
-        int[][] states = {{android.R.attr.state_checked}, {}};
-        button.setBackgroundTintList(new ColorStateList(states, new int[]{color, 0x00000000}));
-        button.setTextColor(new ColorStateList(states, new int[]{white, text}));
-        button.setStrokeColor(ColorStateList.valueOf(color));
+    /**
+     * Selected buttons fill with {@code fillRes} (same in light and dark, white text). Unselected
+     * ones show {@code onRes}, the readable status colour for the current theme, as outline, text
+     * and icon. Before the trip starts the buttons are disabled and drawn muted.
+     */
+    private static void tint(MaterialButton button, int fillRes, int onRes) {
+        android.content.Context c = button.getContext();
+        int fill = ContextCompat.getColor(c, fillRes);
+        int on = ContextCompat.getColor(c, onRes);
+        int white = ContextCompat.getColor(c, R.color.white);
+        int muted = ContextCompat.getColor(c, R.color.text_hint);
+        int outline = ContextCompat.getColor(c, R.color.outline_card);
+        int[][] states = {
+                {-android.R.attr.state_enabled},
+                {android.R.attr.state_checked},
+                {}
+        };
+        ColorStateList content = new ColorStateList(states, new int[]{muted, white, on});
+        button.setBackgroundTintList(
+                new ColorStateList(states, new int[]{0x00000000, fill, 0x00000000}));
+        button.setTextColor(content);
+        button.setIconTint(content);
+        button.setStrokeColor(new ColorStateList(states, new int[]{outline, fill, on}));
     }
 
     @Override

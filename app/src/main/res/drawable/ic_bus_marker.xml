@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Bus position on the parent map: white bus on a green circle with a white ring. -->
+<!-- Bus position on the parent map: white bus on a brand-blue circle with a white ring. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="44dp"
     android:height="44dp"
@@ -9,7 +9,7 @@
         android:fillColor="#FFFFFF"
         android:pathData="M16,0.5a15.5,15.5 0,1 1,-0.01 0z" />
     <path
-        android:fillColor="#1B6B1B"
+        android:fillColor="#2563EB"
         android:pathData="M16,2.5a13.5,13.5 0,1 1,-0.01 0z" />
     <group
         android:scaleX="0.75"
