@@ -1,221 +1,164 @@
-# Implementation Plan: Point 1 — Build and Project Setup
-
-## Executive Summary
-This document provides a detailed, production-grade engineering plan to execute **Point 1: Build and project setup** from the *School Transport Child Safety App Review and Recommendations* report.
-
-The primary objective is to transform the existing mobile codebase into a reproducible, stable, secure, and clean Android build foundation that compiles from the command line, enforces secure defaults, eliminates asset-decoding crashes, and prevents navigation regressions.
+# Transport App: Implementation Status & Comprehensive Action Plan
+*Audit & Progress Tracking against "Pain Points and How to Fix Them" (12 November 2026)*
 
 ---
 
-## 1. Baseline Audit & Gap Analysis
+## 1. Executive Summary & Progress Scorecard
 
-Based on our inspection of the current repository against the findings on Pages 2–3 of the review document:
+Over the recent development sprints (commits `7338dd6` through `b71b73a`), the project was transformed from an unrunnable static prototype into a functional, building Android application with real-time Firebase services, hardened authentication, foreground location tracking, server-side push notifications, and modern MVVM architecture.
 
-| PDF Sub-Item | Severity | Current Status in Repo | Action Required |
-|---|---|---|---|
-| **1.1 Launch screen declaration** (`AndroidManifest.xml`) | **Critical** | Partially Addressed (`MainActivity` now has MAIN/LAUNCHER filter) | Enforce `allowBackup="false"` for child data protection; verify all 20+ activities are declared and unexported where appropriate. |
-| **1.2 Role picker crash prevention** (`MainActivity.java`) | **Critical** | Navigation wired; no automated test | Implement an Espresso instrumented test verifying `MainActivity` -> `Navigation` transition without `ActivityNotFoundException`. |
-| **1.3 Gradle wrapper files** (root) | **Critical** | Wrapper files present in repo | Ensure `.gitignore` explicitly prevents `gradle-wrapper.jar` from being ignored (`!gradle/wrapper/gradle-wrapper.jar`); document `JAVA_HOME` configuration. |
-| **1.4 Wrong image file extensions** (`res/drawable/`) | **High** | **Active Defect** | `notification.jpg` is raw SVG (causes inflation errors); `school.jpg` is AVIF (crashes Android < 12, minSdk is 24); `attendant.jpg` is WebP; `clock.jpg` & `tracking.jpg` are PNGs; `driver_image.png` is JPEG. Must be converted/renamed. |
-| **1.5 Launcher icon resources** (`res/mipmap-*`) | **High** | Generic icons present | Ensure brand adaptive icons (`ic_launcher`, `ic_launcher_round`) feature a bus or safety shield motif in brand green (`#228B22`). |
-| **1.6 Leftover templates & missing dependencies** | **Medium** | Partial cleanup done | Add explicit dependencies for `androidx.recyclerview:recyclerview` and `androidx.cardview:cardview` to `libs.versions.toml`; remove dead template file `refs.xml`. |
-| **1.7 Release build and publishing identity** | **Medium** | **Active Defect** | Package ID is `com.example.transportapp` (rejected by Google Play); `isMinifyEnabled = false`; no R8 shrinking or ProGuard rules for Firebase/charts. |
-| **1.8 `local.properties` in version control** | **Low** | Verified Clean | In `.gitignore` and untracked. Add safeguarding rules for release keystores and local secrets. |
+### Scorecard: 21 Pain Points
+| Status | Count | Pain Points |
+|---|:---:|---|
+|  **Completed / Resolved** | **10** | **#2, #3, #4, #5, #6, #9, #11, #12, #19, #20** |
+|  **Partially Resolved** | **4** | **#1, #8, #10, #17** |
+|  **Remaining / Pending** | **7** | **#7, #13, #14, #15, #16, #18, #21** |
+
+```mermaid
+pie title 21 Pain Points Resolution Status
+    "Completed / Resolved" : 10
+    "Partially Resolved" : 4
+    "Remaining / Pending" : 7
+```
 
 ---
 
-## 2. Architecture & Design Decisions
+## 2. All 21 Pain Points: Audit & Status Matrix
+
+| # | Severity | Pain Point Area | Review Finding | Status | Current Implementation State in Codebase |
+|---|---|---|---|:---:|---|
+| **1** | **Critical** | Child Safety | Parents matched to children by name |  **Partial** | Parents are now matched by **verified login email** (`parentEmail` in student record & `ParentEmails.normalize(user.getEmail())`), eliminating duplicate name collisions. *Pending: full account UID linking via invitation Cloud Function (`parentUids: [uid]`).* |
+| **2** | **Critical** | Security | Open sign-up, client-set roles, rules not in repo |  **Resolved** | [firestore.rules](file:///c:/Users/Martin/Downloads/Transport-App/firestore.rules) & [firebase.json](file:///c:/Users/Martin/Downloads/Transport-App/firebase.json) added to repository. Server-side validation enforces role isolation; sign-up restricted to parent role; driver accounts linked via Cloud Function. |
+| **3** | **Critical** | Safety | False "picked up" and "dropped off" alerts |  **Resolved** | Implemented [TripAlerts.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/TripAlerts.java). Alerts send only the actual status recorded (`done`, `not_done`, `unmarked`), and unconfirmed children trigger immediate warnings to `schoolAlerts`. Grammar fixed in strings. |
+| **4** | **High** | Safety | Checkbox list can record wrong child on scroll |  **Resolved** | In [StudentStatusAdapter.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/StudentStatusAdapter.java), listeners are attached once in `onCreateViewHolder`, guarded by `holder.settingState` during binding, and index is resolved via `getBindingAdapterPosition()`. |
+| **5** | **Medium** | Privacy | Personal data in logs; raw errors shown to users |  **Resolved** | ProGuard configured with `-assumenosideeffects class android.util.Log { public static int d(...); v(...); i(...); }` to strip verbose/debug logs with names and tokens from release APKs. Friendly user error messages. |
+| **6** | **Critical** | Notifications | Push notifications never reach the phone |  **Resolved** | Replaced dead upstream API. Implemented [TransportMessagingService.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/TransportMessagingService.java), [PushTokens.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/PushTokens.java), declared `POST_NOTIFICATIONS` permission, and created `sendParentPush` Cloud Function in [functions/index.js](file:///c:/Users/Martin/Downloads/Transport-App/functions/index.js) using FCM HTTP v1. |
+| **7** | **High** | Admin | Delete Student crashes or silently deletes nothing |  **Remaining** | [DeleteStudent.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/DeleteStudent.java) accepts an Intent `studentId` extra but **no caller in the codebase shows a student picker before launching it**, so the ID is effectively uncontrolled. It deletes from root `students/{id}` (line 83) instead of subcollection `students/{grade}/studentList/{id}`. Dead code: unreachable `updateStudentData()` at line 54 also uses the wrong path. |
+| **8** | **High** | Data | Screens read collections that are never written |  **Partial** | Fixed driver lookup to use `staff` and unified `vehicle`. *Remaining: Three separate mismatches in route data — (a) [AddRoute.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/AddRoute.java) writes to `"Routes"` (capital); [RouteReportActivity.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/RouteReportActivity.java) reads `"routes"` (lowercase) — a different Firestore collection; (b) [AddStudent.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/AddStudent.java) `fetchRoutes()` and `checkVehicleCapacity()` also query `"Routes"` (capital); (c) `RouteReportActivity.java` reads field `"name"` (line 90) but `AddRoute.java` stores field `"routeName"` (line 117) — causing a NullPointerException in the spinner even if the collection name is fixed.* |
+| **9** | **High** | Accounts | Sign-up dead end, no log-out, no saved session |  **Resolved** | Session restoration implemented in `MainActivity` (checks `FirebaseAuth.getCurrentUser()`) and `Login.resumeSession()`, which re-reads role from Firestore and routes to the correct home screen. [Session.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/Session.java) provides the sign-out toolbar helper (clears tokens and redirects to `MainActivity`). Logout icon added to [toolbar.xml](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/res/layout/toolbar.xml); sign-up sends email verification. |
+| **10** | **High** | Features | No live bus location, map or emergency SOS |  **Partial** | Implemented [TripLocationService.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/TripLocationService.java) foreground GPS service (15 s / 20 m intervals) writing to `busGroups/{busId}`, and SOS emergency alert in [DriverLanding.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/DriverLanding.java). [ParentLanding.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/ParentLanding.java) already reads `lat`/`lng` from `busGroups` and launches the **native maps app** via `geo:` URI as a workaround. *Remaining: Embedded in-app map (Google Maps SDK or osmdroid) with live bus marker and ETA display — the external-app workaround is functional but not suitable for production UX.* |
+| **11** | **High** | Features | Chat only shows messages on the sender's screen |  **Resolved** | [ChatActivity.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/ChatActivity.java) now persists messages in Firestore under `busGroups/{busId}/messages` with real-time `addSnapshotListener`, sender UIDs, and timestamps. |
+| **12** | **Medium** | Trips | Trip lifecycle gaps (open trips, pre-ticked, crashes) |  **Resolved** | Fixed Intent validation in [DropOff.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/DropOff.java) (`if (!getIntentData()) finish()`); trip statuses start unticked; start/end times guarded against null arithmetic. |
+| **13** | **Medium** | Data | Fragile data model (copied staff, text capacity) |  **Remaining** | [AddStudent.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/AddStudent.java) copies staff names into student records; vehicle capacity is stored as String text; capacity check is not in a Firestore transaction. |
+| **14** | **Medium** | Performance | Notification feed loads everything, unsorted |  **Remaining** | [FirestoreParentRepository.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/FirestoreParentRepository.java) listens to all parent notifications without `.orderBy("timestamp", Query.Direction.DESCENDING).limit(50)` or pagination. |
+| **15** | **High** | Release | Play Store blockers (package name, target SDK 36) |  **Remaining** | Application ID is still `com.example.transportapp` (must be updated in Gradle and Firebase); target SDK is 35 (needs evaluation for 36); published online privacy policy URL required. |
+| **16** | **Low** | Build | Gradle 10 deprecations & dependencies outside catalog |  **Remaining** | `MPAndroidChart` and `firebase-messaging` are declared inline in [app/build.gradle.kts](file:///c:/Users/Martin/Downloads/Transport-App/app/build.gradle.kts) instead of [gradle/libs.versions.toml](file:///c:/Users/Martin/Downloads/Transport-App/gradle/libs.versions.toml); Firebase BoM not yet used. |
+| **17** | **Medium** | Code Quality | All logic in activities as deeply nested callbacks |  **Partial** | Parent dashboard modernized with MVVM ([ParentDashboardViewModel.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/ParentDashboardViewModel.java) & [ParentRepository.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/ParentRepository.java)). *Remaining: School and Driver screens still have multi-level nested callbacks.* |
+| **18** | **Medium** | Quality | Almost no tests and no CI workflow |  **Remaining** | Instrumented entry test [LaunchAndNavigationTest.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/androidTest/java/com/example/transportapp/LaunchAndNavigationTest.java) exists; missing GitHub Actions CI workflow (`.github/workflows/android.yml`) and ViewModel unit tests. |
+| **19** | **Medium** | UX | Hard-coded text, oversized images, contrast, insets |  **Resolved** | Deleted 1.1MB & 2.2MB drawables; added WebPs in `drawable-nodpi`; fixed button contrast ratios in [colors.xml](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/res/values/colors.xml); centralized window insets via [SystemBars.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/SystemBars.java); strings extracted. |
+| **20** | **Medium** | UX | Dead back buttons, no loading or empty states |  **Resolved** | Standardized [toolbar.xml](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/res/layout/toolbar.xml) and wired navigation icons with `finish()` across all activities; added empty-state feedback in parent dashboard. |
+| **21** | **Low** | UX | Driver screen hard to use on the road |  **Remaining** | Checkbox tap targets in `item_student_status.xml` remain small for moving vehicles; driver screen displays technical IDs (`driverId`); student ordering by stop route and QR code boarding not yet added. |
+
+---
+
+## 3. Accomplished Work: Technical Deep Dive
+
+### 3.1 Security, Role-Based Access & Rules (#2, #5)
+- **Firestore Security Rules**: Shipped [firestore.rules](file:///c:/Users/Martin/Downloads/Transport-App/firestore.rules) covering all collections (`users`, `staff`, `vehicle`, `Routes`, `routes`, `students`, `trips`, `notifications`, `schoolAlerts`, `busGroups`). Rules verify user roles server-side via `users/{uid}.role` and restrict student document access to the assigned parent email.
+- **Privacy Hardening**: Set `android:allowBackup="false"` and added [network_security_config.xml](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/res/xml/network_security_config.xml). Added [PrivacyNotice.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/PrivacyNotice.java) dialog and stripped release logging via ProGuard `-assumenosideeffects`.
+
+### 3.2 Real-Time Push Notification Engine (#3, #6)
+- **Token Registration**: [PushTokens.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/PushTokens.java) captures FCM tokens upon sign-in and stores them in `users/{uid}/fcmTokens`.
+- **FCM Service**: [TransportMessagingService.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/TransportMessagingService.java) configures system notifications with `NotificationChannel`, handling foreground and background message display.
+- **Cloud Functions**: [functions/index.js](file:///c:/Users/Martin/Downloads/Transport-App/functions/index.js) listens to `notifications/{notificationId}` and pushes notifications via FCM HTTP v1 API.
+- **Guarded Trip Alerts**: [TripAlerts.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/TripAlerts.java) ensures only students genuinely marked as picked up or dropped off generate success notifications; unmarked or missing students trigger alerts to `schoolAlerts`.
+
+### 3.3 Live Driver Tracking & Emergency SOS (#10, #11)
+- **Foreground Tracking**: [TripLocationService.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/TripLocationService.java) runs as a foreground service with a persistent notification while trips are active, recording GPS coordinates to `busGroups/{busId}` every 15 seconds.
+- **SOS Button**: Added emergency confirmation to [DriverLanding.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/DriverLanding.java) that broadcasts instant emergency records to `schoolAlerts`.
+- **Group Bus Chat**: [ChatActivity.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/ChatActivity.java) reads and writes messages to `busGroups/{busId}/messages` with real-time listeners.
+
+### 3.4 Modern Architecture, UI & Performance (#4, #9, #19, #20)
+- **MVVM Pattern**: Built [ParentDashboardViewModel.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/ParentDashboardViewModel.java) and [FirestoreParentRepository.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/FirestoreParentRepository.java) to decouple data fetching from UI controllers.
+- **Session Management**: `MainActivity` checks `FirebaseAuth.getCurrentUser()` on launch and calls `Login.resumeSession()` to re-read the user's role from Firestore and route directly to the correct dashboard. [Session.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/Session.java) is a sign-out toolbar helper that clears FCM tokens and redirects back to `MainActivity`.
+- **Clean Naming**: Renamed `Navigation` to [RoleSelectActivity.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/RoleSelectActivity.java).
+- **Reusable Layouts**: Extracted shared [toolbar.xml](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/res/layout/toolbar.xml) and [footer.xml](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/res/layout/footer.xml).
+- **Theme & Contrast**: Added full dark theme palette in [values-night/colors.xml](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/res/values-night/colors.xml) and updated buttons to meet WCAG 4.5:1 contrast.
+- **Memory Fix**: Replaced oversized 1.1MB JPEG and 2.2MB PNG with optimized WebP drawables in [drawable-nodpi](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/res/drawable-nodpi).
+
+---
+
+## 4. Prioritized Execution Plan for Remaining Items
 
 ```mermaid
 flowchart TD
-    subgraph Phase 1: Asset Normalization
-        A1[notification.jpg SVG] -->|Convert to XML| V1[ic_notification.xml VectorDrawable]
-        A2[school.jpg AVIF] -->|Transcode to WebP/PNG| V2[school.png / school.webp API 24+]
-        A3[Mislabelled jpg/png/webp] -->|Rename & Fix Header| V3[Genuine Extensions]
-        V1 & V2 & V3 --> L1[Update XML Layout References]
+    subgraph Phase 1: High Priority Data & Crash Fixes
+        P1_1[Fix DeleteStudent Subcollection Path #7]
+        P1_2[Unify Routes Collection Naming #8]
+        P1_3[Add OrderBy and Limit to Notification Query #14]
+        P1_4[Clean Gradle Dependencies & BoM #16]
     end
 
-    subgraph Phase 2: Manifest & Navigation Testing
-        M1[AndroidManifest.xml] -->|Set allowBackup=false| M2[Security Hardening]
-        M2 --> T1[Espresso Test: MainActivityTest]
-        T1 -->|Verify Get Started Tap| T2[Navigation Activity Launch]
+    subgraph Phase 2: Live Map & Parent ETA
+        P2_1[Integrate MapView in Parent Dashboard #10]
+        P2_2[Render Bus Position from busGroups/{busId} #10]
+        P2_3[Display Dynamic Trip ETA #10]
     end
 
-    subgraph Phase 3: Build & Dependencies
-        G1[libs.versions.toml] -->|Add RecyclerView & CardView| G2[app/build.gradle.kts]
-        G2 -->|Configure R8 & ShrinkResources| G3[Release Build Configuration]
-        G3 --> P1[ProGuard Rules for Firebase & Models]
+    subgraph Phase 3: Data Integrity & Architecture
+        P3_1[Add UID-based Parent Linking #1]
+        P3_2[Firestore Transactions for Capacity #13]
+        P3_3[Merge PickUp and DropOff into TripActivity #17]
     end
+
+    subgraph Phase 4: Release & Quality
+        P4_1[Setup GitHub Actions CI Workflow #18]
+        P4_2[Production Package Name Migration #15]
+        P4_3[Driver Road UX & Big Touch Targets #21]
+    end
+
+    Phase 1 --> Phase 2 --> Phase 3 --> Phase 4
 ```
 
-### Key Technical Decisions:
-1. **Asset Transcoding Strategy**:
-   - `notification.jpg`: The current file contains raw SVG vector markup. We will convert it into a native Android `VectorDrawable` XML (`ic_notification.xml`) so it scales cleanly across all screen densities without bitmap distortion.
-   - `school.jpg`: Decoded currently as AVIF (`ftypavif`). AVIF is only natively supported on Android 12 (API 31)+. Because the project target `minSdk` is 24 (Android 7.0), this image will fail to decode on earlier devices. We will transcode it to standard PNG or lossless WebP.
-   - Mismatched raster formats (`clock.jpg`, `tracking.jpg`, `attendant.jpg`, etc.) will be renamed to match their real container format, and all XML layouts will be updated to point to the correct drawables.
-2. **Security Hardening (`allowBackup="false"`)**:
-   - Because this application manages student names, routes, attendance, and driver details, enabling full ADB backup poses a sensitive data exposure vulnerability. Setting `android:allowBackup="false"` prevents unauthorized extraction of local databases, SharedPreferences, or cached tokens via physical ADB access.
-3. **Application ID & Firebase Coordination**:
-   - Google Play strictly rejects apps using the `com.example.*` namespace.
-   - However, `app/google-services.json` is hardcoded to package `com.example.transportapp`. Changing `applicationId` prematurely without updating Firebase Console will break Firebase Authentication and Firestore. We will structure the release build type or define an ID transition plan that keeps Firebase functioning during development.
-
----
-
-## 3. Step-by-Step Execution Plan
-
-### Step 1: Normalize and Fix Image Assets (`res/drawable/`)
-- [ ] **1.1 Convert `notification.jpg` to Vector Drawable**:
-  - Parse the SVG path from `notification.jpg`.
-  - Create `app/src/main/res/drawable/ic_notification.xml` as an Android VectorDrawable (viewport 24x24 or 612x612, with `@color/green` or theme tint).
-  - Update `activity_main.xml`, `activity_parent_landing.xml`, and any other layouts referencing `@drawable/notification` to `@drawable/ic_notification`.
-  - Delete `notification.jpg`.
-- [ ] **1.2 Convert `school.jpg` from AVIF to WebP/PNG**:
-  - Transcode `school.jpg` to standard WebP/PNG compatible with Android API 24+.
-  - Replace the file in `app/src/main/res/drawable/school.png` (or `.webp`).
-- [ ] **1.3 Fix File Extensions for Mislabelled Drawables**:
-  - `clock.jpg` (PNG) -> `clock.png`
-  - `tracking.jpg` (PNG) -> `tracking.png`
-  - `attendant.jpg` (WebP) -> `attendant.webp`
-  - `add_student.jpg` (PNG) -> `add_student.png`
-  - `add_vehicle.jpg` (PNG) -> `add_vehicle.png`
-  - `delete_vehicle.jpg` (PNG) -> `delete_vehicle.png`
-  - `modify_student.jpg` (PNG) -> `modify_student.png`
-  - `logo.jpg` (PNG) -> `logo.png`
-  - `driver_image.png` (JPEG) -> `driver_image.jpg`
-- [ ] **1.4 Batch Update References in Layouts**:
-  - Search all XML layout files under `app/src/main/res/layout/` and update `@drawable/...` references to the corrected filenames.
-- [ ] **1.5 Validate High-Resolution Drawables**:
-  - Flag `landing_image.jpg` (1.1 MB) and `student_image.png` (2.2 MB) for downscaling or move to `drawable-nodpi` to mitigate Out-Of-Memory (OOM) exceptions on low-end devices.
-
----
-
-### Step 2: Hardening the Android Manifest (`AndroidManifest.xml`)
-- [ ] **2.1 Security Flags**:
-  - Set `android:allowBackup="false"` in `<application>`.
-  - Review `android:dataExtractionRules` and `android:fullBackupContent` to ensure no sensitive child identity data is backed up.
-- [ ] **2.2 Activity Audit**:
-  - Cross-check all 42 Java classes in `app/src/main/java/com/example/transportapp` to confirm every Activity subclass is declared.
-  - Verify that only `MainActivity` has `android:exported="true"` with `MAIN` and `LAUNCHER` intent filters. All other activities (`Navigation`, `Login`, `SignUp`, `ParentLanding`, `SchoolLanding`, `DriverLanding`, report screens, CRUD screens) must remain `android:exported="false"`.
-- [ ] **2.3 Application Attributes**:
-  - Ensure `android:icon="@mipmap/ic_launcher"`, `android:roundIcon="@mipmap/ic_launcher_round"`, `android:label="@string/app_name"`, and `android:theme="@style/Theme.TransportApp"` are correctly bound.
-
----
-
-### Step 3: Implement Automated Instrumented Test for Launch & Role Picker
-- [ ] **3.1 Add Espresso Dependency Confirmation**:
-  - Verify `libs.espresso.core` and `libs.ext.junit` are configured in `app/build.gradle.kts`.
-- [ ] **3.2 Create `LaunchAndNavigationTest.java` in `androidTest`**:
-  - Create `app/src/androidTest/java/com/example/transportapp/LaunchAndNavigationTest.java`.
-  - Use `ActivityScenarioRule<MainActivity>` to launch `MainActivity`.
-  - Simulate user click on `R.id.get_started`.
-  - Assert that `Navigation` activity is displayed and role buttons (`R.id.school_button`, `R.id.parent_button`, `R.id.driver_button`) are visible.
-  - This guards against future regressions where activity declarations are accidentally removed from the manifest.
-
----
-
-### Step 4: Gradle Dependencies & Build System Cleanup
-- [ ] **4.1 Explicit Dependency Declarations in `libs.versions.toml`**:
-  - Add `recyclerview = "1.3.2"` (or matching AndroidX version).
-  - Add `cardview = "1.0.0"`.
-  - Define library references:
-    ```toml
-    androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version = "1.3.2" }
-    androidx-cardview = { group = "androidx.cardview", name = "cardview", version = "1.0.0" }
+### Phase 1: High Priority Data & Crash Fixes (Immediate)
+- [ ] **1.1 Fix Delete Student Flow (#7)**:
+  - Update [DeleteStudent.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/DeleteStudent.java) to show a searchable student list (mirroring `ModifyStudent`) before the delete action — no caller currently passes a valid ID.
+  - Delete records from the real path: `students/{grade}/studentList/{studentId}` instead of root `students/{studentId}` (line 83).
+  - Remove dead `updateStudentData()` method (line 54) which also uses the wrong path.
+  - Guard against null IDs to prevent silent Firestore failures.
+- [ ] **1.2 Unify Route Collection Naming & Field Names (#8)**:
+  - Create a centralized constants class (`Collections.java` or update `BusGroups.java`) defining `ROUTES = "routes"` and `FIELD_ROUTE_NAME = "routeName"`.
+  - Fix [AddRoute.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/AddRoute.java) line 125: change `"Routes"` → `"routes"`.
+  - Fix [AddStudent.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/AddStudent.java) `fetchRoutes()` (line 71) and `checkVehicleCapacity()` (line 117): change `"Routes"` → `"routes"`.
+  - Fix [RouteReportActivity.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/RouteReportActivity.java) line 90: change field read from `"name"` → `"routeName"` to match what `AddRoute` stores — without this fix the route spinner will throw a NullPointerException even after the collection name is corrected.
+- [ ] **1.3 Optimize Parent Notification Query (#14)**:
+  - Update `listenToNotifications` in [FirestoreParentRepository.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/FirestoreParentRepository.java):
+    ```java
+    db.collection(TripAlerts.COLLECTION_NOTIFICATIONS)
+      .whereEqualTo("parentEmail", parentEmail)
+      .orderBy("timestamp", Query.Direction.DESCENDING)
+      .limit(50)
     ```
-- [ ] **4.2 Update `app/build.gradle.kts`**:
-  - Add `implementation(libs.androidx.recyclerview)`.
-  - Add `implementation(libs.androidx.cardview)`.
-- [ ] **4.3 Remove Template Artifacts**:
-  - Delete empty resource file `app/src/main/res/values/refs.xml`.
-  - Clean up unused or dead template dimens if any exist.
-- [ ] **4.4 Protect Gradle Wrapper in `.gitignore`**:
-  - Update `.gitignore` to explicitly un-ignore `gradle-wrapper.jar`:
-    ```gitignore
-    # Ensure Gradle wrapper jar is tracked
-    !gradle/wrapper/gradle-wrapper.jar
-    ```
+- [ ] **1.4 Version Catalog & Firebase BoM (#16)**:
+  - Move `MPAndroidChart` and `firebase-messaging` into [gradle/libs.versions.toml](file:///c:/Users/Martin/Downloads/Transport-App/gradle/libs.versions.toml).
+  - Adopt `platform(libs.firebase.bom)` in [app/build.gradle.kts](file:///c:/Users/Martin/Downloads/Transport-App/app/build.gradle.kts) to lock Firebase library versions.
 
----
+### Phase 2: Live Bus Map & Tracking Visualization (Features)
+- [ ] **2.1 Embedded Parent Map View (#10)**:
+  - Add Google Maps SDK or OpenStreetMap (`osmdroid`) dependency.
+  - Replace the existing `geo:` URI native-maps workaround in [ParentLanding.java](file:///c:/Users/Martin/Downloads/Transport-App/app/src/main/java/com/example/transportapp/ParentLanding.java) with an embedded `MapView` / `SupportMapFragment` in a dedicated `LiveTrackingActivity`.
+  - Subscribe to `busGroups/{busId}` real-time listener (`lat`, `lng`, `active`, `updatedAtMillis`) and animate bus marker continuously while trip is active.
+  - Calculate and display distance and estimated time of arrival (ETA).
 
-### Step 5: Launcher Icon Verification & Adaptive Motif
-- [ ] **5.1 Verify Adaptive Icon Definitions**:
-  - Inspect `app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml` and `ic_launcher_round.xml`.
-  - Verify that `ic_launcher_foreground.xml` contains a distinct school transport motif (bus or safety shield) rather than default generic Android vector.
-  - Verify background uses app brand green (`#228B22`).
-- [ ] **5.2 Check Density Buckets**:
-  - Validate icons in `mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, and `mipmap-xxxhdpi`.
+### Phase 3: Data Architecture & Trip Consolidation (Integrity)
+- [ ] **3.1 UID-based Parent Linking (#1)**:
+  - Transition from email-only linking to `parentUids: [uid]` arrays on student records via an invitation Cloud Function.
+- [ ] **3.2 Transactional Capacity Check (#13)**:
+  - Store vehicle capacity as an integer (`int`).
+  - Wrap student addition in a Firestore transaction (`db.runTransaction(...)`) to guarantee vehicles are not overfilled by concurrent writes.
+  - Reference `staffId`, `vehicleId`, and `routeId` instead of duplicating names.
+- [ ] **3.3 Merge PickUp and DropOff (#17)**:
+  - Refactor `PickUp.java` and `DropOff.java` into a single `TripActivity.java` with a mode flag (`MODE_PICKUP` / `MODE_DROPOFF`) and a dedicated `TripViewModel`.
 
----
-
-### Step 6: Release Build Configuration, Identity & Obfuscation
-- [ ] **6.1 Configure R8 Minification and Resource Shrinking**:
-  - In `app/build.gradle.kts`:
-    ```kotlin
-    buildTypes {
-        release {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    ```
-- [ ] **6.2 Configure `proguard-rules.pro`**:
-  - Add keep rules for data models that rely on reflection/serialization (e.g. Firebase Firestore deserialization):
-    ```proguard
-    # Preserve Firebase models
-    -keepclassmembers class com.example.transportapp.** {
-        <fields>;
-        <methods>;
-    }
-    # Preserve MPAndroidChart components
-    -keep class com.github.mikephil.charting.** { *; }
-    ```
-- [ ] **6.3 Production Package Identity Migration Strategy**:
-  - Define product flavor or build configuration for production `applicationId` (e.g., `com.schooltransport.childsafety`).
-  - Document the required Firebase Console step: register the new `applicationId` in Firebase project `transport-app-f559b` and download the refreshed `google-services.json`.
-- [ ] **6.4 Signing Configuration Strategy**:
-  - Add a signing config template referencing `keystore.properties` (kept outside version control) so debug builds remain hassle-free while release builds can be signed securely.
-
----
-
-### Step 7: Environment & Command-Line Build Validation
-- [ ] **7.1 Standardize Command-Line Environment**:
-  - Ensure build commands run reliably with Android Studio's bundled JDK:
-    `$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"`
-- [ ] **7.2 Execute Clean Build**:
-  - Run `./gradlew clean assembleDebug` from the command line to verify all assets decode and compile without warning or error.
-- [ ] **7.3 Execute Automated Tests**:
-  - Run `./gradlew test` (unit tests).
-  - Run `./gradlew connectedAndroidTest` (when emulator or physical device is attached).
-
----
-
-## 4. Verification Checklist & Success Criteria
-
-| Check | Tool / Command | Expected Outcome |
-|---|---|---|
-| **Command-Line Build** | `./gradlew assembleDebug` | `BUILD SUCCESSFUL` with no asset inflation or decoding warnings |
-| **Asset Format Integrity** | File header inspection | No SVG or AVIF masquerading as `.jpg`; all extensions match file headers |
-| **Security Attributes** | `aapt dump xmltree app-debug.apk AndroidManifest.xml` | `android:allowBackup(0x01010280)="false"` |
-| **Activity Declarations** | `AndroidManifest.xml` review | Every Activity in Java source is registered; only `MainActivity` exported |
-| **Instrumented Test** | `./gradlew connectedAndroidTest` | `LaunchAndNavigationTest` passes: Get Started opens role picker smoothly |
-| **Dependency Resolution** | `./gradlew dependencies --configuration debugCompileClasspath` | `androidx.recyclerview` explicitly resolved |
-| **Release Build Assembly** | `./gradlew assembleRelease` | R8 completes obfuscation and resource shrinking without missing class warnings |
-
----
-
-## 5. Potential Risks & Mitigation
-
-1. **Broken Layout XML References on Rename**:
-   - *Risk*: Renaming `notification.jpg` or `school.jpg` could break layout inflations if any layout is missed.
-   - *Mitigation*: Perform a recursive regex search across all files in `app/src/main/res/layout/` and `app/src/main/java/` to verify every instance is updated before running `./gradlew assembleDebug`.
-2. **Firebase Auth / Firestore Package Mismatch**:
-   - *Risk*: Renaming `applicationId` immediately will cause Firebase calls to fail with unauthorized package errors because `google-services.json` currently specifies `com.example.transportapp`.
-   - *Mitigation*: Keep `applicationId = "com.example.transportapp"` for the debug build type while setting up product flavors or an explicit release application ID once the Firebase Console entry is added.
-3. **R8 Stripping Firebase Deserializers**:
-   - *Risk*: Enabling `isMinifyEnabled = true` can strip empty constructors required by Firestore `toObject(Class)`.
-   - *Mitigation*: Keep rules added to `proguard-rules.pro` specifically preserving the fields and constructors of all model classes (`Student`, `Driver`, `Route`, `Vehicle`, `Staff`, `Notification`).
-
+### Phase 4: CI/CD, Tests & Release Readiness (Launch)
+- [ ] **4.1 GitHub Actions Workflow (#18)**:
+  - Create `.github/workflows/android.yml` to automatically run `./gradlew assembleDebug testDebugUnitTest lint` on pull requests and pushes to `main`.
+  - Add unit tests for `ParentDashboardViewModel`, `TripAlerts`, and `ParentEmails`.
+- [ ] **4.2 Driver Road Experience Polish (#21)**:
+  - Replace small checkboxes in `item_student_status.xml` with large status chips or buttons (Not Yet / Boarded / Absent).
+  - Hide internal technical IDs on `activity_driver_landing.xml`.
+  - Order student checklist by route stop sequence.
+- [ ] **4.3 Google Play Release Identity (#15)**:
+  - Migrate package ID from `com.example.transportapp` to production ID (e.g., `com.safeschool.transport`).
+  - Update Google Cloud Console and Firebase app registration with the new package name and updated `google-services.json`.
+  - Raise `targetSdk` to 36 and publish privacy policy documentation.
