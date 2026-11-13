@@ -67,7 +67,7 @@ public class AddRoute extends AppCompatActivity {
     }
 
     private void fetchVehicleNames() {
-        firestore.collection("vehicle")
+        firestore.collection(FirestorePaths.VEHICLES)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     vehicleNamesList.clear();
@@ -83,7 +83,7 @@ public class AddRoute extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to fetch vehicles: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not load vehicles", e);
                 });
     }
 
@@ -122,14 +122,14 @@ public class AddRoute extends AppCompatActivity {
         routeData.put("dropOffTime", dropOffTime);
 
         // Save to Firestore
-        firestore.collection("Routes")
+        firestore.collection(FirestorePaths.ROUTES)
                 .add(routeData)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(this, "Route added successfully", Toast.LENGTH_SHORT).show();
                     clearForm();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to add route: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not add route", e);
                 });
     }
 

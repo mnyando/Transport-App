@@ -27,8 +27,8 @@ public final class TripAlerts {
 
     private static final String TAG = "TripAlerts";
 
-    public static final String COLLECTION_NOTIFICATIONS = "notifications";
-    public static final String COLLECTION_SCHOOL_ALERTS = "schoolAlerts";
+    public static final String COLLECTION_NOTIFICATIONS = FirestorePaths.NOTIFICATIONS;
+    public static final String COLLECTION_SCHOOL_ALERTS = FirestorePaths.SCHOOL_ALERTS;
 
     public static final String STATUS_DONE = "done";
     public static final String STATUS_NOT_DONE = "not_done";

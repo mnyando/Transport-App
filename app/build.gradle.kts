@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.example.transportapp"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.transportapp"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -63,10 +63,14 @@ dependencies {
     implementation(libs.cardview)
     implementation(libs.lifecycle.viewmodel)
     implementation(libs.lifecycle.livedata)
+    implementation(libs.swiperefreshlayout)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
-    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
-    implementation ("com.google.firebase:firebase-messaging:23.3.1")
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.functions)
+    implementation(libs.mpandroidchart)
+    implementation(libs.osmdroid)
     testImplementation(libs.junit)
     testImplementation(libs.arch.core.testing)
     androidTestImplementation(libs.ext.junit)

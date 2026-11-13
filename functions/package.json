@@ -1,6 +1,6 @@
 {
   "name": "transport-app-functions",
-  "description": "Sends pick-up and drop-off push alerts to parents",
+  "description": "Push alerts, account links, counts and checks for the Transport App",
   "private": true,
   "main": "index.js",
   "engines": {
@@ -9,7 +9,8 @@
   "scripts": {
     "serve": "firebase emulators:start --only functions,firestore,auth",
     "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "logs": "firebase functions:log",
+    "test": "node --test test/helpers.test.js"
   },
   "dependencies": {
     "firebase-admin": "^12.7.0",

@@ -8,8 +8,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.cardview.widget.CardView;
 
+import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -61,11 +63,9 @@ public class SchoolLanding extends AppCompatActivity {
 
         reportsButton = findViewById(R.id.reportsButton);
 
-        // Fetch data from Firestore
-        countTotalStudents();
-        countRoutes();
-        countVehicles();
-        countDrivers();
+        refreshLayout = findViewById(R.id.schoolRefresh);
+        refreshLayout.setColorSchemeResources(R.color.green);
+        refreshLayout.setOnRefreshListener(this::refreshCounts);
 
         // Set onClickListeners for Route actions
         addRoute.setOnClickListener(v -> openActivity(AddRoute.class));
@@ -88,6 +88,29 @@ public class SchoolLanding extends AppCompatActivity {
         deleteVehicle.setOnClickListener(v -> openActivity(DeleteVehicle.class));
 
         reportsButton.setOnClickListener(v -> openActivity(Reports.class));
+        findViewById(R.id.inviteCodeButton).setOnClickListener(v -> InviteCodes.showDialog(this));
+    }
+
+    /** Numbers are reloaded each time the school comes back here, e.g. after adding a student. */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshCounts();
+    }
+
+    private SwipeRefreshLayout refreshLayout;
+    private int pendingCounts;
+
+    private void refreshCounts() {
+        pendingCounts = 4;
+        countTotalStudents();
+        countRoutes();
+        countVehicles();
+        countDrivers();
+    }
+
+    private void countDone() {
+        if (--pendingCounts <= 0) refreshLayout.setRefreshing(false);
     }
 
     // Function to open another activity
@@ -97,32 +120,23 @@ public class SchoolLanding extends AppCompatActivity {
     }
 
     private void countTotalStudents() {
-        db.collectionGroup("studentList")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    int totalStudents = queryDocumentSnapshots.size();
-                    studentsEnrolledText.setText(String.valueOf(totalStudents));
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(SchoolLanding.this, "Could not load the student count", Toast.LENGTH_SHORT).show();
-                    Log.e("CountStudents", "Error: " + e.getMessage()); // Optional: for debugging
-                });
+        db.collectionGroup(FirestorePaths.STUDENT_LIST).count().get(AggregateSource.SERVER)
+                .addOnSuccessListener(result -> studentsEnrolledText.setText(String.valueOf(result.getCount())))
+                .addOnFailureListener(e -> UserErrors.show(this, getString(R.string.count_failed_students), e))
+                .addOnCompleteListener(t -> countDone());
     }
 
     // Count total routes
     private void countRoutes() {
-        db.collection("Routes")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    int totalRoutes = queryDocumentSnapshots.size();
-                    routesTraveledText.setText(String.valueOf(totalRoutes));
-                })
-                .addOnFailureListener(e -> Toast.makeText(SchoolLanding.this, "Could not load the routes count", Toast.LENGTH_SHORT).show());
+        db.collection(FirestorePaths.ROUTES).count().get(AggregateSource.SERVER)
+                .addOnSuccessListener(result -> routesTraveledText.setText(String.valueOf(result.getCount())))
+                .addOnFailureListener(e -> UserErrors.show(this, getString(R.string.count_failed_routes), e))
+                .addOnCompleteListener(t -> countDone());
     }
 
     // Count active and inactive vehicles
     private void countVehicles() {
-        db.collection("vehicle") // Adjusted to "vehicle" to match AddVehicle; use "vehicles" if that's your collection name
+        db.collection(FirestorePaths.VEHICLES)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     int activeVehicles = 0;
@@ -140,12 +154,13 @@ public class SchoolLanding extends AppCompatActivity {
                     activeVehiclesText.setText(String.valueOf(activeVehicles));
                     inactiveVehiclesText.setText(String.valueOf(inactiveVehicles));
                 })
-                .addOnFailureListener(e -> Toast.makeText(SchoolLanding.this, "Could not load the vehicles count", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> UserErrors.show(this, getString(R.string.count_failed_vehicles), e))
+                .addOnCompleteListener(t -> countDone());
     }
 
     // Count active and inactive drivers
     private void countDrivers() {
-        db.collection("staff")
+        db.collection(FirestorePaths.STAFF)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     int activeDrivers = 0;
@@ -165,6 +180,7 @@ public class SchoolLanding extends AppCompatActivity {
                     activeDriversText.setText(String.valueOf(activeDrivers));
                     inactiveDriversText.setText(String.valueOf(inactiveDrivers));
                 })
-                .addOnFailureListener(e -> Toast.makeText(SchoolLanding.this, "Could not load the drivers count", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> UserErrors.show(this, getString(R.string.count_failed_drivers), e))
+                .addOnCompleteListener(t -> countDone());
     }
 }

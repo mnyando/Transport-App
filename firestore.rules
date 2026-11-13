@@ -1,0 +1,260 @@
+rules_version = '2';
+
+// Firestore Security Rules for the Transport App (review section 3: "no authentication or
+// role-based access").
+//
+// The role always comes from the server-side profile users/{uid}.role, never from the app:
+//   school - school staff: manage students, staff, vehicles and routes; see every report.
+//   parent - sees only children whose parentUids holds their account ID. The link is made by
+//            Cloud Functions, and only for a verified email matching the student record.
+//   driver - sees only the children, trips and live location of the bus on their own staff
+//            record. users/{uid}.staffId is written by the linkStaffAccount Cloud Function
+//            (functions/index.js) when the school saves the driver's email on the staff record.
+// Anything not matched below is denied.
+//
+// Deploy: firebase deploy --only firestore:rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function verified() {
+      return signedIn() && request.auth.token.email_verified == true;
+    }
+
+    function myEmail() {
+      return request.auth.token.email.lower();
+    }
+
+    function profilePath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function hasProfile() {
+      return signedIn() && exists(profilePath());
+    }
+
+    function me() {
+      return get(profilePath()).data;
+    }
+
+    function myRole() {
+      return hasProfile() && me().get('role', '') is string ? me().get('role', '').lower() : '';
+    }
+
+    function isSchool() {
+      return myRole() == 'school';
+    }
+
+    function isParent() {
+      return verified() && myRole() == 'parent';
+    }
+
+    function isDriver() {
+      return verified() && myRole() == 'driver' && me().get('staffId', '') != '';
+    }
+
+    function myStaffId() {
+      return me().staffId;
+    }
+
+    function myStaff() {
+      return get(/databases/$(database)/documents/staff/$(myStaffId())).data;
+    }
+
+    // The vehicle the signed-in driver is assigned to, from their staff record.
+    function myVehicle() {
+      return myStaff().assignedVehicle;
+    }
+
+    // busGroups document IDs are vehicle names with '/' replaced (BusGroups.docId).
+    function myBusId() {
+      return myVehicle().trim().replace('/', '_');
+    }
+
+    function onlyChanges(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    // Parent alert settings: { pickup: bool, dropoff: bool }, both optional.
+    function validAlertPrefs(p) {
+      return p is map && p.keys().hasOnly(['pickup', 'dropoff'])
+          && (!('pickup' in p) || p.pickup is bool)
+          && (!('dropoff' in p) || p.dropoff is bool);
+    }
+
+    // The parent sign-up code. Nobody but the school can read it; sign-up is checked here.
+    function validInviteCode(code) {
+      let config = /databases/$(database)/documents/config/signup;
+      return code is string && code.size() > 0 && exists(config)
+          && get(config).data.get('inviteCode', '') == code;
+    }
+
+    // ---------- accounts ----------
+
+    match /users/{uid} {
+      allow read: if (signedIn() && request.auth.uid == uid) || isSchool();
+
+      // Sign-up may only create its own profile, only as a parent, and only with the school's
+      // current invite code (review #2; set on the School page, stored in config/signup).
+      // Drivers sign up the same way and are promoted by the linkStaffAccount function; school
+      // accounts are set up by an administrator.
+      allow create: if signedIn() && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(
+              ['fullName', 'email', 'role', 'consentVersion', 'consentAt', 'fcmTokens', 'inviteCode'])
+          && validInviteCode(request.resource.data.get('inviteCode', ''))
+          && request.resource.data.role == 'parent'
+          && request.resource.data.email is string
+          && request.resource.data.email.lower() == myEmail()
+          && request.resource.data.consentVersion is int && request.resource.data.consentVersion >= 1
+          && (!('consentAt' in request.resource.data) || request.resource.data.consentAt == request.time);
+
+      // Users may only change their own push tokens and alert settings (AlertPreferences.java).
+      // Role, email and staffId are never writable from the app.
+      allow update: if signedIn() && request.auth.uid == uid
+          && onlyChanges(['fcmTokens', 'alertPrefs'])
+          && (!('alertPrefs' in request.resource.data) || validAlertPrefs(request.resource.data.alertPrefs));
+
+      allow delete: if false;
+    }
+
+    match /config/{docId} {
+      allow read, write: if isSchool();
+    }
+
+    // ---------- school-managed records ----------
+
+    match /staff/{staffId} {
+      allow read: if isSchool() || (isDriver() && staffId == myStaffId());
+      allow write: if isSchool();
+    }
+
+    match /vehicle/{vehicleId} {
+      allow read: if isSchool() || isDriver();
+      allow write: if isSchool();
+    }
+
+    match /Routes/{routeId} {
+      allow read: if isSchool() || isDriver();
+      allow write: if isSchool();
+    }
+
+
+    // Students removed on Delete Student (review #7): kept for the school's records only.
+    match /archivedStudents/{studentId} {
+      allow read, write: if isSchool();
+    }
+
+    // Placeholder parent documents students/{grade} (used by older delete code).
+    match /students/{grade} {
+      allow read, write: if isSchool();
+    }
+
+    // Children: students/{grade}/studentList/{studentId}. The recursive match is needed for
+    // the collection-group queries used by the parent, driver and school screens.
+    match /{path=**}/studentList/{studentId} {
+      // Parents by account ID only (review #1): parentUids is written by Cloud Functions
+      // (linkMyChildren / onStudentWritten) after checking the parent's email is verified.
+      allow read: if isSchool()
+          || (isParent() && request.auth.uid in resource.data.get('parentUids', []))
+          || (isDriver() && resource.data.vehicle == myVehicle());
+
+      allow create, delete: if isSchool();
+
+      // Drivers may only record trip progress for children on their own bus.
+      allow update: if isSchool()
+          || (isDriver()
+              && resource.data.get('vehicle', '') == myVehicle()
+              && onlyChanges(['currentTripId', 'pickupStatus', 'dropoffStatus',
+                              'pickupTime', 'dropOffTime', 'lastPickupTripId']));
+    }
+
+    // ---------- trips and alerts ----------
+
+    match /trips/{tripId} {
+      allow read: if isSchool()
+          || (isDriver() && resource.data.driverId == myStaffId());
+
+      allow create: if isDriver()
+          && request.resource.data.driverId == myStaffId()
+          && request.resource.data.vehicle == myVehicle();
+
+      allow update: if isSchool()
+          || (isDriver()
+              && resource.data.get('driverId', '') == myStaffId()
+              && request.resource.data.driverId == resource.data.driverId
+              && request.resource.data.vehicle == resource.data.vehicle);
+
+      allow delete: if isSchool();
+
+      function tripIsMine() {
+        return get(/databases/$(database)/documents/trips/$(tripId)).data.get('driverId', '') == myStaffId();
+      }
+
+      // trips/{tripId}/pickupStatus/{studentId} and trips/{tripId}/dropoffStatus/{studentId}
+      match /{statusCollection}/{studentId} {
+        allow read: if isSchool() || (isDriver() && tripIsMine());
+        allow write: if (statusCollection == 'pickupStatus' || statusCollection == 'dropoffStatus')
+            && (isSchool() || (isDriver() && tripIsMine()));
+      }
+    }
+
+    // Parent alerts. Created by the driver's phone; delivered by the sendParentPush function.
+    match /notifications/{notificationId} {
+      allow read: if isSchool()
+          || (isParent() && resource.data.parentEmail == myEmail());
+      allow create: if isDriver()
+          && request.resource.data.driverId == myStaffId()
+          && request.resource.data.vehicle == myVehicle()
+          && request.resource.data.parentEmail is string;
+      allow update: if false;
+      allow delete: if isSchool();
+    }
+
+    // Unconfirmed pick-ups / drop-offs and SOS alerts for the school.
+    match /schoolAlerts/{alertId} {
+      allow read: if isSchool();
+      allow create: if isDriver()
+          && request.resource.data.driverId == myStaffId()
+          && request.resource.data.vehicle == myVehicle();
+      allow update: if isSchool() && onlyChanges(['resolved', 'resolvedAt', 'resolvedBy']);
+      allow delete: if isSchool();
+    }
+
+    // ---------- live bus location and bus chat ----------
+
+    // busGroups/{busId}: parentEmails, plus the live location while a trip is active.
+    match /busGroups/{busId} {
+      function isMemberOf(data) {
+        return isSchool()
+            || (isParent() && myEmail() in data.get('parentEmails', []))
+            || (isDriver() && busId == myBusId());
+      }
+
+      allow read: if isMemberOf(resource.data);
+
+      // The school adds parents when it saves a student; the driver refreshes the parent list
+      // and writes the live location for their own bus only.
+      allow create, update: if isSchool() || (isDriver() && busId == myBusId());
+      allow delete: if isSchool();
+
+      match /messages/{messageId} {
+        function bus() {
+          return get(/databases/$(database)/documents/busGroups/$(busId)).data;
+        }
+
+        allow read: if isMemberOf(bus());
+        allow create: if isMemberOf(bus())
+            && request.resource.data.senderUid == request.auth.uid
+            && request.resource.data.text is string
+            && request.resource.data.text.size() <= 1000;
+        allow update: if false;
+        allow delete: if isSchool();
+      }
+    }
+  }
+}

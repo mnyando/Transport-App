@@ -27,11 +27,16 @@ functions/node_modules/
 .firebase/
 *-debug.log
 
-# Kept local only (not pushed)
-firestore.rules
+# Markdown notes stay local, except the tracked project docs
 *.md
-app/src/test/
-app/src/androidTest/
-functions/test/
-**/*.test.js
-**/*.spec.js
+!README.md
+!BUILD_AND_PROJECT_SETUP_PLAN.md
+
+# Rules-test emulator logs
+firestore-debug.log
+firebase-debug.log
+ui-debug.log
+rules-tests/node_modules/
+
+# Android Studio settings that differ per machine (review #16)
+.idea/

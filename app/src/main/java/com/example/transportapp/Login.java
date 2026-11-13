@@ -89,7 +89,7 @@ public class Login extends AppCompatActivity {
 
     private void loginUser() {
         String email = etEmail.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
+        String password = etPassword.getText().toString(); // not trimmed: spaces can be part of a password
 
         if (TextUtils.isEmpty(email)) {
             etEmail.setError(getString(R.string.error_email_required));
@@ -129,7 +129,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void fetchUserRole(String authUid, String email) {
-        db.collection("users").document(authUid).get()
+        db.collection(FirestorePaths.USERS).document(authUid).get()
                 .addOnSuccessListener(document -> {
                     if (!document.exists()) {
                         Log.w(TAG, "User data not found");
@@ -195,7 +195,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void loadDriverStaffRecord(String staffId, String email) {
-        db.collection("staff").document(staffId).get()
+        db.collection(FirestorePaths.STAFF).document(staffId).get()
                 .addOnSuccessListener(staffDoc -> {
                     if (staffDoc.exists()) {
                         processDriverProfile(staffDoc, email);

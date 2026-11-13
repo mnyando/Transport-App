@@ -80,7 +80,7 @@ public class DeleteStaff extends AppCompatActivity implements StaffAdapter.OnSta
     }
 
     private void fetchStaff() {
-        firestore.collection("staff") // Changed to "staff"
+        firestore.collection(FirestorePaths.STAFF)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     staffList.clear();
@@ -92,12 +92,12 @@ public class DeleteStaff extends AppCompatActivity implements StaffAdapter.OnSta
                     staffAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error fetching staff: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not load staff", e);
                 });
     }
 
     private void fetchVehicles() {
-        firestore.collection("vehicle")
+        firestore.collection(FirestorePaths.VEHICLES)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     vehicleList.clear();
@@ -111,12 +111,12 @@ public class DeleteStaff extends AppCompatActivity implements StaffAdapter.OnSta
                     vehicleAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error fetching vehicles: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not load vehicles", e);
                 });
     }
 
     private void fetchRoutes() {
-        firestore.collection("Routes")
+        firestore.collection(FirestorePaths.ROUTES)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     routeList.clear();
@@ -130,7 +130,7 @@ public class DeleteStaff extends AppCompatActivity implements StaffAdapter.OnSta
                     routeAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error fetching routes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not load routes", e);
                 });
     }
 
@@ -182,7 +182,7 @@ public class DeleteStaff extends AppCompatActivity implements StaffAdapter.OnSta
     }
 
     private void deleteStaff() {
-        firestore.collection("staff").document(selectedStaffId) // Changed to "staff"
+        firestore.collection(FirestorePaths.STAFF).document(selectedStaffId)
                 .delete()
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Staff deleted successfully", Toast.LENGTH_SHORT).show();
@@ -190,7 +190,7 @@ public class DeleteStaff extends AppCompatActivity implements StaffAdapter.OnSta
                     clearFields();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to delete staff: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not delete staff", e);
                 });
     }
 

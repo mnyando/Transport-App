@@ -76,7 +76,7 @@ public class RouteReportActivity extends AppCompatActivity {
     }
 
     private void loadRoutes() {
-        db.collection("routes")
+        db.collection(FirestorePaths.ROUTES)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -86,8 +86,12 @@ public class RouteReportActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Map<String, Object> route = document.getData();
                             route.put("id", document.getId());
+                            // AddRoute saves the name as "routeName" (review #8: this read "name").
+                            Object name = route.get("routeName");
+                            if (name == null) continue;
+                            route.put("routeName", name.toString());
                             routeList.add(route);
-                            routeNames.add(route.get("name").toString());
+                            routeNames.add(name.toString());
                         }
 
                         // Setup spinner
@@ -100,7 +104,8 @@ public class RouteReportActivity extends AppCompatActivity {
                         routeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                loadRouteData(routeList.get(position).get("id").toString());
+                                // Trips record the route by name (the driver's assignedRoute).
+                                loadRouteData(routeList.get(position).get("routeName").toString());
                             }
 
                             @Override
@@ -111,10 +116,10 @@ public class RouteReportActivity extends AppCompatActivity {
                 });
     }
 
-    private void loadRouteData(String routeId) {
+    private void loadRouteData(String routeName) {
         // Load route stats
-        db.collection("trips")
-                .whereEqualTo("route", routeId)
+        db.collection(FirestorePaths.TRIPS)
+                .whereEqualTo("route", routeName)
                 .whereEqualTo("completed", true)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -126,6 +131,8 @@ public class RouteReportActivity extends AppCompatActivity {
                         recentTrips.clear();
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Trips that were never finished (closed by TripRepository) are not real trips.
+                            if (Boolean.TRUE.equals(document.getBoolean("abandoned"))) continue;
                             tripsCompleted++;
                             Long duration = document.getLong("durationMillis");
                             if (duration != null) {

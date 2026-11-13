@@ -96,12 +96,12 @@
     <string name="title_delete_vehicle">Delete Vehicle</string>
     <string name="title_driver_landing">Driver Dashboard</string>
     <string name="title_driver_report">Driver Analytics</string>
-    <string name="title_drop_off">Trip Status</string>
+    <string name="title_drop_off">Drop-off</string>
     <string name="title_modify_route">Modify Route</string>
     <string name="title_modify_staff">Modify Staff</string>
     <string name="title_modify_student">Modify Student</string>
     <string name="title_modify_vehicle">Modify Vehicle</string>
-    <string name="title_pick_up">Trip Status</string>
+    <string name="title_pick_up">Pick-up</string>
     <string name="title_reports">Transport Analytics</string>
     <string name="title_role_select">Select Role</string>
     <string name="title_school_landing">School Dashboard</string>
@@ -136,8 +136,6 @@
     <string name="staff_list">Staff List</string>
     <string name="hint_vehicle_id">Vehicle ID</string>
     <string name="driver_details">Driver Details</string>
-    <string name="driver_id_id">Driver ID: [ID]</string>
-    <string name="email_email">Email: [Email]</string>
     <string name="driver_name_name">Driver Name: [Name]</string>
     <string name="assigned_vehicle_vehicle">Assigned Vehicle: [Vehicle]</string>
     <string name="assigned_route_route">Assigned Route: [Route]</string>
@@ -147,7 +145,7 @@
     <string name="sos_emergency">SOS - Emergency</string>
     <string name="n_0">0</string>
     <string name="student_status">Student Status</string>
-    <string name="trip_complete">Trip Complete</string>
+    <string name="trip_complete">Complete trip</string>
     <string name="login_to_your_account">Login to Your Account</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -234,6 +232,9 @@
     <string name="error_verify_email_first">Please verify your email first. We sent a new link to your inbox.</string>
     <string name="error_driver_profile_incomplete">Your driver profile is incomplete. Contact the school.</string>
     <string name="sign_out">Sign out</string>
+    <string name="error_hint_permission">Your account is not allowed to do this. Contact the school if you think it should be.</string>
+    <string name="error_hint_connection">Check your internet connection and try again.</string>
+    <string name="error_hint_retry">Please try again.</string>
     <string name="show_password">Show password</string>
     <string name="hide_password">Hide password</string>
     <string name="sign_out_confirm">Sign out of this phone? You will stop getting alerts here until you sign in again.</string>
@@ -246,4 +247,121 @@
     <string name="alert_settings_saved">Alert settings saved</string>
     <string name="alert_settings_load_failed">Could not load your alert settings. Check your connection and try again.</string>
     <string name="alert_settings_save_failed">Could not save your alert settings. Check your connection and try again.</string>
+
+    <!-- Delete Student (review #7) -->
+    <string name="delete">Delete</string>
+    <string name="no_students_in_grade">No students in %1$s</string>
+    <string name="delete_student_title">Delete student record</string>
+    <string name="delete_student_confirm">Remove %1$s from the transport list? Their record is archived so the school can still look it up, but they will no longer appear on any bus or parent screen.</string>
+    <string name="student_already_removed">This student was already removed.</string>
+    <string name="student_deleted">Student removed</string>
+
+    <!-- Trip screen (review #12, #17, #21) -->
+    <string name="start_trip">Start trip</string>
+    <string name="retry">Try again</string>
+    <string name="loading">Loading</string>
+    <string name="status_picked_up">Picked up</string>
+    <string name="status_not_picked">Not picked</string>
+    <string name="status_dropped_off">Dropped off</string>
+    <string name="status_not_dropped">Not dropped</string>
+    <string name="trip_missing_driver">Driver or bus details are missing. Go back and sign in again.</string>
+    <string name="trip_error">Something went wrong with the trip</string>
+    <string name="trip_loading">Loading the children on this bus…</string>
+    <string name="trip_load_failed">Could not load this trip</string>
+    <string name="trip_load_failed_detail">Check your internet connection, then try again.</string>
+    <string name="trip_bus">Bus %1$s</string>
+    <string name="trip_no_students">No children are assigned to this bus yet. Ask the school to check the student records.</string>
+    <string name="trip_not_started">%1$d children on bus %2$s. Tap Start trip when you set off.</string>
+    <string name="trip_active_status">Started %1$s · %2$d of %3$d marked</string>
+    <string name="trip_resumed">Continuing the trip you started earlier.</string>
+    <string name="trip_completed">Trip completed. Parents are being notified.</string>
+    <plurals name="trip_parents_without_email">
+        <item quantity="one">%d child has no parent email on file, so that parent was not notified. Ask the school to add it.</item>
+        <item quantity="other">%d children have no parent email on file, so those parents were not notified. Ask the school to add it.</item>
+    </plurals>
+    <string name="trip_kind_pickup">pick-up</string>
+    <string name="trip_kind_dropoff">drop-off</string>
+    <string name="trip_other_open_title">Another trip is still open</string>
+    <string name="trip_other_open">Your %1$s trip started %2$s has not been completed. Finish it before starting a new trip.</string>
+    <string name="trip_open_other">Open the %1$s trip</string>
+    <string name="trip_unmarked_title">Some children are not marked</string>
+    <plurals name="trip_unmarked_pickup">
+        <item quantity="one">%d child has not been marked as picked up or not picked. If you complete the trip now, their parent and the school will be told the pick-up was not confirmed.</item>
+        <item quantity="other">%d children have not been marked as picked up or not picked. If you complete the trip now, their parents and the school will be told the pick-up was not confirmed.</item>
+    </plurals>
+    <plurals name="trip_unmarked_dropoff">
+        <item quantity="one">%d child has not been marked as dropped off or not dropped. If you complete the trip now, their parent and the school will be told the drop-off was not confirmed.</item>
+        <item quantity="other">%d children have not been marked as dropped off or not dropped. If you complete the trip now, their parents and the school will be told the drop-off was not confirmed.</item>
+    </plurals>
+    <string name="trip_go_back">Go back</string>
+    <string name="trip_leave_title">Leave this trip?</string>
+    <string name="trip_leave_message">The trip stays open and you can finish it later from the home screen. Parents will not see the bus on the map until you come back to it.</string>
+    <string name="trip_leave">Leave</string>
+    <string name="trip_stay">Stay</string>
+    <string name="trip_location_off">Location is off, so parents will not see the bus on the map for this trip.</string>
+
+    <!-- Driver home (review #21) -->
+    <string name="not_set">Not set</string>
+    <string name="driver_label_name">Driver: %1$s</string>
+    <string name="driver_label_vehicle">Bus: %1$s</string>
+    <string name="driver_label_route">Route: %1$s</string>
+    <string name="driver_refresh_failed">Could not refresh your bus and route</string>
+
+    <!-- Student and vehicle records (review #13) -->
+    <string name="student_added">Student added</string>
+    <string name="student_updated">Student record updated</string>
+    <string name="error_student_not_saved">Could not save the student</string>
+    <string name="error_route_not_found">Route %1$s was not found. Refresh the list and pick it again.</string>
+    <string name="error_route_no_vehicle">Route %1$s has no bus assigned. Assign one on Modify Route first.</string>
+    <string name="error_vehicle_not_found">Bus %1$s was not found. Check which bus the route uses on Modify Route.</string>
+    <string name="error_student_id_taken">Another student in %2$s already has ID %1$s.</string>
+    <string name="error_vehicle_capacity_missing">Bus %1$s has no valid capacity. Set it on Modify Vehicle first.</string>
+    <string name="error_vehicle_full">Bus %1$s is full (%2$d seats). Choose another route or increase its capacity.</string>
+    <string name="error_capacity_number">Enter the number of seats, for example 30</string>
+    <string name="vehicle_capacity_label">Capacity: %1$s</string>
+    <string name="error_license_taken">A staff member with this licence number already exists.</string>
+    <string name="staff_added">Staff added</string>
+
+    <!-- Parent dashboard (review #1, #20) -->
+    <string name="children_load_failed">Could not load your children. Check your connection and pull down to try again.</string>
+    <string name="no_children_linked">No children are linked to your account yet. Ask the school to add %1$s as the parent email on your child\'s record, then pull down to refresh.</string>
+
+    <!-- Live bus map (review #10) -->
+    <string name="bus_map_title_short">Bus map</string>
+    <string name="bus_map_title">Bus %1$s</string>
+    <string name="bus_map_marker">Bus %1$s</string>
+    <string name="bus_map_description">Map showing where the bus is now</string>
+    <string name="bus_map_waiting">Finding the bus…</string>
+    <string name="bus_map_unavailable">The bus location could not be loaded. Check your connection.</string>
+    <string name="bus_map_not_on_trip">Bus %1$s is not on a trip right now. Its position appears here while the driver is on a trip.</string>
+    <string name="bus_map_live">Bus %1$s is on a trip.</string>
+    <string name="bus_map_updated_now">Bus %1$s is on a trip. Updated just now.</string>
+    <plurals name="bus_map_updated_minutes">
+        <item quantity="one">Bus %1$s is on a trip. Updated %2$d minute ago.</item>
+        <item quantity="other">Bus %1$s is on a trip. Updated %2$d minutes ago.</item>
+    </plurals>
+    <string name="osm_attribution">Map data © OpenStreetMap contributors</string>
+    <string name="bus_checking">Checking where bus %1$s is…</string>
+    <string name="bus_location_unavailable">The bus location is not available yet. It appears once the driver starts a trip.</string>
+
+    <!-- School home (review #20) -->
+    <string name="count_failed_students">Could not load the number of students</string>
+    <string name="count_failed_routes">Could not load the number of routes</string>
+    <string name="count_failed_vehicles">Could not load the number of vehicles</string>
+    <string name="count_failed_drivers">Could not load the number of drivers</string>
+
+    <!-- Sign-up invite code (review #2) -->
+    <string name="hint_invite_code">School invite code</string>
+    <string name="error_invite_code_required">Enter the invite code the school gave you</string>
+    <string name="error_invite_code_wrong">That invite code is not right. Check it with the school and try again.</string>
+    <string name="error_sign_up_incomplete">Could not finish creating your account. Please try again.</string>
+    <string name="invite_code_title">Parent sign-up code</string>
+    <string name="invite_code_message">Parents need this code to create an account. Give it only to families of children on the transport list, and change it if it gets out.</string>
+    <string name="invite_code_none">No code set yet. Parents cannot sign up until you set one.</string>
+    <string name="invite_code_current">Current code: %1$s</string>
+    <string name="invite_code_new">New code</string>
+    <string name="invite_code_generate">New random code</string>
+    <string name="invite_code_saved">Sign-up code updated</string>
+    <string name="invite_code_load_failed">Could not load the sign-up code</string>
+    <string name="invite_code_button">Parent sign-up code</string>
 </resources>

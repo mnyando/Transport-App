@@ -154,6 +154,8 @@ public class TripLocationService extends Service implements LocationListener {
     // Older Android versions call these; nothing to do.
     @Override public void onProviderEnabled(@NonNull String provider) {}
     @Override public void onProviderDisabled(@NonNull String provider) {}
+    // Deprecated in API 29 but still abstract on Android 7-9 (minSdk 24), so it must stay.
+    @SuppressWarnings("deprecation")
     @Override public void onStatusChanged(String provider, int status, android.os.Bundle extras) {}
 
     private Notification buildNotification() {

@@ -69,7 +69,7 @@ public class DeleteRoute extends AppCompatActivity {
     }
 
     private void fetchVehicles() {
-        firestore.collection("vehicle")
+        firestore.collection(FirestorePaths.VEHICLES)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     vehicleNamesList.clear();
@@ -85,12 +85,12 @@ public class DeleteRoute extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to fetch vehicles: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not load vehicles", e);
                 });
     }
 
     private void fetchRoutes() {
-        firestore.collection("Routes")
+        firestore.collection(FirestorePaths.ROUTES)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     routeList.clear();
@@ -133,7 +133,7 @@ public class DeleteRoute extends AppCompatActivity {
     }
 
     private void deleteRouteFromFirestore() {
-        firestore.collection("Routes")
+        firestore.collection(FirestorePaths.ROUTES)
                 .document(selectedRouteId)
                 .delete()
                 .addOnSuccessListener(aVoid -> {
@@ -141,7 +141,7 @@ public class DeleteRoute extends AppCompatActivity {
                     fetchRoutes(); // Refresh list after deletion
                     clearFields();
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to delete route: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> UserErrors.show(this, "Could not delete route", e));
     }
 
     private void clearFields() {

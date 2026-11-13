@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Pull down to refresh the numbers (review #20) -->
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/schoolRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fillViewport="true"
     android:background="@color/screen_background">
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -869,12 +875,26 @@
             android:layout_marginTop="24dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/edit_text_background"
+            android:backgroundTint="@color/green"
+            android:minHeight="56dp"
             android:text="@string/reports"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
+
+        <!-- Review #2: the code parents need to sign up -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/inviteCodeButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:minHeight="56dp"
+            android:text="@string/invite_code_button"
+            android:textColor="@color/text_accent"
+            android:textSize="16sp" />
 
         <!-- Footer Section -->
         <include
@@ -884,3 +904,4 @@
 
     </LinearLayout>
 </ScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

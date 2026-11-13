@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,7 +46,7 @@ public class ParentLanding extends AppCompatActivity {
     private static final String TAG = "ParentLanding";
 
     private final List<Student> childList = new ArrayList<>();
-    private final List<Notification> notificationList = new ArrayList<>();
+    private SwipeRefreshLayout refreshLayout;
     private ChildAdapter childAdapter;
     private NotificationAdapter notificationAdapter;
     private ParentDashboardViewModel viewModel;
@@ -95,6 +96,10 @@ public class ParentLanding extends AppCompatActivity {
         findViewById(R.id.whereIsBusButton).setOnClickListener(v -> pickVehicle(this::checkBus));
         findViewById(R.id.messageBusButton).setOnClickListener(v -> pickVehicle(this::openBusChat));
         setupRecyclerViews();
+        // Pull down to reload the children (review #20).
+        refreshLayout = findViewById(R.id.parentRefresh);
+        refreshLayout.setColorSchemeResources(R.color.green);
+        refreshLayout.setOnRefreshListener(() -> viewModel.refreshChildren());
 
         viewModel = new ViewModelProvider(this, ParentDashboardViewModel.factory(
                 new FirestoreParentRepository(FirebaseFirestore.getInstance())))
@@ -129,35 +134,35 @@ public class ParentLanding extends AppCompatActivity {
 
         RecyclerView notificationRecyclerView = findViewById(R.id.notificationRecyclerView);
         notificationRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        notificationAdapter = new NotificationAdapter(notificationList, this::onNotificationClick);
+        notificationAdapter = new NotificationAdapter(this::onNotificationClick);
         notificationRecyclerView.setAdapter(notificationAdapter);
     }
 
     private void showChildren(ParentDashboardViewModel.ChildrenState state) {
-        if (state.loading) return;
+        if (state.loading) {
+            if (!refreshLayout.isRefreshing()) childEmptyText.setText(R.string.loading_your_children);
+            return;
+        }
+        refreshLayout.setRefreshing(false);
         childList.clear();
         childList.addAll(state.children);
         childAdapter.updateList(childList);
         Log.d(TAG, "Students linked to this parent: " + childList.size());
 
         if (state.failed) {
-            childEmptyText.setText("Could not load your children. Check your connection and reopen this screen.");
+            childEmptyText.setText(R.string.children_load_failed);
             childEmptyText.setVisibility(View.VISIBLE);
         } else if (childList.isEmpty()) {
-            childEmptyText.setText("No children are linked to your email yet. "
-                    + "Ask the school to add " + parentEmail + " to your child's record.");
+            childEmptyText.setText(getString(R.string.no_children_linked, parentEmail));
             childEmptyText.setVisibility(View.VISIBLE);
         } else {
             childEmptyText.setVisibility(View.GONE);
         }
     }
 
-    @SuppressWarnings("NotifyDataSetChanged") // the whole feed is replaced on each update
     private void showNotifications(List<Notification> notifications) {
-        notificationList.clear();
-        notificationList.addAll(notifications);
-        notificationAdapter.notifyDataSetChanged();
-        notificationEmptyText.setVisibility(notificationList.isEmpty() ? View.VISIBLE : View.GONE);
+        notificationAdapter.submitList(new ArrayList<>(notifications));
+        notificationEmptyText.setVisibility(notifications.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     private void onNotificationClick(Notification notification) {
@@ -199,43 +204,28 @@ public class ParentLanding extends AppCompatActivity {
         viewModel.checkBus(vehicle);
     }
 
-    /** Shows the latest shared bus location and opens it in the phone's maps app once. */
+    /** Shows the latest shared bus location and opens the live map once (review #10). */
     private void showBusStatus(ParentDashboardViewModel.BusStatus status) {
         busStatusText.setVisibility(View.VISIBLE);
         String vehicle = status.vehicle;
         switch (status.kind) {
             case CHECKING:
-                busStatusText.setText("Checking where bus " + vehicle + " is...");
+                busStatusText.setText(getString(R.string.bus_checking, vehicle));
                 return;
             case NOT_ON_TRIP:
-                busStatusText.setText("Bus " + vehicle + " is not on a trip right now.");
+                busStatusText.setText(getString(R.string.bus_map_not_on_trip, vehicle));
                 return;
             case UNAVAILABLE:
-                busStatusText.setText("The bus location isn't available yet. It appears once the driver starts a trip.");
+                busStatusText.setText(R.string.bus_location_unavailable);
                 return;
             case ON_TRIP:
             default:
                 break;
         }
         long minutes = status.minutesAgo;
-        busStatusText.setText("Bus " + vehicle + " is on a trip. Location updated "
-                + (minutes < 0 ? "recently" : minutes == 0 ? "just now" : minutes + " min ago") + ".");
-        if (!status.takeOpenMap() || status.lat == null || status.lng == null) return;
-
-        double lat = status.lat;
-        double lng = status.lng;
-        Uri uri = Uri.parse(String.format(Locale.US, "geo:%f,%f?q=%f,%f(%s)",
-                lat, lng, lat, lng, Uri.encode("Bus " + vehicle)));
-        Intent map = new Intent(Intent.ACTION_VIEW, uri);
-        if (map.resolveActivity(getPackageManager()) != null) {
-            startActivity(map);
-        } else {
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(String.format(Locale.US,
-                        "https://www.google.com/maps/search/?api=1&query=%f,%f", lat, lng))));
-            } catch (android.content.ActivityNotFoundException ex) {
-                Toast.makeText(this, "Install a maps app to see the bus on a map.", Toast.LENGTH_LONG).show();
-            }
-        }
+        busStatusText.setText(minutes < 0 ? getString(R.string.bus_map_live, vehicle)
+                : minutes == 0 ? getString(R.string.bus_map_updated_now, vehicle)
+                : getResources().getQuantityString(R.plurals.bus_map_updated_minutes, (int) minutes, vehicle, (int) minutes));
+        if (status.takeOpenMap()) startActivity(BusMapActivity.intent(this, vehicle));
     }
 }

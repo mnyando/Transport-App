@@ -48,31 +48,13 @@
                 <ImageView
                     android:contentDescription="@null"
                     android:id="@+id/driverImageView"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/circle_background"
                     android:src="@drawable/driver"
                     android:scaleType="centerCrop" />
-
-                <TextView
-                    android:id="@+id/driverIdTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="6dp"
-                    android:text="@string/driver_id_id"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/driverEmailTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="6dp"
-                    android:text="@string/email_email"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/driverNameTextView"
@@ -113,6 +95,8 @@
                         android:id="@+id/pickUpButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:minHeight="64dp"
+                        android:textSize="18sp"
                         android:layout_weight="1"
                         android:layout_marginEnd="8dp"
                         android:backgroundTint="@color/green"
@@ -123,6 +107,8 @@
                         android:id="@+id/dropOffButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:minHeight="64dp"
+                        android:textSize="18sp"
                         android:layout_weight="1"
                         android:layout_marginStart="8dp"
                         android:backgroundTint="@color/green"
@@ -134,6 +120,8 @@
                     android:id="@+id/messagesButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:minHeight="64dp"
+                    android:textSize="18sp"
                     android:layout_marginTop="8dp"
                     android:backgroundTint="@color/blue"
                     android:text="@string/messages_from_parents"

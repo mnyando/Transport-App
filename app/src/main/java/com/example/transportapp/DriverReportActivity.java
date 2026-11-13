@@ -100,7 +100,7 @@ public class DriverReportActivity extends AppCompatActivity {
 
     private void performDriverSearch(String query) {
         Log.d(TAG, "Searching drivers with query: " + query);
-        db.collection("staff")
+        db.collection(FirestorePaths.STAFF)
                 .orderBy("staffName")
                 .startAt(query)
                 .endAt(query + "\uf8ff")
@@ -134,7 +134,7 @@ public class DriverReportActivity extends AppCompatActivity {
 
     private void loadDriverData(String driverId) {
         Log.d(TAG, "Loading data for driver: " + driverId);
-        db.collection("trips")
+        db.collection(FirestorePaths.TRIPS)
                 .whereEqualTo("driverId", driverId)
                 .whereEqualTo("completed", true)
                 .get()
@@ -148,6 +148,8 @@ public class DriverReportActivity extends AppCompatActivity {
                         recentTrips.clear();
 
                         for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Trips that were never finished (closed by TripRepository) are not real trips.
+                            if (Boolean.TRUE.equals(document.getBoolean("abandoned"))) continue;
                             totalTrips++;
                             Long duration = document.getLong("durationMillis");
                             if (duration != null) {

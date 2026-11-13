@@ -32,7 +32,7 @@ public final class PushTokens {
     public static void saveToken(String token) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null || token == null || token.isEmpty()) return;
-        FirebaseFirestore.getInstance().collection("users").document(user.getUid())
+        FirebaseFirestore.getInstance().collection(FirestorePaths.USERS).document(user.getUid())
                 .update(FIELD_TOKENS, FieldValue.arrayUnion(token))
                 .addOnFailureListener(e -> Log.w(TAG, "Could not save FCM token", e));
     }
@@ -49,7 +49,7 @@ public final class PushTokens {
         }
         FirebaseMessaging.getInstance().getToken()
                 .addOnSuccessListener(token -> FirebaseFirestore.getInstance()
-                        .collection("users").document(user.getUid())
+                        .collection(FirestorePaths.USERS).document(user.getUid())
                         .update(FIELD_TOKENS, FieldValue.arrayRemove(token))
                         .addOnCompleteListener(t -> afterwards.run()))
                 .addOnFailureListener(e -> afterwards.run());

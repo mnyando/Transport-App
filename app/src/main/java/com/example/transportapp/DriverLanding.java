@@ -20,8 +20,8 @@ import java.util.List;
 
 public class DriverLanding extends AppCompatActivity {
 
-    private TextView driverIdTextView, driverEmailTextView, driverNameTextView,
-            vehicleTextView, routeTextView;
+    // The driver's ID and email are not shown: drivers don't need them on the road (review #21).
+    private TextView driverNameTextView, vehicleTextView, routeTextView;
     private ImageView driverImageView;
     private Button pickUpButton, dropOffButton, messagesButton, sosButton;
     private FirebaseFirestore db;
@@ -58,8 +58,6 @@ public class DriverLanding extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        driverIdTextView = findViewById(R.id.driverIdTextView);
-        driverEmailTextView = findViewById(R.id.driverEmailTextView);
         driverNameTextView = findViewById(R.id.driverNameTextView);
         vehicleTextView = findViewById(R.id.vehicleTextView);
         routeTextView = findViewById(R.id.routeTextView);
@@ -71,11 +69,10 @@ public class DriverLanding extends AppCompatActivity {
     }
 
     private void displayDriverInfo() {
-        driverIdTextView.setText("Driver ID: " + (driverId != null ? driverId : "N/A"));
-        driverEmailTextView.setText("Email: " + (driverEmail != null ? driverEmail : "N/A"));
-        driverNameTextView.setText("Driver Name: " + (driverName != null ? driverName : "N/A"));
-        vehicleTextView.setText("Assigned Vehicle: " + (assignedVehicle != null ? assignedVehicle : "N/A"));
-        routeTextView.setText("Assigned Route: " + (assignedRoute != null ? assignedRoute : "N/A"));
+        String none = getString(R.string.not_set);
+        driverNameTextView.setText(getString(R.string.driver_label_name, driverName != null ? driverName : none));
+        vehicleTextView.setText(getString(R.string.driver_label_vehicle, assignedVehicle != null ? assignedVehicle : none));
+        routeTextView.setText(getString(R.string.driver_label_route, assignedRoute != null ? assignedRoute : none));
     }
 
     private boolean requireVehicle() {
@@ -88,10 +85,10 @@ public class DriverLanding extends AppCompatActivity {
 
     private void setupButtonListeners() {
         pickUpButton.setOnClickListener(v -> {
-            if (requireVehicle()) startActivity(tripIntent(PickUp.class));
+            if (requireVehicle()) startActivity(tripIntent(TripRepository.PICKUP));
         });
         dropOffButton.setOnClickListener(v -> {
-            if (requireVehicle()) startActivity(tripIntent(DropOff.class));
+            if (requireVehicle()) startActivity(tripIntent(TripRepository.DROPOFF));
         });
         messagesButton.setOnClickListener(v -> {
             if (!requireVehicle()) return;
@@ -106,13 +103,8 @@ public class DriverLanding extends AppCompatActivity {
         });
     }
 
-    private Intent tripIntent(Class<?> screen) {
-        Intent trip = new Intent(this, screen);
-        trip.putExtra("assignedVehicle", assignedVehicle);
-        trip.putExtra("driverId", driverId);
-        trip.putExtra("driverName", driverName);
-        trip.putExtra("assignedRoute", assignedRoute);
-        return trip;
+    private Intent tripIntent(String tripType) {
+        return TripActivity.intent(this, tripType, assignedVehicle, driverId, driverName, assignedRoute);
     }
 
     /** SOS asks once (so a pocket tap doesn't alarm every parent) and takes an optional note. */
@@ -132,7 +124,7 @@ public class DriverLanding extends AppCompatActivity {
 
     private void sendSos(String note) {
         sosButton.setEnabled(false);
-        db.collectionGroup("studentList")
+        db.collectionGroup(FirestorePaths.STUDENT_LIST)
                 .whereEqualTo("vehicle", assignedVehicle)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -166,7 +158,7 @@ public class DriverLanding extends AppCompatActivity {
     /** Drivers live in the staff collection (the old code read a "drivers" collection nothing writes). */
     private void refreshDriverInfo() {
         if (driverId == null) return;
-        db.collection("staff").document(driverId)
+        db.collection(FirestorePaths.STAFF).document(driverId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -178,6 +170,6 @@ public class DriverLanding extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to refresh driver info", Toast.LENGTH_SHORT).show());
+                        UserErrors.show(this, getString(R.string.driver_refresh_failed), e));
     }
 }

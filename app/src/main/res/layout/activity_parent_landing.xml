@@ -12,11 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize" />
 
-    <!-- ScrollView for scrollable content -->
-    <ScrollView
+    <!-- Pull down to reload (review #20) -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/parentRefresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="1">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:fillViewport="true">
 
         <LinearLayout
@@ -168,6 +173,7 @@
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!-- Footer Section (Fixed at the bottom) -->
     <include

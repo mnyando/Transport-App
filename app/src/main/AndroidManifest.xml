@@ -68,11 +68,11 @@
             android:label="@string/title_reports"
             android:exported="false" />
         <activity
-            android:name=".DropOff"
-            android:label="@string/title_drop_off"
+            android:name=".BusMapActivity"
+            android:label="@string/bus_map_title_short"
             android:exported="false" />
         <activity
-            android:name=".PickUp"
+            android:name=".TripActivity"
             android:label="@string/title_pick_up"
             android:exported="false" />
         <activity

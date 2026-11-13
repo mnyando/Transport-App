@@ -127,7 +127,7 @@ public class StudentReportActivity extends AppCompatActivity {
             return;
         }
 
-        db.collectionGroup("studentList")
+        db.collectionGroup(FirestorePaths.STUDENT_LIST)
                 .orderBy("name")
                 .startAt(query)
                 .endAt(query + "\uf8ff")
@@ -154,7 +154,7 @@ public class StudentReportActivity extends AppCompatActivity {
     }
 
     private void fetchStudentData(String studentId) {
-        db.collectionGroup("studentList")
+        db.collectionGroup(FirestorePaths.STUDENT_LIST)
                 .whereEqualTo("studentId", studentId)
                 .limit(1)
                 .get()
@@ -218,11 +218,10 @@ public class StudentReportActivity extends AppCompatActivity {
     }
 
     private void calculateAttendanceFromTrips(String studentId) {
-        String currentMonth = new SimpleDateFormat("yyyy-MM", Locale.getDefault()).format(new Date());
         Date startOfMonth = getStartOfMonth();
         Date endOfMonth = getEndOfMonth();
 
-        db.collection("trips")
+        db.collection(FirestorePaths.TRIPS)
                 .whereEqualTo("completed", true)
                 .whereGreaterThanOrEqualTo("endTimeMillis", startOfMonth.getTime())
                 .whereLessThanOrEqualTo("endTimeMillis", endOfMonth.getTime())
@@ -230,15 +229,19 @@ public class StudentReportActivity extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        int presentDays = task.getResult().size();
+                        // studentIds lists the children carried on a completed trip
+                        // (TripRepository). Count days, not trips: a child rides twice a day.
+                        java.util.Set<String> days = new java.util.HashSet<>();
+                        SimpleDateFormat day = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                        for (QueryDocumentSnapshot trip : task.getResult()) {
+                            Long end = trip.getLong("endTimeMillis");
+                            if (end != null) days.add(day.format(new Date(end)));
+                        }
+                        int presentDays = days.size();
                         int schoolDays = getSchoolDaysInMonth();
                         int absentDays = Math.max(0, schoolDays - presentDays);
 
                         updateAttendanceStats(presentDays, absentDays);
-
-                        if (presentDays > 0) {
-                            saveCalculatedAttendance(studentId, presentDays, absentDays, currentMonth);
-                        }
                     } else {
                         Log.e("Attendance", "Error calculating attendance", task.getException());
                         updateAttendanceStats(0, 0);
@@ -255,7 +258,7 @@ public class StudentReportActivity extends AppCompatActivity {
         Log.d("TripsDebug", "Loading trips for student: " + studentId);
 
         // First approach: Try to get trips where studentId is in studentIds array
-        db.collection("trips")
+        db.collection(FirestorePaths.TRIPS)
                 .whereArrayContains("studentIds", studentId)
                 .orderBy("startTimeMillis", Query.Direction.DESCENDING)
                 .limit(5)
@@ -327,7 +330,7 @@ public class StudentReportActivity extends AppCompatActivity {
         }
 
         // Fetch trips by their IDs
-        db.collection("trips")
+        db.collection(FirestorePaths.TRIPS)
                 .whereIn(FieldPath.documentId(), tripIds)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -416,25 +419,17 @@ public class StudentReportActivity extends AppCompatActivity {
         return calendar.getTime();
     }
 
+    /** Weekdays from the 1st of this month up to today (school holidays are not known here). */
     private int getSchoolDaysInMonth() {
-        return 20;
-    }
-
-    private void saveCalculatedAttendance(String studentId, int presentDays, int absentDays, String month) {
-        Map<String, Object> attendanceRecord = new HashMap<>();
-        attendanceRecord.put("studentId", studentId);
-        attendanceRecord.put("presentDays", presentDays);
-        attendanceRecord.put("absentDays", absentDays);
-        attendanceRecord.put("calculatedFromTrips", true);
-        attendanceRecord.put("timestamp", FieldValue.serverTimestamp());
-
-        db.collection("attendance")
-                .document(month)
-                .collection("records")
-                .add(attendanceRecord)
-                .addOnFailureListener(e -> {
-                    Log.e("Attendance", "Error saving attendance", e);
-                });
+        Calendar day = Calendar.getInstance();
+        int today = day.get(Calendar.DAY_OF_MONTH);
+        int weekdays = 0;
+        for (int d = 1; d <= today; d++) {
+            day.set(Calendar.DAY_OF_MONTH, d);
+            int dow = day.get(Calendar.DAY_OF_WEEK);
+            if (dow != Calendar.SATURDAY && dow != Calendar.SUNDAY) weekdays++;
+        }
+        return weekdays;
     }
 
     private void updateAttendanceStats(int presentDays, int absentDays) {

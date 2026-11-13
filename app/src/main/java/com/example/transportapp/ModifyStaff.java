@@ -88,7 +88,7 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
 
     private void fetchStaff() {
         Log.d(TAG, "Fetching staff from Firestore");
-        firestore.collection("staff")
+        firestore.collection(FirestorePaths.STAFF)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     staffList.clear();
@@ -106,12 +106,12 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error fetching staff: " + e.getMessage());
-                    Toast.makeText(this, "Error fetching staff: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not load staff", e);
                 });
     }
 
     private void fetchVehicles() {
-        firestore.collection("vehicle")
+        firestore.collection(FirestorePaths.VEHICLES)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     vehicleList.clear();
@@ -126,12 +126,12 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error fetching vehicles: " + e.getMessage());
-                    Toast.makeText(this, "Error fetching vehicles: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not load vehicles", e);
                 });
     }
 
     private void fetchRoutes() {
-        firestore.collection("Routes")
+        firestore.collection(FirestorePaths.ROUTES)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     routeList.clear();
@@ -146,7 +146,7 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error fetching routes: " + e.getMessage());
-                    Toast.makeText(this, "Error fetching routes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not load routes", e);
                 });
     }
 
@@ -225,7 +225,7 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
         updatedData.put("status", updatedStatus);
         updatedData.put("role", updatedRole);
 
-        firestore.collection("staff").document(selectedStaffId)
+        firestore.collection(FirestorePaths.STAFF).document(selectedStaffId)
                 .update(updatedData)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Staff updated successfully", Toast.LENGTH_SHORT).show();
@@ -234,7 +234,7 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
                 })
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Failed to update staff: " + e.getMessage());
-                    Toast.makeText(this, "Failed to update staff: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not update staff", e);
                 });
     }
 

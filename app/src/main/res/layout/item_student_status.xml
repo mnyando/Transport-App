@@ -1,36 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- One child on the trip checklist (review #21: large tap targets for use in a moving bus). -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingVertical="8dp"
-    android:gravity="center_vertical">
+    android:orientation="vertical"
+    android:paddingVertical="12dp">
 
-    <!-- Student Name -->
     <TextView
         android:id="@+id/studentNameTextView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textSize="16sp"
-        android:textColor="@color/text_primary" />
+        android:textColor="@color/text_primary"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-    <!-- Picked Checkbox -->
-    <CheckBox
-        android:id="@+id/pickedCheckBox"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/studentDetailTextView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/picked"
-        android:textColor="@color/text_primary" />
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
-    <!-- Not Picked Checkbox -->
-    <CheckBox
-        android:id="@+id/notPickedCheckBox"
-        android:layout_width="wrap_content"
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/statusGroup"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/not_picked"
-        android:textColor="@color/text_primary" />
+        android:layout_marginTop="8dp"
+        app:selectionRequired="false"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/doneButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="64dp"
+            android:textSize="18sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/notDoneButton"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="64dp"
+            android:textSize="18sp" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
 </LinearLayout>

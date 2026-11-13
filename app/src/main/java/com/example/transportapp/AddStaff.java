@@ -61,7 +61,7 @@ public class AddStaff extends AppCompatActivity {
     }
 
     private void loadVehicles() {
-        CollectionReference vehicleRef = db.collection("vehicle");
+        CollectionReference vehicleRef = db.collection(FirestorePaths.VEHICLES);
         vehicleRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             vehicleList.clear();
             vehicleList.add("Select Vehicle");
@@ -75,12 +75,12 @@ public class AddStaff extends AppCompatActivity {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             vehicleDropdown.setAdapter(adapter);
         }).addOnFailureListener(e -> {
-            Toast.makeText(this, "Failed to load vehicles: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            UserErrors.show(this, "Could not load vehicles", e);
         });
     }
 
     private void loadRoutes() {
-        CollectionReference routeRef = db.collection("Routes");
+        CollectionReference routeRef = db.collection(FirestorePaths.ROUTES);
         routeRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             routeList.clear();
             routeList.add("Select Route");
@@ -94,7 +94,7 @@ public class AddStaff extends AppCompatActivity {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             routeDropdown.setAdapter(adapter);
         }).addOnFailureListener(e -> {
-            Toast.makeText(this, "Failed to load routes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            UserErrors.show(this, "Could not load routes", e);
         });
     }
 
@@ -140,20 +140,28 @@ public class AddStaff extends AppCompatActivity {
             staffData.put("status", status);
             staffData.put("role", role);
 
-            db.collection("staff").document(licenseNumber) // Use license as ID
-                    .set(staffData)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(this, "Staff added successfully", Toast.LENGTH_SHORT).show();
-                        clearForm();
+            // Generated document IDs (review #13): a licence number can change or be mistyped,
+            // and it used to be the record's key. Older staff keep their licence-number IDs.
+            db.collection(FirestorePaths.STAFF).whereEqualTo("licenseNumber", licenseNumber).limit(1).get()
+                    .addOnSuccessListener(existing -> {
+                        if (!existing.isEmpty()) {
+                            licenseNumberInput.setError(getString(R.string.error_license_taken));
+                            licenseNumberInput.requestFocus();
+                            return;
+                        }
+                        db.collection(FirestorePaths.STAFF).add(staffData)
+                                .addOnSuccessListener(ref -> {
+                                    Toast.makeText(this, R.string.staff_added, Toast.LENGTH_SHORT).show();
+                                    clearForm();
+                                })
+                                .addOnFailureListener(e -> UserErrors.show(this, "Could not save staff", e));
                     })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(this, "Error saving staff: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    });
+                    .addOnFailureListener(e -> UserErrors.show(this, "Could not save staff", e));
         });
     }
 
     private void checkStaffCountForVehicle(String vehicleName, Runnable onSuccess) {
-        db.collection("staff") // Updated to "staff"
+        db.collection(FirestorePaths.STAFF)
                 .whereEqualTo("assignedVehicle", vehicleName)
                 .whereEqualTo("role", "Driver") // Only count drivers
                 .get()
@@ -166,7 +174,7 @@ public class AddStaff extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error checking staff count: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not check staff count", e);
                 });
     }
 

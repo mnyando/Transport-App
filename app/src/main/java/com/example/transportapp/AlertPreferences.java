@@ -37,7 +37,7 @@ final class AlertPreferences {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
         DocumentReference profile = FirebaseFirestore.getInstance()
-                .collection("users").document(user.getUid());
+                .collection(FirestorePaths.USERS).document(user.getUid());
 
         profile.get()
                 .addOnSuccessListener(doc -> {

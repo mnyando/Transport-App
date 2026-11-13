@@ -37,7 +37,7 @@ public class DeleteVehicle extends AppCompatActivity {
         setContentView(R.layout.activity_delete_vehicle);
 
         db = FirebaseFirestore.getInstance();
-        vehiclesRef = db.collection("vehicle");
+        vehiclesRef = db.collection(FirestorePaths.VEHICLES);
 
         // Initialize Views
         vehicleNameInput = findViewById(R.id.vehicleNameInput);
@@ -74,7 +74,7 @@ public class DeleteVehicle extends AppCompatActivity {
                     vehicleAdapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to fetch vehicles: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not load vehicles", e);
                 });
     }
 
@@ -83,7 +83,7 @@ public class DeleteVehicle extends AppCompatActivity {
         vehicleNameInput.setText(vehicle.getVehicleName());
         vehicleNumberInput.setText(vehicle.getVehicleNumber());
         vehicleIdInput.setText(vehicle.getId());
-        capacityInput.setText(vehicle.getCapacity());
+        capacityInput.setText(vehicle.capacityText());
     }
 
     private void showDeleteConfirmationDialog() {
@@ -115,7 +115,7 @@ public class DeleteVehicle extends AppCompatActivity {
                     fetchVehicles();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to delete vehicle: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not delete vehicle", e);
                 });
     }
 }

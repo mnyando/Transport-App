@@ -78,7 +78,7 @@ public class ModifyRoute extends AppCompatActivity {
     }
 
     private void fetchVehicles() {
-        firestore.collection("vehicle")
+        firestore.collection(FirestorePaths.VEHICLES)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     vehicleNamesList.clear();
@@ -93,11 +93,11 @@ public class ModifyRoute extends AppCompatActivity {
                         Toast.makeText(this, "No vehicles found", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to fetch vehicles: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> UserErrors.show(this, "Could not load vehicles", e));
     }
 
     private void fetchRoutes() {
-        firestore.collection("Routes")
+        firestore.collection(FirestorePaths.ROUTES)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     routeList.clear();
@@ -166,14 +166,14 @@ public class ModifyRoute extends AppCompatActivity {
         updatedData.put("dropOffTime", dropOffTime); // Include drop-off time
 
         // Update Firestore
-        firestore.collection("Routes")
+        firestore.collection(FirestorePaths.ROUTES)
                 .document(selectedRouteId)
                 .update(updatedData)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Route updated successfully", Toast.LENGTH_SHORT).show();
                     fetchRoutes(); // Refresh the route list
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Failed to update route: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> UserErrors.show(this, "Could not update route", e));
     }
 
     private void showTimePickerDialog(EditText targetEditText) {

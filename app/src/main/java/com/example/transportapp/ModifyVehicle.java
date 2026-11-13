@@ -35,7 +35,7 @@ public class ModifyVehicle extends AppCompatActivity {
         setContentView(R.layout.activity_modify_vehicle);
 
         db = FirebaseFirestore.getInstance();
-        vehiclesRef = db.collection("vehicle");
+        vehiclesRef = db.collection(FirestorePaths.VEHICLES);
 
         // Initialize Views
         vehicleNameInput = findViewById(R.id.vehicleNameInput);
@@ -76,7 +76,7 @@ public class ModifyVehicle extends AppCompatActivity {
         vehicleNameInput.setText(vehicle.getVehicleName());
         vehicleNumberInput.setText(vehicle.getVehicleNumber());
         vehicleIdInput.setText(vehicle.getId());
-        capacityInput.setText(vehicle.getCapacity());
+        capacityInput.setText(vehicle.capacityText());
         // Set radio button based on vehicle status
         if ("Active".equals(vehicle.getStatus())) {
             statusRadioGroup.check(R.id.activeRadioButton);
@@ -104,6 +104,14 @@ public class ModifyVehicle extends AppCompatActivity {
             return;
         }
 
+        // Capacity is saved as a number so it can be compared safely (review #13).
+        int seats = Vehicle.parseCapacity(capacity);
+        if (seats <= 0) {
+            capacityInput.setError(getString(R.string.error_capacity_number));
+            capacityInput.requestFocus();
+            return;
+        }
+
         // Determine selected status
         if (selectedStatusId == R.id.activeRadioButton) {
             status = "Active";
@@ -118,7 +126,7 @@ public class ModifyVehicle extends AppCompatActivity {
         vehicleRef.update(
                         "vehicleName", vehicleName,
                         "vehicleNumber", vehicleNumber,
-                        "capacity", capacity,
+                        "capacity", (long) seats,
                         "status", status // Add status to update
                 )
                 .addOnSuccessListener(aVoid -> {
@@ -134,7 +142,7 @@ public class ModifyVehicle extends AppCompatActivity {
                     fetchVehicles();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to update vehicle: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not update vehicle", e);
                 });
     }
 }

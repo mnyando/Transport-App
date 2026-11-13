@@ -111,8 +111,9 @@
                     <ImageView
                         android:contentDescription="@string/show_password"
                         android:id="@+id/ivTogglePassword"
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:padding="11dp"
                         android:src="@drawable/baseline_remove_red_eye_24"
                         android:clickable="true"
                         android:focusable="true"

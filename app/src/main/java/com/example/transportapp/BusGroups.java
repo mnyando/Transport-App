@@ -26,8 +26,8 @@ import java.util.Map;
 public final class BusGroups {
 
     private static final String TAG = "BusGroups";
-    public static final String COLLECTION = "busGroups";
-    public static final String MESSAGES = "messages";
+    public static final String COLLECTION = FirestorePaths.BUS_GROUPS;
+    public static final String MESSAGES = FirestorePaths.MESSAGES;
 
     private BusGroups() {}
 

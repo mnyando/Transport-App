@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import android.widget.CheckBox;
 import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class SignUp extends AppCompatActivity {
 
@@ -57,7 +58,7 @@ public class SignUp extends AppCompatActivity {
         btnSignUp.setOnClickListener(v -> {
             String fullName = etFullName.getText().toString().trim();
             String email = ParentEmails.normalize(etEmail.getText().toString());
-            String password = etPassword.getText().toString().trim();
+            String password = etPassword.getText().toString(); // not trimmed: spaces can be part of a password
 
             // Input validation
             if (fullName.isEmpty()) {
@@ -81,6 +82,14 @@ public class SignUp extends AppCompatActivity {
                 return;
             }
 
+            String inviteCode = ((EditText) findViewById(R.id.etInviteCode)).getText().toString()
+                    .trim().toUpperCase(java.util.Locale.ROOT);
+            if (inviteCode.isEmpty()) {
+                ((EditText) findViewById(R.id.etInviteCode)).setError(getString(R.string.error_invite_code_required));
+                findViewById(R.id.etInviteCode).requestFocus();
+                return;
+            }
+
             if (!cbConsent.isChecked()) {
                 Toast.makeText(SignUp.this, R.string.consent_required, Toast.LENGTH_LONG).show();
                 PrivacyNotice.show(SignUp.this);
@@ -101,8 +110,10 @@ public class SignUp extends AppCompatActivity {
                                 // Recorded consent to the privacy notice the user agreed to.
                                 userData.put("consentVersion", PrivacyNotice.VERSION);
                                 userData.put("consentAt", FieldValue.serverTimestamp());
+                                // Checked by firestore.rules against config/signup (review #2).
+                                userData.put("inviteCode", inviteCode);
 
-                                db.collection("users").document(user.getUid())
+                                db.collection(FirestorePaths.USERS).document(user.getUid())
                                         .set(userData)
                                         .addOnSuccessListener(aVoid -> {
                                             // Parents are linked to children by their *verified*
@@ -122,7 +133,14 @@ public class SignUp extends AppCompatActivity {
                                         })
                                         .addOnFailureListener(e -> {
                                             Log.e(TAG, "Failed to save user data to Firestore", e);
-                                            Toast.makeText(SignUp.this, "Could not finish creating your account. Please try again.", Toast.LENGTH_LONG).show();
+                                            // Remove the half-made sign-in account so the email can be
+                                            // used again (e.g. with the right invite code).
+                                            boolean refused = e instanceof FirebaseFirestoreException
+                                                    && ((FirebaseFirestoreException) e).getCode()
+                                                    == FirebaseFirestoreException.Code.PERMISSION_DENIED;
+                                            user.delete().addOnCompleteListener(d -> mAuth.signOut());
+                                            Toast.makeText(SignUp.this, refused ? R.string.error_invite_code_wrong
+                                                    : R.string.error_sign_up_incomplete, Toast.LENGTH_LONG).show();
                                         });
                             } else {
                                 Log.e(TAG, "User is null after creation");

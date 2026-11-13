@@ -68,7 +68,7 @@ public class AddStudent extends AppCompatActivity {
     }
 
     private void fetchRoutes() {
-        db.collection("Routes")
+        db.collection(FirestorePaths.ROUTES)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     routeList.clear();
@@ -84,7 +84,7 @@ public class AddStudent extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error fetching routes: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    UserErrors.show(this, "Could not load routes", e);
                 });
     }
 
@@ -110,160 +110,29 @@ public class AddStudent extends AppCompatActivity {
             return;
         }
 
-        checkVehicleCapacity(route);
-    }
-
-    private void checkVehicleCapacity(String routeName) {
-        db.collection("Routes")
-                .whereEqualTo("routeName", routeName)
-                .limit(1)
-                .get()
-                .addOnSuccessListener(routeQuery -> {
-                    if (!routeQuery.isEmpty()) {
-                        DocumentSnapshot routeDoc = routeQuery.getDocuments().get(0);
-                        String vehicleName = routeDoc.getString("vehicle");
-                        String pickupTime = routeDoc.getString("pickupTime");
-                        String dropOffTime = routeDoc.getString("dropOffTime");
-
-                        if (vehicleName == null) {
-                            Toast.makeText(this, "No vehicle assigned to this route", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        // Get vehicle capacity
-                        db.collection("vehicle")
-                                .whereEqualTo("vehicleName", vehicleName)
-                                .limit(1)
-                                .get()
-                                .addOnSuccessListener(vehicleQuery -> {
-                                    if (!vehicleQuery.isEmpty()) {
-                                        String capacityStr = vehicleQuery.getDocuments().get(0).getString("capacity");
-                                        int capacity;
-                                        try {
-                                            capacity = Integer.parseInt(capacityStr);
-                                        } catch (NumberFormatException e) {
-                                            Toast.makeText(this, "Invalid vehicle capacity", Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
-
-                                        // Count students on this route
-                                        db.collectionGroup("studentList")
-                                                .whereEqualTo("route", routeName)
-                                                .get()
-                                                .addOnSuccessListener(studentQuery -> {
-                                                    int studentCount = studentQuery.size();
-                                                    if (studentCount >= capacity) {
-                                                        Toast.makeText(this, "Vehicle capacity (" + capacity + ") exceeded. Current students: " + studentCount, Toast.LENGTH_SHORT).show();
-                                                    } else {
-                                                        fetchStaffForVehicle(vehicleName, (driver, attendant) -> {
-                                                            saveStudentData(
-                                                                    studentNameInput.getText().toString().trim(),
-                                                                    studentClassInput.getSelectedItem().toString(),
-                                                                    studentIdInput.getText().toString().trim(),
-                                                                    parentNameInput.getText().toString().trim(),
-                                                                    parentContactInput.getText().toString().trim(),
-                                                                    ParentEmails.normalize(parentEmailInput.getText().toString()),
-                                                                    homeLocationInput.getText().toString().trim(),
-                                                                    routeName,
-                                                                    vehicleName,
-                                                                    pickupTime,
-                                                                    dropOffTime,
-                                                                    driver,
-                                                                    attendant
-                                                            );
-                                                        });
-                                                    }
-                                                });
-                                    }
-                                });
-                    }
-                });
-    }
-
-    private void fetchStaffForVehicle(String vehicleName, StaffFetchCallback callback) {
-        // Get driver
-        db.collection("staff")
-                .whereEqualTo("assignedVehicle", vehicleName)
-                .whereEqualTo("role", "Driver")
-                .whereEqualTo("status", "Active")
-                .limit(1)
-                .get()
-                .addOnSuccessListener(driverQuery -> {
-                    Map<String, String> driver = new HashMap<>();
-                    if (!driverQuery.isEmpty()) {
-                        DocumentSnapshot driverDoc = driverQuery.getDocuments().get(0);
-                        driver.put("name", driverDoc.getString("staffName"));
-                        driver.put("phone", driverDoc.getString("phoneNumber"));
-                    }
-
-                    // Get attendant
-                    db.collection("staff")
-                            .whereEqualTo("assignedVehicle", vehicleName)
-                            .whereEqualTo("role", "Attendant")
-                            .whereEqualTo("status", "Active")
-                            .limit(1)
-                            .get()
-                            .addOnSuccessListener(attendantQuery -> {
-                                Map<String, String> attendant = new HashMap<>();
-                                if (!attendantQuery.isEmpty()) {
-                                    DocumentSnapshot attendantDoc = attendantQuery.getDocuments().get(0);
-                                    attendant.put("name", attendantDoc.getString("staffName"));
-                                    attendant.put("phone", attendantDoc.getString("phoneNumber"));
-                                }
-
-                                callback.onStaffFetched(driver, attendant);
-                            });
-                });
-    }
-
-    private void saveStudentData(
-            String studentName, String studentClass, String studentId,
-            String parentName, String parentContact, String parentEmail, String homeLocation,
-            String route, String vehicle, String pickupTime, String dropOffTime,
-            Map<String, String> driver, Map<String, String> attendant
-    ) {
-        Map<String, Object> studentData = new HashMap<>();
-        // Basic student info
-        studentData.put("parentName", parentName);
-        studentData.put("name", studentName);
-        studentData.put("studentId", studentId);
-        studentData.put("route", route);
-        studentData.put("parentContact", parentContact);
+        Map<String, Object> fields = new HashMap<>();
+        fields.put("name", studentName);
+        fields.put("studentId", studentId);
+        fields.put("parentName", parentName);
+        fields.put("parentContact", parentContact);
         // The parent's login email is what links their account to this child (see ParentLanding
         // and firestore.rules). The typed parent name is only for display.
-        studentData.put("parentEmail", parentEmail);
-        studentData.put("homeLocation", homeLocation);
+        fields.put("parentEmail", parentEmail);
+        fields.put("homeLocation", homeLocation);
 
-        // Route and vehicle info
-        studentData.put("vehicle", vehicle);
-        studentData.put("pickupTime", pickupTime);
-        studentData.put("dropOffTime", dropOffTime);
+        // Capacity check, duplicate-ID check and save in one transaction (review #13).
+        StudentRecords.save(this, db, fields, studentClass, route, null, new StudentRecords.Result() {
+            @Override
+            public void onSaved(String vehicle) {
+                Toast.makeText(AddStudent.this, R.string.student_added, Toast.LENGTH_SHORT).show();
+                clearForm();
+            }
 
-        // Staff info
-        if (driver != null && !driver.isEmpty()) {
-            // Staff phone numbers are not copied onto the child record: every parent on the
-            // bus can read it. Parents reach the driver and attendant through the bus chat.
-            studentData.put("driverName", driver.get("name"));
-        }
-        if (attendant != null && !attendant.isEmpty()) {
-            studentData.put("attendantName", attendant.get("name"));
-        }
-
-        db.collection("students")
-                .document(studentClass)
-                .collection("studentList")
-                .document(studentId)
-                .set(studentData)
-                .addOnSuccessListener(aVoid -> {
-                    // Lets this parent see the bus location and join the bus chat.
-                    BusGroups.addParent(db, vehicle, parentEmail);
-                    Toast.makeText(this, "✅ Student added successfully", Toast.LENGTH_SHORT).show();
-                    clearForm();
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Failed to save student", e);
-                    Toast.makeText(this, "Could not save the student. Please try again.", Toast.LENGTH_SHORT).show();
-                });
+            @Override
+            public void onFailed(String message, Exception e) {
+                StudentRecords.showFailure(AddStudent.this, message, e);
+            }
+        });
     }
 
     private void clearForm() {
@@ -277,7 +146,4 @@ public class AddStudent extends AppCompatActivity {
         routeDropdown.setSelection(0);
     }
 
-    interface StaffFetchCallback {
-        void onStaffFetched(Map<String, String> driver, Map<String, String> attendant);
-    }
 }

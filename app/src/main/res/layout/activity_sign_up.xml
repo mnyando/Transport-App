@@ -140,12 +140,43 @@
                     <ImageView
                         android:contentDescription="@string/show_password"
                         android:id="@+id/ivTogglePassword"
-                        android:layout_width="26dp"
-                        android:layout_height="26dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:padding="11dp"
                         android:src="@drawable/baseline_remove_red_eye_24"
                         android:clickable="true"
                         android:focusable="true"
                         app:tint="@color/gray" />
+                </LinearLayout>
+
+                <!-- School invite code (review #2): only families the school invites can sign up -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="@drawable/input_field_bg"
+                    android:padding="14dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="14dp">
+
+                    <ImageView
+                        android:contentDescription="@null"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/baseline_lock_24"
+                        android:layout_marginEnd="10dp"
+                        app:tint="@color/gray" />
+
+                    <EditText
+                        android:id="@+id/etInviteCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_invite_code"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapCharacters|textNoSuggestions"
+                        android:textSize="16sp"
+                        android:textColorHint="@color/gray"
+                        android:textColor="@color/text_primary"/>
                 </LinearLayout>
 
                 <!-- Consent (review section 3): required before an account is created -->

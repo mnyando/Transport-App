@@ -63,19 +63,28 @@ public class AddVehicle extends AppCompatActivity {
             return;
         }
 
+        // Capacity is saved as a number so it can be compared safely (review #13).
+        int seats = Vehicle.parseCapacity(capacity);
+        if (seats <= 0) {
+            capacityInput.setError(getString(R.string.error_capacity_number));
+            capacityInput.requestFocus();
+            return;
+        }
+
         // Create a map for the vehicle data
         Map<String, Object> vehicleData = new HashMap<>();
         vehicleData.put("vehicleName", vehicleName);
         vehicleData.put("vehicleNumber", vehicleNumber);
-        vehicleData.put("capacity", capacity);
+        vehicleData.put("capacity", (long) seats);
+        vehicleData.put("studentCount", 0L);
         vehicleData.put("status", status); // Add status to the map
 
         // Save data to Firestore
-        db.collection("vehicle").add(vehicleData)
+        db.collection(FirestorePaths.VEHICLES).add(vehicleData)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(this, "Vehicle added successfully", Toast.LENGTH_SHORT).show();
                     finish(); // Close the activity after saving
                 })
-                .addOnFailureListener(e -> Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> UserErrors.show(this, "Could not save the vehicle", e));
     }
 }
