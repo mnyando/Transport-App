@@ -30,7 +30,7 @@ functions/node_modules/
 # Markdown notes stay local, except the tracked project docs
 *.md
 !README.md
-!BUILD_AND_PROJECT_SETUP_PLAN.md
+!DESIGN_SYSTEM_AND_PLAN.md
 
 # Rules-test emulator logs
 firestore-debug.log
