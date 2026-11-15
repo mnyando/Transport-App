@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- One chat message. ChatAdapter aligns the row start/end and picks the bubble for mine/theirs. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/spacing_l"
+    android:paddingVertical="3dp">
 
     <TextView
         android:id="@+id/senderTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_s"
+        android:layout_marginBottom="2dp"
+        android:fontFamily="sans-serif-medium"
         android:textColor="@color/text_secondary"
         android:textSize="12sp" />
 
@@ -16,9 +21,13 @@
         android:id="@+id/messageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:background="@drawable/message_background"
-        android:padding="12dp"
-        android:textColor="@color/text_primary" />
-
+        android:layout_marginStart="0dp"
+        android:background="@drawable/bg_bubble_theirs"
+        android:lineSpacingMultiplier="1.1"
+        android:maxWidth="280dp"
+        android:paddingHorizontal="14dp"
+        android:paddingVertical="10dp"
+        android:textColor="@color/text_primary"
+        android:textIsSelectable="true"
+        android:textSize="16sp" />
 </LinearLayout>

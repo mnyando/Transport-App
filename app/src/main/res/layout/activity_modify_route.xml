@@ -4,16 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-    <!-- Navigation Bar (Fixed at the top) -->
     <include
         layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize" />
 
-    <!-- ScrollView for content below the toolbar -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -23,138 +20,146 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_l">
 
-            <!-- RecyclerView for route items -->
+            <!-- Step 1: choose a route -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/surface"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="8dp">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/routeRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:clipToPadding="false"
-                    android:overScrollMode="always"
-                    android:padding="12dp" />
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Beautified Modify Route Form Section inside CardView -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/surface"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="10dp">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="24dp">
+                    android:padding="@dimen/spacing_l">
 
-                    <!-- Route ID/Name -->
+                    <LinearLayout style="@style/Widget.Transport.CardHeader">
+
+                        <ImageView
+                            style="@style/Widget.Transport.IconBadge"
+                            android:backgroundTint="@color/tile_violet_container"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_route"
+                            app:tint="@color/tile_on_violet" />
+
+                        <TextView
+                            style="@style/Widget.Transport.CardHeaderTitle"
+                            android:text="@string/form_choose_route" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/routeRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:clipToPadding="false"
+                        android:overScrollMode="always" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Step 2: edit -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_m">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_l">
+
+                    <LinearLayout style="@style/Widget.Transport.CardHeader">
+
+                        <ImageView
+                            style="@style/Widget.Transport.IconBadge"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_edit_24" />
+
+                        <TextView
+                            style="@style/Widget.Transport.CardHeaderTitle"
+                            android:text="@string/form_details" />
+                    </LinearLayout>
+
                     <EditText
                         android:id="@+id/routeNameInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/edittext_background"
+                        style="@style/Widget.Transport.Field"
+                        android:layout_marginTop="@dimen/spacing_l"
                         android:hint="@string/hint_route_id_name"
-                        android:padding="14dp"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint"
-                        android:textSize="16sp" />
+                        android:importantForAutofill="no"
+                        android:inputType="text" />
 
-                    <!-- Total Distance -->
                     <EditText
                         android:id="@+id/totalDistanceInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:background="@drawable/edittext_background"
+                        style="@style/Widget.Transport.Field"
                         android:hint="@string/hint_total_distance_km"
-                        android:inputType="numberDecimal"
-                        android:padding="14dp"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint"
-                        android:textSize="16sp" />
+                        android:importantForAutofill="no"
+                        android:inputType="numberDecimal" />
 
-                    <!-- Route Description -->
                     <EditText
                         android:id="@+id/routeDescriptionInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:background="@drawable/edittext_background"
+                        style="@style/Widget.Transport.Field"
                         android:hint="@string/hint_route_description"
-                        android:padding="14dp"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint"
-                        android:textSize="16sp" />
+                        android:importantForAutofill="no"
+                        android:inputType="textMultiLine|textCapSentences" />
 
-                    <!-- Vehicle Dropdown -->
                     <Spinner
                         android:id="@+id/vehicleDropdown"
+                        style="@style/Widget.Transport.Dropdown" />
+
+                    <TextView
+                        style="@style/Widget.Transport.FieldLabel"
+                        android:text="@string/form_schedule" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:background="@drawable/edittext_background"
-                        android:padding="14dp"
-                        android:spinnerMode="dropdown" />
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
 
-                    <!-- Pickup Time -->
-                    <EditText
-                        android:id="@+id/pickupTimeInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:background="@drawable/edittext_background"
-                        android:cursorVisible="false"
-                        android:focusable="false"
-                        android:hint="@string/hint_pickup_time"
-                        android:onClick="showTimePickerDialog"
-                        android:padding="14dp"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint"
-                        android:textSize="16sp" />
+                        <EditText
+                            android:id="@+id/pickupTimeInput"
+                            style="@style/Widget.Transport.Field"
+                            android:layout_width="0dp"
+                            android:layout_marginTop="@dimen/spacing_s"
+                            android:layout_marginEnd="@dimen/spacing_xs"
+                            android:layout_weight="1"
+                            android:cursorVisible="false"
+                            android:drawablePadding="@dimen/spacing_s"
+                            android:focusable="false"
+                            android:hint="@string/hint_pickup_time"
+                            android:importantForAutofill="no"
+                            android:inputType="none"
+                            app:drawableStartCompat="@drawable/clock_24"
+                            app:drawableTint="@color/text_hint" />
 
-                    <!-- Drop Off Time -->
-                    <EditText
-                        android:id="@+id/dropOffTimeInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:background="@drawable/edittext_background"
-                        android:cursorVisible="false"
-                        android:focusable="false"
-                        android:hint="@string/hint_drop_off_time"
-                        android:onClick="showTimePickerDialog"
-                        android:padding="14dp"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint"
-                        android:textSize="16sp" />
+                        <EditText
+                            android:id="@+id/dropOffTimeInput"
+                            style="@style/Widget.Transport.Field"
+                            android:layout_width="0dp"
+                            android:layout_marginStart="@dimen/spacing_xs"
+                            android:layout_marginTop="@dimen/spacing_s"
+                            android:layout_weight="1"
+                            android:cursorVisible="false"
+                            android:drawablePadding="@dimen/spacing_s"
+                            android:focusable="false"
+                            android:hint="@string/hint_drop_off_time"
+                            android:importantForAutofill="no"
+                            android:inputType="none"
+                            app:drawableStartCompat="@drawable/clock_24"
+                            app:drawableTint="@color/text_hint" />
+                    </LinearLayout>
 
-                    <!-- Update Button -->
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/updateRouteButton"
+                        style="@style/Widget.Transport.Button.Primary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="28dp"
-                        android:backgroundTint="@color/brand_primary"
-                        android:padding="16dp"
+                        android:layout_marginTop="@dimen/spacing_xl"
                         android:text="@string/update_route"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:cornerRadius="12dp" />
+                        app:icon="@drawable/ic_check_24"
+                        app:iconGravity="textStart" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>

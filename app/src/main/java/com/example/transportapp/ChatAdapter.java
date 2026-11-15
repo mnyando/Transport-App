@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -51,7 +52,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             who += " (" + message.senderRole + ")";
         }
         holder.senderTextView.setText(who);
+        // Own messages need no name above them; the bubble colour already says "you".
+        holder.senderTextView.setVisibility(mine ? View.GONE : View.VISIBLE);
         holder.messageTextView.setText(message.text);
+        holder.messageTextView.setBackgroundResource(
+                mine ? R.drawable.bg_bubble_mine : R.drawable.bg_bubble_theirs);
+        holder.messageTextView.setTextColor(ContextCompat.getColor(holder.itemView.getContext(),
+                mine ? R.color.white : R.color.text_primary));
         ((LinearLayout) holder.itemView).setGravity(mine ? Gravity.END : Gravity.START);
     }
 

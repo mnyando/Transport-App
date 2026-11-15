@@ -11,7 +11,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -106,13 +109,26 @@ public class AddStaff extends AppCompatActivity {
         String assignedVehicle = vehicleDropdown.getSelectedItem() != null ? vehicleDropdown.getSelectedItem().toString() : "";
         String assignedRoute = routeDropdown.getSelectedItem() != null ? routeDropdown.getSelectedItem().toString() : "";
         int selectedStatusId = statusRadioGroup.getCheckedRadioButtonId();
+        if (selectedStatusId == -1) {
+            // Used to fall through to "Not Active" without asking.
+            Toast.makeText(this, R.string.error_select_status, Toast.LENGTH_SHORT).show();
+            return;
+        }
         String status = selectedStatusId == R.id.activeRadioButton ? "Active" : "Not Active";
         int selectedRoleId = roleRadioGroup.getCheckedRadioButtonId();
         String role = selectedRoleId == R.id.driverRadioButton ? "Driver" : "Attendant";
 
-        if (staffName.isEmpty() || staffPhone.isEmpty() || licenseNumber.isEmpty() ||
+        if (staffName.isEmpty() || staffPhone.isEmpty() ||
                 "Select Vehicle".equals(assignedVehicle) || "Select Route".equals(assignedRoute)) {
             Toast.makeText(this, "Please fill out all fields and select a vehicle and route", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Only drivers need a driving licence. Requiring it from everyone meant a conductor
+        // (stored as "Attendant") could never be saved.
+        boolean isDriver = "Driver".equals(role);
+        if (isDriver && licenseNumber.isEmpty()) {
+            licenseNumberInput.setError(getString(R.string.error_license_required_driver));
+            licenseNumberInput.requestFocus();
             return;
         }
 
@@ -128,7 +144,9 @@ public class AddStaff extends AppCompatActivity {
             return;
         }
 
-        // Check staff count for the selected vehicle
+        // Check staff count for the selected vehicle. The button stays off until the save ends,
+        // so a double tap can't pass the licence check twice and add two records.
+        saveDriverButton.setEnabled(false);
         checkStaffCountForVehicle(assignedVehicle, () -> {
             Map<String, Object> staffData = new HashMap<>();
             staffData.put("staffName", staffName);
@@ -142,21 +160,33 @@ public class AddStaff extends AppCompatActivity {
 
             // Generated document IDs (review #13): a licence number can change or be mistyped,
             // and it used to be the record's key. Older staff keep their licence-number IDs.
-            db.collection(FirestorePaths.STAFF).whereEqualTo("licenseNumber", licenseNumber).limit(1).get()
+            // The duplicate check only applies to a licence actually entered: several conductors
+            // without one must not clash on the empty value.
+            Task<QuerySnapshot> licenceCheck = licenseNumber.isEmpty() ? Tasks.forResult(null)
+                    : db.collection(FirestorePaths.STAFF).whereEqualTo("licenseNumber", licenseNumber).limit(1).get();
+            licenceCheck
                     .addOnSuccessListener(existing -> {
-                        if (!existing.isEmpty()) {
+                        if (existing != null && !existing.isEmpty()) {
+                            saveDriverButton.setEnabled(true);
                             licenseNumberInput.setError(getString(R.string.error_license_taken));
                             licenseNumberInput.requestFocus();
                             return;
                         }
                         db.collection(FirestorePaths.STAFF).add(staffData)
                                 .addOnSuccessListener(ref -> {
+                                    saveDriverButton.setEnabled(true);
                                     Toast.makeText(this, R.string.staff_added, Toast.LENGTH_SHORT).show();
                                     clearForm();
                                 })
-                                .addOnFailureListener(e -> UserErrors.show(this, "Could not save staff", e));
+                                .addOnFailureListener(e -> {
+                                    saveDriverButton.setEnabled(true);
+                                    UserErrors.show(this, "Could not save staff", e);
+                                });
                     })
-                    .addOnFailureListener(e -> UserErrors.show(this, "Could not save staff", e));
+                    .addOnFailureListener(e -> {
+                        saveDriverButton.setEnabled(true);
+                        UserErrors.show(this, "Could not save staff", e);
+                    });
         });
     }
 
@@ -168,12 +198,14 @@ public class AddStaff extends AppCompatActivity {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     int driverCount = queryDocumentSnapshots.size();
                     if (driverCount >= 2 && driverRadioButton.isChecked()) {
-                        Toast.makeText(this, "Maximum of 2 drivers already assigned to " + vehicleName, Toast.LENGTH_SHORT).show();
+                        saveDriverButton.setEnabled(true);
+                        Toast.makeText(this, getString(R.string.error_driver_limit, vehicleName), Toast.LENGTH_SHORT).show();
                     } else {
                         onSuccess.run(); // Proceed with saving
                     }
                 })
                 .addOnFailureListener(e -> {
+                    saveDriverButton.setEnabled(true);
                     UserErrors.show(this, "Could not check staff count", e);
                 });
     }

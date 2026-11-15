@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,6 +30,8 @@ public class ModifyVehicle extends AppCompatActivity {
     private VehicleAdapter vehicleAdapter;
     private List<Vehicle> vehicleList;
     private String selectedVehicleId = null; // Track editing vehicle
+    /** Name as loaded: routes, staff and students point at the bus by this name. */
+    private String selectedVehicleName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,9 @@ public class ModifyVehicle extends AppCompatActivity {
         vehicleAdapter = new VehicleAdapter(vehicleList, this::onVehicleClicked);
         vehicleRecyclerView.setAdapter(vehicleAdapter);
 
+        // The document ID is shown for reference only; it can't be changed here.
+        vehicleIdInput.setEnabled(false);
+
         // Fetch vehicles
         fetchVehicles();
 
@@ -68,11 +75,12 @@ public class ModifyVehicle extends AppCompatActivity {
                 vehicleList.add(vehicle);
             }
             vehicleAdapter.notifyDataSetChanged();
-        });
+        }).addOnFailureListener(e -> UserErrors.show(this, "Could not load vehicles", e));
     }
 
     private void onVehicleClicked(Vehicle vehicle) {
         selectedVehicleId = vehicle.getId();
+        selectedVehicleName = vehicle.getVehicleName();
         vehicleNameInput.setText(vehicle.getVehicleName());
         vehicleNumberInput.setText(vehicle.getVehicleNumber());
         vehicleIdInput.setText(vehicle.getId());
@@ -122,7 +130,55 @@ public class ModifyVehicle extends AppCompatActivity {
             return;
         }
 
-        DocumentReference vehicleRef = vehiclesRef.document(selectedVehicleId);
+        String vehicleId = selectedVehicleId;
+        String oldName = selectedVehicleName != null ? selectedVehicleName : vehicleName;
+        boolean renaming = !vehicleName.equals(oldName);
+
+        // Before saving: the new name must be free; a bus that is in use can't be renamed (its
+        // routes, staff, children and bus group all hold the old name); and the capacity can't
+        // drop below the children already riding it.
+        Task<Boolean> nameCheck = renaming
+                ? RecordLinks.nameTaken(db, FirestorePaths.VEHICLES, "vehicleName", vehicleName, vehicleId)
+                : Tasks.forResult(false);
+        Task<Long> children = RecordLinks.studentsOnVehicle(db, oldName);
+        Task<Long> routes = renaming ? RecordLinks.routesForVehicle(db, oldName) : Tasks.forResult(0L);
+        Task<Long> staff = renaming ? RecordLinks.staffWith(db, "assignedVehicle", oldName) : Tasks.forResult(0L);
+
+        saveVehicleButton.setEnabled(false);
+        Tasks.whenAllComplete(nameCheck, children, routes, staff).addOnCompleteListener(all -> {
+            if (!nameCheck.isSuccessful() || !children.isSuccessful()
+                    || !routes.isSuccessful() || !staff.isSuccessful()) {
+                saveVehicleButton.setEnabled(true);
+                UserErrors.show(this, getString(R.string.checking_links_failed), null);
+                return;
+            }
+            if (Boolean.TRUE.equals(nameCheck.getResult())) {
+                saveVehicleButton.setEnabled(true);
+                vehicleNameInput.setError(getString(R.string.error_vehicle_name_taken, vehicleName));
+                vehicleNameInput.requestFocus();
+                return;
+            }
+            long riders = children.getResult();
+            if (renaming && (riders > 0 || routes.getResult() > 0 || staff.getResult() > 0)) {
+                saveVehicleButton.setEnabled(true);
+                Toast.makeText(this, getString(R.string.error_vehicle_rename_in_use,
+                        routes.getResult().intValue(), staff.getResult().intValue(), (int) riders),
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (seats < riders) {
+                saveVehicleButton.setEnabled(true);
+                capacityInput.setError(getString(R.string.error_capacity_below_students, (int) riders));
+                capacityInput.requestFocus();
+                return;
+            }
+            updateVehicle(vehicleId, vehicleName, vehicleNumber, seats, status);
+        });
+    }
+
+    private void updateVehicle(String vehicleId, String vehicleName, String vehicleNumber,
+                               int seats, String status) {
+        DocumentReference vehicleRef = vehiclesRef.document(vehicleId);
         vehicleRef.update(
                         "vehicleName", vehicleName,
                         "vehicleNumber", vehicleNumber,
@@ -130,6 +186,7 @@ public class ModifyVehicle extends AppCompatActivity {
                         "status", status // Add status to update
                 )
                 .addOnSuccessListener(aVoid -> {
+                    saveVehicleButton.setEnabled(true);
                     Toast.makeText(this, "Vehicle updated successfully", Toast.LENGTH_SHORT).show();
                     // Clear the inputs after successful update
                     vehicleNameInput.setText("");
@@ -138,10 +195,12 @@ public class ModifyVehicle extends AppCompatActivity {
                     capacityInput.setText("");
                     statusRadioGroup.clearCheck(); // Clear radio selection
                     selectedVehicleId = null;
+                    selectedVehicleName = null;
                     // Refresh the vehicle list
                     fetchVehicles();
                 })
                 .addOnFailureListener(e -> {
+                    saveVehicleButton.setEnabled(true);
                     UserErrors.show(this, "Could not update vehicle", e);
                 });
     }

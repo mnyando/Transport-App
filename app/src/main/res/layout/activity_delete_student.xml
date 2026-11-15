@@ -1,179 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fillViewport="true"
     android:background="@color/screen_background"
-    android:padding="16dp">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Navigation Bar -->
         <include
             layout="@layout/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!-- Filter Card with Dropdown and RecyclerView -->
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="@color/surface"
-            android:padding="24dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="10dp">
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_l">
 
-            <LinearLayout
+            <include layout="@layout/delete_warning" />
+
+            <!-- Step 1: choose a student -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="@dimen/spacing_m">
 
-                <Spinner
-                    android:id="@+id/filterDropdown"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:padding="12dp"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/studentRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="217dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:nestedScrollingEnabled="false" />
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Add Student Form Section -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="@color/surface"
-            android:padding="24dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="10dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- Student Name -->
-                <EditText
-                    android:id="@+id/studentNameInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="@string/hint_student_name"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp"/>
-
-                <!-- Class Dropdown -->
-                <Spinner
-                    android:id="@+id/classDropdown"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:padding="12dp"/>
-
-                <!-- Student ID Number -->
-                <EditText
-                    android:id="@+id/studentIdInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="@string/hint_student_id_number"
-                    android:inputType="number"
-                    android:padding="12dp"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp"/>
-
-                <!-- Assigned Route Dropdown -->
-                <Spinner
-                    android:id="@+id/routeDropdown"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:padding="12dp"/>
-
-                <!-- Parent Name -->
-                <EditText
-                    android:id="@+id/parentNameInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="@string/hint_parent_name"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp"/>
-
-                <!-- Parent Contact -->
-                <EditText
-                    android:id="@+id/parentContactInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="@string/hint_parent_contact"
-                    android:inputType="phone"
-                    android:padding="12dp"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp"/>
-
-                <!-- Home Location -->
-                <EditText
-                    android:id="@+id/homeLocationInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="@string/hint_home_location"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp"/>
-
-                <!-- Save Button -->
-                <Button
-                    android:id="@+id/deleteStudentButton"
-                    android:layout_width="280dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="10dp"
-                    android:backgroundTint="@color/brand_primary"
-                    android:drawablePadding="8dp"
-                    android:padding="16dp"
-                    android:text="@string/title_delete_student"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_l">
+
+                    <LinearLayout style="@style/Widget.Transport.CardHeader">
+
+                        <ImageView
+                            style="@style/Widget.Transport.IconBadge"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_student" />
+
+                        <TextView
+                            style="@style/Widget.Transport.CardHeaderTitle"
+                            android:text="@string/select_student" />
+                    </LinearLayout>
+
+                    <Spinner
+                        android:id="@+id/filterDropdown"
+                        style="@style/Widget.Transport.Dropdown"
+                        android:layout_marginTop="@dimen/spacing_l" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/studentRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:clipToPadding="false"
+                        android:nestedScrollingEnabled="false" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Step 2: review and remove -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_m">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_l">
+
+                    <TextView
+                        style="@style/Widget.Transport.FieldLabel"
+                        android:layout_marginTop="0dp"
+                        android:text="@string/student" />
+
+                    <EditText
+                        android:id="@+id/studentNameInput"
+                        style="@style/Widget.Transport.Field"
+                        android:layout_marginTop="@dimen/spacing_s"
+                        android:hint="@string/hint_student_name"
+                        android:importantForAutofill="no"
+                        android:inputType="textPersonName" />
+
+                    <Spinner
+                        android:id="@+id/classDropdown"
+                        style="@style/Widget.Transport.Dropdown" />
+
+                    <EditText
+                        android:id="@+id/studentIdInput"
+                        style="@style/Widget.Transport.Field"
+                        android:hint="@string/hint_student_id_number"
+                        android:importantForAutofill="no"
+                        android:inputType="number" />
+
+                    <Spinner
+                        android:id="@+id/routeDropdown"
+                        style="@style/Widget.Transport.Dropdown" />
+
+                    <TextView
+                        style="@style/Widget.Transport.FieldLabel"
+                        android:text="@string/parent_2" />
+
+                    <EditText
+                        android:id="@+id/parentNameInput"
+                        style="@style/Widget.Transport.Field"
+                        android:layout_marginTop="@dimen/spacing_s"
+                        android:hint="@string/hint_parent_name"
+                        android:importantForAutofill="no"
+                        android:inputType="textPersonName" />
+
+                    <EditText
+                        android:id="@+id/parentContactInput"
+                        style="@style/Widget.Transport.Field"
+                        android:hint="@string/hint_parent_contact"
+                        android:importantForAutofill="no"
+                        android:inputType="phone" />
+
+                    <EditText
+                        android:id="@+id/homeLocationInput"
+                        style="@style/Widget.Transport.Field"
+                        android:hint="@string/hint_home_location"
+                        android:importantForAutofill="no"
+                        android:inputType="textPostalAddress" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/deleteStudentButton"
+                        style="@style/Widget.Transport.Button.Danger"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xl"
+                        android:text="@string/title_delete_student"
+                        app:icon="@drawable/ic_delete_24"
+                        app:iconGravity="textStart" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

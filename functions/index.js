@@ -185,6 +185,51 @@ exports.onUserProfileCreated = onDocumentCreated("users/{uid}", async (event) =>
 });
 
 // ---------------------------------------------------------------------------
+// Self-repair for driver links, called by the app at sign-in (StaffLinks.java).
+//
+// The two triggers above only run when a staff record or profile is *written*. A link is missed
+// when, for example, the staff record was saved as "Not Active" (older app versions did this by
+// default), was created before the functions were deployed, or a trigger failed. The driver then
+// silently signed in as a parent. This re-runs the same rules for the caller only.
+//
+// Returns { linked: true, staffId } or { linked: false, reason } where reason is one of
+// "no_staff" (no staff record with this email), "not_driver" (record is not a Driver, e.g. a
+// conductor) or "inactive" (record is marked Not Active).
+// ---------------------------------------------------------------------------
+exports.linkMyStaffAccount = require("firebase-functions/v2/https").onCall(async (request) => {
+  const { HttpsError } = require("firebase-functions/v2/https");
+  const auth = request.auth;
+  if (!auth) throw new HttpsError("unauthenticated", "Sign in first.");
+  // Linking by email is only safe once the email is proven to belong to the caller.
+  if (auth.token.email_verified !== true) throw new HttpsError("permission-denied", "Verify your email first.");
+
+  const db = admin.firestore();
+  const profileRef = db.collection("users").doc(auth.uid);
+  const profile = await profileRef.get();
+  if (!profile.exists) return { linked: false, reason: "no_profile" };
+  const role = (profile.get("role") || "").toLowerCase();
+  // School accounts are managed by an administrator and are never changed here.
+  if (role === "school") return { linked: false, reason: "school" };
+
+  const email = normEmail(auth.token.email);
+  const staff = await db.collection("staff").where("email", "==", email).limit(5).get();
+  if (staff.empty) return { linked: false, reason: "no_staff" };
+
+  const driver = staff.docs.find((doc) => isDriverStaff(doc.data()));
+  if (!driver) {
+    const anyDriver = staff.docs.some((doc) => (doc.get("role") || "").toLowerCase() === "driver");
+    return { linked: false, reason: anyDriver ? "inactive" : "not_driver" };
+  }
+  if (role === "driver" && profile.get("staffId") === driver.id) {
+    return { linked: true, staffId: driver.id };
+  }
+  await unlinkStaff(db, driver.id, auth.uid);
+  await linkUser(db, auth.uid, driver.id);
+  logger.info("Linked driver account on sign-in", { staffId: driver.id });
+  return { linked: true, staffId: driver.id };
+});
+
+// ---------------------------------------------------------------------------
 // Location retention (review section 3: "share the bus location only during an active trip").
 // The app removes the position when a trip ends. If the driver's phone dies or loses signal
 // mid-trip, this clears any position that has not been updated for STALE_LOCATION_MINUTES.

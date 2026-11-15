@@ -34,13 +34,14 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.DriverView
 
         // Set driver name (now staffName for consistency)
         String driverName = driver.getStaffName() != null ? driver.getStaffName() : "Unknown Name";
-        holder.driverNameTextView.setText("Name: " + driverName);
+        holder.driverNameTextView.setText(driverName);
 
-        // Set role and status
+        // Role on the second line, status as a coloured pill
         String role = driver.getRole() != null ? driver.getRole() : "Unknown Role";
-        String status = driver.getStatus() != null ? driver.getStatus() : "Unknown";
-
-        holder.driverStatusTextView.setText(role + " - Status: " + status);
+        // Stored as "Attendant"; the school calls them conductors.
+        if ("Attendant".equalsIgnoreCase(role)) role = "Conductor";
+        holder.driverRoleTextView.setText(role);
+        StatusPills.apply(holder.driverStatusTextView, driver.getStatus());
 
         // Handle item click event
         holder.itemView.setOnClickListener(v -> listener.onDriverClick(driver));
@@ -52,11 +53,12 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.DriverView
     }
 
     static class DriverViewHolder extends RecyclerView.ViewHolder {
-        TextView driverNameTextView, driverStatusTextView;
+        TextView driverNameTextView, driverRoleTextView, driverStatusTextView;
 
         DriverViewHolder(@NonNull View itemView) {
             super(itemView);
             driverNameTextView = itemView.findViewById(R.id.driverNameTextView);
+            driverRoleTextView = itemView.findViewById(R.id.driverRoleTextView);
             driverStatusTextView = itemView.findViewById(R.id.driverStatusTextView);
         }
     }

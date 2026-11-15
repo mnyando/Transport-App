@@ -121,15 +121,19 @@ public class AddStudent extends AppCompatActivity {
         fields.put("homeLocation", homeLocation);
 
         // Capacity check, duplicate-ID check and save in one transaction (review #13).
+        // The button stays off until the save finishes so a double tap can't submit twice.
+        saveStudentButton.setEnabled(false);
         StudentRecords.save(this, db, fields, studentClass, route, null, new StudentRecords.Result() {
             @Override
             public void onSaved(String vehicle) {
+                saveStudentButton.setEnabled(true);
                 Toast.makeText(AddStudent.this, R.string.student_added, Toast.LENGTH_SHORT).show();
                 clearForm();
             }
 
             @Override
             public void onFailed(String message, Exception e) {
+                saveStudentButton.setEnabled(true);
                 StudentRecords.showFailure(AddStudent.this, message, e);
             }
         });

@@ -39,6 +39,8 @@ public class Login extends AppCompatActivity {
     private ProgressBar progress;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    /** Set once the driver-link repair has run for this sign-in, so the role is re-read only once. */
+    private boolean staffLinkChecked;
 
     /** Opens the home screen for the account that is already signed in. */
     static Intent resumeSession(Context context) {
@@ -63,7 +65,7 @@ public class Login extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> loginUser());
         tvSignUp.setOnClickListener(v -> startActivity(new Intent(this, SignUp.class)));
         tvForgotPassword.setOnClickListener(v -> sendPasswordReset());
-        PasswordToggle.attach(findViewById(R.id.ivTogglePassword), etPassword);
+        // Show/hide password is the text field's own end icon (endIconMode="password_toggle").
 
         FirebaseUser current = mAuth.getCurrentUser();
         if (savedInstanceState == null && getIntent().getBooleanExtra(EXTRA_RESUME, false)
@@ -101,6 +103,7 @@ public class Login extends AppCompatActivity {
         }
 
         setBusy(true);
+        staffLinkChecked = false;
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     FirebaseUser user = mAuth.getCurrentUser();
@@ -145,14 +148,15 @@ public class Login extends AppCompatActivity {
                         String staffId = document.getString("staffId");
                         if (staffId == null || staffId.isEmpty()) {
                             Log.w(TAG, "Driver account has no linked staff record");
-                            fail(R.string.driver_not_linked, true);
+                            requireVerifiedEmailThen(() -> repairStaffLink(authUid, email, false));
                         } else {
                             requireVerifiedEmailThen(() -> loadDriverStaffRecord(staffId, email));
                         }
                     } else if ("parent".equalsIgnoreCase(role)) {
-                        requireVerifiedEmailThen(() -> openHome(new Intent(this, ParentLanding.class)
-                                .putExtra("parentId", authUid)
-                                .putExtra("parentEmail", email)));
+                        // Drivers sign up as parents and are promoted when their staff record is
+                        // linked. If that link was missed, repair it now instead of silently
+                        // opening the parent dashboard for a driver.
+                        requireVerifiedEmailThen(() -> repairStaffLink(authUid, email, true));
                     } else if ("school".equalsIgnoreCase(role)) {
                         openHome(new Intent(this, SchoolLanding.class));
                     } else {
@@ -192,6 +196,45 @@ public class Login extends AppCompatActivity {
             }
             fail(R.string.error_verify_email_first, true);
         });
+    }
+
+    /**
+     * Runs the {@link StaffLinks} repair once per sign-in. When it links the account, the profile
+     * (now role "driver") is read again; otherwise a parent goes to the parent dashboard and a
+     * driver account is told exactly why it isn't linked.
+     */
+    private void repairStaffLink(String authUid, String email, boolean isParent) {
+        if (staffLinkChecked) {
+            if (isParent) openParentHome(authUid, email);
+            else fail(R.string.driver_not_linked, true);
+            return;
+        }
+        staffLinkChecked = true;
+        StaffLinks.claim().addOnSuccessListener(result -> {
+            if (result.linked) {
+                fetchUserRole(authUid, email);
+            } else if (isParent) {
+                // A parent account stays usable. If it belongs to a switched-off driver record,
+                // say so, since that is why the driver screen didn't open.
+                if (StaffLinks.INACTIVE.equals(result.reason)) {
+                    Toast.makeText(this, R.string.driver_staff_inactive, Toast.LENGTH_LONG).show();
+                }
+                openParentHome(authUid, email);
+            } else if (StaffLinks.INACTIVE.equals(result.reason)) {
+                // A driver record exists for this email but is switched off.
+                fail(R.string.driver_staff_inactive, true);
+            } else if (StaffLinks.NOT_DRIVER.equals(result.reason)) {
+                fail(R.string.driver_staff_not_driver, true);
+            } else {
+                fail(R.string.driver_not_linked, true);
+            }
+        });
+    }
+
+    private void openParentHome(String authUid, String email) {
+        openHome(new Intent(this, ParentLanding.class)
+                .putExtra("parentId", authUid)
+                .putExtra("parentEmail", email));
     }
 
     private void loadDriverStaffRecord(String staffId, String email) {

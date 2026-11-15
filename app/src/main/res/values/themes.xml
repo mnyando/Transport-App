@@ -6,12 +6,28 @@
         <item name="colorOnPrimary">@color/theme_on_primary</item>
         <item name="colorPrimaryContainer">@color/theme_primary_container</item>
         <item name="colorOnPrimaryContainer">@color/theme_on_primary_container</item>
-        <item name="colorSecondary">@color/accent_orange</item>
+        <item name="colorSecondary">@color/brand_gradient_end</item>
         <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
         <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="colorOutline">@color/border_light</item>
         <item name="colorOutlineVariant">@color/outline_card</item>
-        <!-- Cards use the design-system card (16dp radius, 1dp outline) -->
+        <item name="colorError">@color/error_red</item>
+        <item name="android:colorBackground">@color/screen_background</item>
+        <item name="android:windowBackground">@color/screen_background</item>
+
+        <!-- Component defaults so every screen picks up the design system -->
         <item name="materialCardViewStyle">@style/Widget.Transport.Card</item>
+        <item name="materialButtonStyle">@style/Widget.Transport.Button</item>
+        <item name="textInputStyle">@style/Widget.Transport.TextInput</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.Transport.ExtraLarge</item>
+    </style>
+
+    <!-- Dialogs and bottom sheets get softer, larger corners -->
+    <style name="ShapeAppearance.Transport.ExtraLarge" parent="ShapeAppearance.Material3.Corner.ExtraLarge">
+        <item name="cornerSize">@dimen/radius_xl</item>
     </style>
 
     <style name="Theme.TransportApp" parent="Base.Theme.TransportApp" />

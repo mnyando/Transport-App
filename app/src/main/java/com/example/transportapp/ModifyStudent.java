@@ -34,6 +34,8 @@ public class ModifyStudent extends AppCompatActivity {
     private List<Student> studentList;
     private String selectedStudentId = null;
     private String originalGrade = null;
+    /** Grade whose students are being loaded; older responses for another grade are ignored. */
+    private String loadingGrade = null;
     private List<String> routeList;
     private ArrayAdapter<String> routeAdapter;
 
@@ -149,14 +151,20 @@ public class ModifyStudent extends AppCompatActivity {
             return;
         }
         Log.d(TAG, "fetchStudentsByGrade: Fetching students for grade: " + grade);
+        loadingGrade = grade;
         db.collection(FirestorePaths.STUDENTS).document(grade)
                 .collection(FirestorePaths.STUDENT_LIST)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!grade.equals(loadingGrade)) return; // a newer grade was picked meanwhile
                     studentList.clear();
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Student student = document.toObject(Student.class);
                         student.setId(document.getId());
+                        // The grade is the parent document, and many records don't repeat it as a
+                        // field. Without this the class dropdown fell back to the first grade and
+                        // saving moved the child into it.
+                        student.setGrade(grade);
                         studentList.add(student);
                     }
                     studentAdapter.notifyDataSetChanged();
@@ -186,8 +194,7 @@ public class ModifyStudent extends AppCompatActivity {
         homeLocationInput.setText(student.getHomeLocation());
 
         // Class selection
-        ArrayAdapter<String> classAdapter = (ArrayAdapter<String>) classDropdown.getAdapter();
-        int classPosition = classAdapter.getPosition(student.getGrade());
+        int classPosition = positionOf(classDropdown, student.getGrade());
         if (classPosition >= 0) {
             classDropdown.setSelection(classPosition);
             Log.d(TAG, "onStudentClicked: Set classDropdown to " + student.getGrade());
@@ -199,6 +206,12 @@ public class ModifyStudent extends AppCompatActivity {
 
         // Route selection
         int routePosition = routeAdapter.getPosition(student.getRoute());
+        if (routeList.isEmpty()) {
+            // Routes are still loading; don't silently pick the first one on save.
+            Toast.makeText(this, "Routes are still loading, try again in a moment", Toast.LENGTH_SHORT).show();
+            selectedStudentId = null;
+            return;
+        }
         if (routePosition >= 0) {
             routeDropdown.setSelection(routePosition);
             Log.d(TAG, "onStudentClicked: Set routeDropdown to " + student.getRoute());
@@ -212,8 +225,35 @@ public class ModifyStudent extends AppCompatActivity {
         Toast.makeText(this, "Editing " + student.getName() + "'s record", Toast.LENGTH_SHORT).show();
     }
 
+    /** Index of {@code value} in a spinner's adapter, or -1. Works for CharSequence adapters. */
+    private static int positionOf(Spinner spinner, String value) {
+        if (value == null || spinner.getAdapter() == null) return -1;
+        for (int i = 0; i < spinner.getAdapter().getCount(); i++) {
+            Object item = spinner.getAdapter().getItem(i);
+            if (item != null && value.equals(item.toString())) return i;
+        }
+        return -1;
+    }
+
+    private void clearForm() {
+        selectedStudentId = null;
+        originalGrade = null;
+        studentNameInput.setText("");
+        studentIdInput.setText("");
+        parentNameInput.setText("");
+        parentContactInput.setText("");
+        parentEmailInput.setText("");
+        homeLocationInput.setText("");
+    }
+
     private void checkAndSaveStudentData() {
         Log.d(TAG, "checkAndSaveStudentData: Starting validation");
+        // This screen edits an existing record. Without a selection StudentRecords.save would
+        // create a brand-new student instead.
+        if (selectedStudentId == null) {
+            Toast.makeText(this, R.string.error_select_student_first, Toast.LENGTH_SHORT).show();
+            return;
+        }
         String name = studentNameInput.getText().toString().trim();
         String studentId = studentIdInput.getText().toString().trim();
         String parentName = parentNameInput.getText().toString().trim();
@@ -247,21 +287,19 @@ public class ModifyStudent extends AppCompatActivity {
 
         // Editing keeps the record's ID and trip fields; a grade change moves the full record.
         // Capacity is only checked when the child joins a different bus (review #13).
-        StudentRecords.Existing existing = null;
-        if (selectedStudentId != null) {
-            String fromGrade = originalGrade != null && !originalGrade.isEmpty() ? originalGrade
-                    : filterDropdown.getSelectedItem() != null ? filterDropdown.getSelectedItem().toString() : grade;
-            existing = new StudentRecords.Existing(fromGrade, selectedStudentId);
-        }
+        String fromGrade = originalGrade != null && !originalGrade.isEmpty() ? originalGrade
+                : filterDropdown.getSelectedItem() != null ? filterDropdown.getSelectedItem().toString() : grade;
+        StudentRecords.Existing existing = new StudentRecords.Existing(fromGrade, selectedStudentId);
         saveStudentButton.setEnabled(false);
         StudentRecords.save(this, db, fields, grade, route, existing, new StudentRecords.Result() {
             @Override
             public void onSaved(String vehicle) {
                 saveStudentButton.setEnabled(true);
                 Toast.makeText(ModifyStudent.this, R.string.student_updated, Toast.LENGTH_SHORT).show();
-                selectedStudentId = null;
-                originalGrade = null;
-                fetchStudentsByGrade(grade);
+                clearForm();
+                // Reload the grade on screen (the child may have moved to another grade).
+                Object shown = filterDropdown.getSelectedItem();
+                fetchStudentsByGrade(shown != null ? shown.toString() : grade);
             }
 
             @Override

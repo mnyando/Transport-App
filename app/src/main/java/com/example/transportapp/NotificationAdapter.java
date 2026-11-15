@@ -47,7 +47,7 @@ class NotificationAdapter extends ListAdapter<Notification, NotificationAdapter.
     @Override
     public NotificationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(android.R.layout.simple_list_item_2, parent, false);
+                .inflate(R.layout.item_notification_row, parent, false);
         NotificationViewHolder holder = new NotificationViewHolder(view);
         view.setOnClickListener(v -> {
             int position = holder.getBindingAdapterPosition();

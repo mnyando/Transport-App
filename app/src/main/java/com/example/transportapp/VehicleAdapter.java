@@ -35,7 +35,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
         holder.vehicleName.setText(vehicle.getVehicleName());
         holder.vehicleNumber.setText(vehicle.getVehicleNumber());
         holder.capacity.setText(holder.itemView.getContext().getString(R.string.vehicle_capacity_label, vehicle.capacityText()));
-        holder.status.setText("Status: " + (vehicle.getStatus() != null ? vehicle.getStatus() : "Unknown")); // Bind status
+        StatusPills.apply(holder.status, vehicle.getStatus());
 
         holder.itemView.setOnClickListener(v -> onVehicleClickListener.onVehicleClick(vehicle));
     }

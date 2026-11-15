@@ -70,7 +70,8 @@ public class DriverLanding extends AppCompatActivity {
 
     private void displayDriverInfo() {
         String none = getString(R.string.not_set);
-        driverNameTextView.setText(getString(R.string.driver_label_name, driverName != null ? driverName : none));
+        // The hero already says "On duty" above the name, so the name stands on its own.
+        driverNameTextView.setText(driverName != null ? driverName : none);
         vehicleTextView.setText(getString(R.string.driver_label_vehicle, assignedVehicle != null ? assignedVehicle : none));
         routeTextView.setText(getString(R.string.driver_label_route, assignedRoute != null ? assignedRoute : none));
     }

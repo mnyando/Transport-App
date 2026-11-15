@@ -1,101 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/screen_background"
-    android:padding="16dp">
+    android:fillViewport="true">
 
-    <!-- Navigation Bar -->
-    <include
-        layout="@layout/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <!-- RecyclerView for route items -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/routeRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/surface" />
-
-    <!-- Beautified Modify Route Form Section inside CardView -->
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/surface"
-        android:padding="24dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="10dp">
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_l">
 
-            <!-- Route ID/Name -->
-            <EditText
-                android:id="@+id/routeNameInput"
+            <include layout="@layout/delete_warning" />
+
+            <!-- Step 1: choose a route -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_route_id_name"
-                android:padding="12dp"
-                android:layout_marginTop="6dp"
-                android:background="@drawable/edittext_background"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp" />
+                android:layout_marginTop="@dimen/spacing_m">
 
-            <!-- Total Distance -->
-            <EditText
-                android:id="@+id/totalDistanceInput"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_l">
+
+                    <LinearLayout style="@style/Widget.Transport.CardHeader">
+
+                        <ImageView
+                            style="@style/Widget.Transport.IconBadge"
+                            android:backgroundTint="@color/tile_violet_container"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_route"
+                            app:tint="@color/tile_on_violet" />
+
+                        <TextView
+                            style="@style/Widget.Transport.CardHeaderTitle"
+                            android:text="@string/form_choose_route" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/routeRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:clipToPadding="false" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Step 2: review and remove -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_total_distance"
-                android:layout_marginTop="16dp"
-                android:padding="12dp"
-                android:background="@drawable/edittext_background"
-                android:inputType="numberDecimal"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp" />
+                android:layout_marginTop="@dimen/spacing_m">
 
-            <!-- Route Description -->
-            <EditText
-                android:id="@+id/routeDescriptionInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_route_description"
-                android:layout_marginTop="16dp"
-                android:padding="12dp"
-                android:background="@drawable/edittext_background"
-                android:textColor="@color/text_primary"
-                android:textSize="16sp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_l">
 
-            <!-- Vehicle Dropdown -->
-            <Spinner
-                android:id="@+id/vehicleDropdown"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:padding="12dp"
-                android:background="@drawable/edittext_background" />
+                    <TextView
+                        style="@style/Widget.Transport.FieldLabel"
+                        android:layout_marginTop="0dp"
+                        android:text="@string/form_details" />
 
-            <!-- Update Button -->
-            <Button
-                android:id="@+id/deleteRouteButton"
-                android:layout_width="280dp"
-                android:layout_height="wrap_content"
-                android:text="@string/title_delete_route"
-                android:layout_gravity="center"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/brand_primary"
-                android:layout_marginTop="24dp"
-                android:padding="16dp"
-                android:drawablePadding="8dp" />
+                    <EditText
+                        android:id="@+id/routeNameInput"
+                        style="@style/Widget.Transport.Field"
+                        android:layout_marginTop="@dimen/spacing_s"
+                        android:hint="@string/hint_route_id_name"
+                        android:importantForAutofill="no"
+                        android:inputType="text" />
+
+                    <EditText
+                        android:id="@+id/totalDistanceInput"
+                        style="@style/Widget.Transport.Field"
+                        android:hint="@string/hint_total_distance"
+                        android:importantForAutofill="no"
+                        android:inputType="numberDecimal" />
+
+                    <EditText
+                        android:id="@+id/routeDescriptionInput"
+                        style="@style/Widget.Transport.Field"
+                        android:hint="@string/hint_route_description"
+                        android:importantForAutofill="no"
+                        android:inputType="textMultiLine" />
+
+                    <Spinner
+                        android:id="@+id/vehicleDropdown"
+                        style="@style/Widget.Transport.Dropdown" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/deleteRouteButton"
+                        style="@style/Widget.Transport.Button.Danger"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xl"
+                        android:text="@string/title_delete_route"
+                        app:icon="@drawable/ic_delete_24"
+                        app:iconGravity="textStart" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

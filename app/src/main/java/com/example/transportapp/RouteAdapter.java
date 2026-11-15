@@ -20,7 +20,8 @@ class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHolder> {
     @Override
     public RouteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(android.R.layout.simple_list_item_1, parent, false);
+                .inflate(R.layout.item_list_row, parent, false);
+        ((android.widget.ImageView) view.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_route);
         return new RouteViewHolder(view);
     }
 

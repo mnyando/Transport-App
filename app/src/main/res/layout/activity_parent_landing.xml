@@ -1,23 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Parent home: gradient hero with the two main actions (tag="hero", see SystemBars), then the
+     children and notification cards. Pull down to reload. -->
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background"
-    android:orientation="vertical">
-
-    <!-- Navigation Bar (Fixed at the top) -->
-    <include
-        layout="@layout/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize" />
-
-    <!-- Pull down to reload (review #20) -->
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/parentRefresh"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+    android:tag="hero">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -27,157 +17,246 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
-            <!-- Live bus location and chat with the bus staff -->
+            <!-- ===== Hero ===== -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:orientation="horizontal">
+                android:background="@drawable/bg_hero"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/spacing_xl"
+                android:paddingTop="@dimen/spacing_s"
+                android:paddingBottom="@dimen/spacing_xl"
+                android:tag="hero_top">
 
-                <Button
-                    android:id="@+id/whereIsBusButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="4dp"
-                    android:backgroundTint="@color/brand_primary"
-                    android:text="@string/where_is_the_bus"
-                    android:textColor="@android:color/white" />
-
-                <Button
-                    android:id="@+id/messageBusButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="4dp"
-                    android:backgroundTint="@color/blue"
-                    android:text="@string/message_the_bus"
-                    android:textColor="@android:color/white" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/busStatusText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/text_dark"
-                android:textSize="14sp"
-                android:visibility="gone" />
-
-            <!-- Child Assignment Section -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/surface"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="8dp">
-
+                <!-- Top row: screen title + sign out (Session.setUpHomeToolbar shows the button) -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:gravity="center_vertical"
+                    android:minHeight="56dp"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/toolbar_title"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="12dp"
-                        android:text="@string/your_children"
-                        android:textColor="@color/text_primary"
-                        android:textSize="20sp"
+                        android:layout_weight="1"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/on_hero"
+                        android:textSize="18sp"
                         android:textStyle="bold" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/childRecyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:paddingBottom="8dp" />
-
-                    <TextView
-                        android:id="@+id/childEmptyText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="16dp"
-                        android:text="@string/loading_your_children"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="16sp" />
+                    <ImageButton
+                        android:id="@+id/signOutButton"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_icon_circle"
+                        android:backgroundTint="@color/glass_fill"
+                        android:contentDescription="@string/sign_out"
+                        android:padding="10dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/baseline_logout_24"
+                        android:visibility="gone"
+                        app:tint="@color/on_hero" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Notification Center -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/surface"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="8dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:text="@string/parent_hero_eyebrow"
+                    android:textAppearance="@style/TextAppearance.Transport.Eyebrow" />
 
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:accessibilityHeading="true"
+                    android:text="@string/parent_hero_headline"
+                    android:textAppearance="@style/TextAppearance.Transport.Display"
+                    android:textSize="26sp" />
+
+                <!-- Live bus location and chat with the bus staff -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/whereIsBusButton"
+                    style="@style/Widget.Transport.Button.OnHero"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:text="@string/where_is_the_bus"
+                    app:icon="@drawable/ic_my_location_24"
+                    app:iconGravity="textStart" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/messageBusButton"
+                    style="@style/Widget.Transport.Button.OnHeroGlass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:text="@string/message_the_bus"
+                    app:icon="@drawable/ic_chat_24"
+                    app:iconGravity="textStart" />
+
+                <TextView
+                    android:id="@+id/busStatusText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m"
+                    android:background="@drawable/bg_icon_rounded"
+                    android:backgroundTint="@color/glass_fill"
+                    android:drawablePadding="@dimen/spacing_s"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/spacing_l"
+                    android:paddingVertical="@dimen/spacing_m"
+                    android:textColor="@color/on_hero"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:drawableStartCompat="@drawable/ic_bus_24"
+                    app:drawableTint="@color/on_hero" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/spacing_l">
+
+                <!-- Children -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_l">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingBottom="12dp">
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_l">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingBottom="@dimen/spacing_s">
+
+                            <ImageView
+                                style="@style/Widget.Transport.IconBadge"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_student" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/spacing_m"
+                                android:layout_weight="1"
+                                android:accessibilityHeading="true"
+                                android:text="@string/your_children"
+                                android:textAppearance="@style/TextAppearance.Transport.Title" />
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/childRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:nestedScrollingEnabled="false"
+                            android:paddingBottom="@dimen/spacing_xs" />
 
                         <TextView
-                            android:layout_width="0dp"
+                            android:id="@+id/childEmptyText"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/notifications"
-                            android:textColor="@color/text_primary"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/alertSettingsButton"
-                            style="@style/Widget.Material3.Button.TextButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:minHeight="48dp"
-                            android:text="@string/alert_settings"
-                            android:textColor="@color/text_accent" />
+                            android:layout_marginTop="@dimen/spacing_s"
+                            android:background="@drawable/bg_icon_rounded"
+                            android:backgroundTint="@color/surface_variant"
+                            android:gravity="center"
+                            android:padding="@dimen/spacing_l"
+                            android:text="@string/loading_your_children"
+                            android:textAppearance="@style/TextAppearance.Transport.Subtitle" />
                     </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/notificationRecyclerView"
+                <!-- Notification Center -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_m">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:overScrollMode="always"
-                        android:paddingBottom="8dp" />
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_l">
 
-                    <TextView
-                        android:id="@+id/notificationEmptyText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingVertical="16dp"
-                        android:text="@string/no_notifications_yet"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="16sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingBottom="@dimen/spacing_s">
+
+                            <ImageView
+                                style="@style/Widget.Transport.IconBadge"
+                                android:backgroundTint="@color/tile_amber_container"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_notification"
+                                app:tint="@color/tile_on_amber" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/spacing_m"
+                                android:layout_weight="1"
+                                android:accessibilityHeading="true"
+                                android:text="@string/notifications"
+                                android:textAppearance="@style/TextAppearance.Transport.Title" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/alertSettingsButton"
+                                style="@style/Widget.Material3.Button.TextButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:minHeight="48dp"
+                                android:text="@string/alert_settings"
+                                android:textAllCaps="false"
+                                android:textColor="@color/text_accent" />
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/notificationRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:nestedScrollingEnabled="false"
+                            android:paddingBottom="@dimen/spacing_xs" />
+
+                        <TextView
+                            android:id="@+id/notificationEmptyText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_s"
+                            android:background="@drawable/bg_icon_rounded"
+                            android:backgroundTint="@color/surface_variant"
+                            android:gravity="center"
+                            android:padding="@dimen/spacing_l"
+                            android:text="@string/no_notifications_yet"
+                            android:textAppearance="@style/TextAppearance.Transport.Subtitle" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <include
+                layout="@layout/footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </ScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <!-- Footer Section (Fixed at the bottom) -->
-    <include
-        layout="@layout/footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

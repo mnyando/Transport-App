@@ -14,8 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -194,13 +198,24 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
         String updatedVehicle = vehicleDropdown.getSelectedItem() != null ? vehicleDropdown.getSelectedItem().toString() : "";
         String updatedRoute = routeDropdown.getSelectedItem() != null ? routeDropdown.getSelectedItem().toString() : "";
         int selectedStatusId = statusRadioGroup.getCheckedRadioButtonId();
+        if (selectedStatusId == -1) {
+            // Records with no stored status clear the toggle; don't silently save "Not Active".
+            Toast.makeText(this, R.string.error_select_status, Toast.LENGTH_SHORT).show();
+            return;
+        }
         String updatedStatus = selectedStatusId == R.id.activeRadioButton ? "Active" : "Not Active";
         int selectedRoleId = roleRadioGroup.getCheckedRadioButtonId();
         String updatedRole = selectedRoleId == R.id.driverRadioButton ? "Driver" : "Attendant";
 
-        if (TextUtils.isEmpty(updatedName) || TextUtils.isEmpty(updatedPhone) || TextUtils.isEmpty(updatedLicense) ||
+        if (TextUtils.isEmpty(updatedName) || TextUtils.isEmpty(updatedPhone) ||
                 "Select Vehicle".equals(updatedVehicle) || "Select Route".equals(updatedRoute)) {
             Toast.makeText(this, "All fields are required and must be valid", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // Only drivers need a driving licence (conductors were blocked by this before).
+        if ("Driver".equals(updatedRole) && TextUtils.isEmpty(updatedLicense)) {
+            licenseNumberInput.setError(getString(R.string.error_license_required_driver));
+            licenseNumberInput.requestFocus();
             return;
         }
 
@@ -225,17 +240,60 @@ public class ModifyStaff extends AppCompatActivity implements StaffAdapter.OnSta
         updatedData.put("status", updatedStatus);
         updatedData.put("role", updatedRole);
 
-        firestore.collection(FirestorePaths.STAFF).document(selectedStaffId)
-                .update(updatedData)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Staff updated successfully", Toast.LENGTH_SHORT).show();
-                    clearForm();
-                    fetchStaff();
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "Failed to update staff: " + e.getMessage());
-                    UserErrors.show(this, "Could not update staff", e);
-                });
+        // Same rules as Add Staff, ignoring the record being edited: licence numbers are unique
+        // and a bus has at most 2 drivers. (Editing used to skip both.)
+        String staffId = selectedStaffId;
+        Task<QuerySnapshot> licenceTask = updatedLicense.isEmpty() ? Tasks.forResult(null)
+                : firestore.collection(FirestorePaths.STAFF)
+                        .whereEqualTo("licenseNumber", updatedLicense).limit(2).get();
+        Task<QuerySnapshot> driversTask = "Driver".equals(updatedRole)
+                ? firestore.collection(FirestorePaths.STAFF)
+                        .whereEqualTo("assignedVehicle", updatedVehicle)
+                        .whereEqualTo("role", "Driver").get()
+                : Tasks.forResult(null);
+
+        updateStaffButton.setEnabled(false);
+        Tasks.whenAllComplete(licenceTask, driversTask).addOnCompleteListener(all -> {
+            if (!licenceTask.isSuccessful() || !driversTask.isSuccessful()) {
+                updateStaffButton.setEnabled(true);
+                UserErrors.show(this, "Could not update staff",
+                        !licenceTask.isSuccessful() ? licenceTask.getException() : driversTask.getException());
+                return;
+            }
+            if (licenceTask.getResult() != null) for (DocumentSnapshot doc : licenceTask.getResult()) {
+                if (!doc.getId().equals(staffId)) {
+                    updateStaffButton.setEnabled(true);
+                    licenseNumberInput.setError(getString(R.string.error_license_taken));
+                    licenseNumberInput.requestFocus();
+                    return;
+                }
+            }
+            if (driversTask.getResult() != null) {
+                int otherDrivers = 0;
+                for (DocumentSnapshot doc : driversTask.getResult()) {
+                    if (!doc.getId().equals(staffId)) otherDrivers++;
+                }
+                if (otherDrivers >= 2) {
+                    updateStaffButton.setEnabled(true);
+                    Toast.makeText(this, getString(R.string.error_driver_limit, updatedVehicle),
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+            firestore.collection(FirestorePaths.STAFF).document(staffId)
+                    .update(updatedData)
+                    .addOnSuccessListener(aVoid -> {
+                        updateStaffButton.setEnabled(true);
+                        Toast.makeText(this, "Staff updated successfully", Toast.LENGTH_SHORT).show();
+                        clearForm();
+                        fetchStaff();
+                    })
+                    .addOnFailureListener(e -> {
+                        updateStaffButton.setEnabled(true);
+                        Log.e(TAG, "Failed to update staff: " + e.getMessage());
+                        UserErrors.show(this, "Could not update staff", e);
+                    });
+        });
     }
 
     private void clearForm() {

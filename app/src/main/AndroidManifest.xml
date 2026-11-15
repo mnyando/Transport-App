@@ -139,10 +139,6 @@
         <activity
             android:name=".SchoolLanding"
             android:label="@string/title_school_landing"
-            android:exported="false" /> <!-- Role picker -->
-        <activity
-            android:name=".RoleSelectActivity"
-            android:label="@string/title_role_select"
             android:exported="false" /> <!-- DriverLanding Activity -->
         <activity
             android:name=".DriverLanding"

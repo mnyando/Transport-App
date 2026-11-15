@@ -103,7 +103,6 @@
     <string name="title_modify_vehicle">Modify Vehicle</string>
     <string name="title_pick_up">Pick-up</string>
     <string name="title_reports">Transport Analytics</string>
-    <string name="title_role_select">Select Role</string>
     <string name="title_school_landing">School Dashboard</string>
     <string name="footer_copyright">© %1$d School Transport Solutions</string>
 
@@ -115,11 +114,12 @@
     <string name="hint_drop_off_time">Drop Off Time</string>
     <string name="hint_staff_name">Staff Name</string>
     <string name="hint_phone_number">Phone Number</string>
-    <string name="hint_license_number">License Number</string>
+    <string name="hint_license_number">Driving licence number (drivers only)</string>
     <string name="active">Active</string>
     <string name="not_active">Not Active</string>
     <string name="driver">Driver</string>
-    <string name="attendant">Attendant</string>
+    <!-- Shown as "Conductor"; stored on the staff record as role "Attendant" (Cloud Functions read it). -->
+    <string name="attendant">Conductor</string>
     <string name="save_staff">Save Staff</string>
     <string name="hint_student_name">Student Name</string>
     <string name="hint_student_id_number">Student ID Number</string>
@@ -171,13 +171,7 @@
     <string name="no_notifications_yet">No notifications yet</string>
     <string name="student_history">Student History</string>
     <string name="school">School</string>
-    <string name="monitor_bus_routes_ensure_student_safety">Monitor bus routes, ensure student safety, and manage transport operations seamlessly.</string>
-    <string name="go_to_school_page">Go to School Page</string>
     <string name="parent_2">Parent</string>
-    <string name="track_your_child_s_bus_and">Track your child\'s bus  and receive instant pickup/drop-off alerts.</string>
-    <string name="go_to_parent_page">Go to Parent Page</string>
-    <string name="navigate_efficiently_and_keep_parents_up">Navigate efficiently and keep parents updated with real-time transport status.</string>
-    <string name="go_to_driver_page">Go to Driver Page</string>
     <string name="text">--:--</string>
     <string name="general_information">Fleet overview</string>
     <string name="students_enrolled">Students Enrolled</string>
@@ -377,4 +371,64 @@
     <string name="invite_code_saved">Sign-up code updated</string>
     <string name="invite_code_load_failed">Could not load the sign-up code</string>
     <string name="invite_code_button">Parent sign-up code</string>
+
+    <!-- UI redesign: hero and section copy -->
+    <string name="welcome_eyebrow">School transport, reimagined</string>
+    <string name="welcome_headline">Every ride,\nsafe and in sight.</string>
+    <string name="welcome_features_title">Built for the whole journey</string>
+    <string name="login_eyebrow">Welcome back</string>
+    <string name="login_headline">Sign in to continue</string>
+    <string name="login_subtitle">Track rides, manage routes and stay connected.</string>
+    <string name="signup_eyebrow">Join your school</string>
+    <string name="signup_headline">Create your account</string>
+    <string name="signup_subtitle">Use the invite code your school gave you.</string>
+    <string name="school_hero_eyebrow">School dashboard</string>
+    <string name="school_hero_headline">Your fleet at a glance</string>
+    <string name="school_manage">Manage records</string>
+    <string name="parent_hero_eyebrow">Parent dashboard</string>
+    <string name="parent_hero_headline">Know where the bus is, always.</string>
+    <string name="driver_hero_eyebrow">On duty</string>
+    <string name="driver_trip_actions">Start a trip</string>
+    <string name="driver_sos_hint">Alerts the school and every parent on this bus</string>
+    <string name="select_student">Choose a student</string>
+    <string name="student">Student</string>
+
+    <!-- Form sections (redesign pass 2) -->
+    <string name="form_details">Details</string>
+    <string name="form_assignment">Assignment</string>
+    <string name="form_status">Status</string>
+    <string name="form_role">Role</string>
+    <string name="form_schedule">Schedule</string>
+    <string name="form_contact">Contact</string>
+    <string name="form_choose_staff">Choose a staff member</string>
+    <string name="form_choose_route">Choose a route</string>
+    <string name="form_choose_vehicle">Choose a vehicle</string>
+    <string name="form_new_student">New student</string>
+    <string name="form_new_staff">New staff member</string>
+    <string name="form_new_route">New route</string>
+    <string name="form_new_vehicle">New vehicle</string>
+    <string name="form_delete_warning">Removing a record is permanent. Check the details below first.</string>
+    <string name="reports_driver_subtitle">Trips, punctuality and activity per driver</string>
+    <string name="reports_student_subtitle">Boarding and drop-off history per student</string>
+    <string name="reports_pick">Choose a report</string>
+    <string name="chat_send">Send message</string>
+
+    <!-- Record link checks (logic fixes) -->
+    <string name="error_select_student_first">Choose a student from the list first</string>
+    <string name="error_select_status">Choose Active or Not Active</string>
+    <string name="error_route_name_taken">A route called "%1$s" already exists</string>
+    <string name="error_vehicle_name_taken">A vehicle called "%1$s" already exists</string>
+    <string name="error_bus_too_small_for_route">%1$s has %2$d free seats, but %3$d children are on this route</string>
+    <string name="error_capacity_below_students">%1$d children are already on this bus. Capacity can\'t be lower than that.</string>
+    <string name="error_vehicle_rename_in_use">This bus is used by %1$d route(s), %2$d staff and %3$d children. Move them to another bus before renaming it.</string>
+    <string name="error_vehicle_delete_in_use">This bus is used by %1$d route(s), %2$d staff and %3$d children. Move them to another bus before removing it.</string>
+    <string name="error_route_delete_in_use">%1$d children and %2$d staff are on this route. Move them to another route before removing it.</string>
+    <string name="error_driver_limit">%1$s already has 2 drivers</string>
+    <string name="route_updated_students">Route updated (%1$d children moved with it)</string>
+    <string name="route_update_partial">Route saved, but some children could not be updated. Open the route and save it again.</string>
+    <string name="checking_links_failed">Could not check what uses this record</string>
+    <string name="error_dropoff_before_pickup">Drop-off time must be later than pickup time</string>
+    <string name="error_license_required_driver">Drivers need a driving licence number</string>
+    <string name="driver_staff_inactive">Your driver record is marked Not Active. Ask the school to set it to Active, then sign in again.</string>
+    <string name="driver_staff_not_driver">Your staff record is not set up as a driver. Ask the school to set your role to Driver.</string>
 </resources>

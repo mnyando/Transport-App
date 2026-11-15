@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Design-system sizes (DESIGN_SYSTEM_AND_PLAN.md, step 1). Spacing follows a 4/8dp grid. -->
+<!-- Design-system sizes. Spacing follows a 4/8dp grid. -->
 <resources>
     <!-- Spacing scale -->
     <dimen name="spacing_xs">4dp</dimen>
@@ -10,9 +10,10 @@
     <dimen name="spacing_xxl">32dp</dimen>
 
     <!-- Corner radii -->
-    <dimen name="radius_s">8dp</dimen>
-    <dimen name="radius_m">12dp</dimen>
-    <dimen name="radius_l">16dp</dimen>
+    <dimen name="radius_s">10dp</dimen>
+    <dimen name="radius_m">16dp</dimen>
+    <dimen name="radius_l">24dp</dimen>
+    <dimen name="radius_xl">32dp</dimen>
     <dimen name="radius_pill">100dp</dimen>
 
     <!-- Touch targets: 48dp minimum everywhere, larger for in-vehicle driver controls -->
@@ -20,7 +21,7 @@
     <dimen name="touch_target_driver">56dp</dimen>
     <dimen name="touch_target_action">60dp</dimen>
 
-    <!-- Card elevation -->
-    <dimen name="card_elevation_default">2dp</dimen>
-    <dimen name="card_elevation_raised">6dp</dimen>
+    <!-- Card elevation: flat cards with a hairline outline; raised only for floating panels -->
+    <dimen name="card_elevation_default">0dp</dimen>
+    <dimen name="card_elevation_raised">8dp</dimen>
 </resources>

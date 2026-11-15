@@ -1,152 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/screen_background"
-    android:padding="16dp">
+    android:fillViewport="true">
 
-    <!-- Navigation Bar -->
-    <include
-        layout="@layout/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <!-- Add Student Form Section -->
-    <com.google.android.material.card.MaterialCardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="@color/surface"
-        android:padding="24dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="10dp">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <include
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_margin="@dimen/spacing_l">
 
-            <!-- Student Name -->
-            <EditText
-                android:id="@+id/studentNameInput"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:hint="@string/hint_student_name"
-                android:inputType="text"
-                android:padding="12dp"
-                android:textColor="@color/text_primary"
-                android:textSize="20sp"/>
-
-            <!-- Class Dropdown -->
-            <Spinner
-                android:id="@+id/classDropdown"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:padding="12dp"/>
-
-            <!-- Student ID Number -->
-            <EditText
-                android:id="@+id/studentIdInput"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:hint="@string/hint_student_id_number"
-                android:inputType="number"
-                android:padding="12dp"
-                android:textColor="@color/text_primary"
-                android:textSize="20sp"/>
-
-            <!-- Assigned Route Dropdown -->
-            <Spinner
-                android:id="@+id/routeDropdown"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:padding="12dp"/>
-
-            <!-- Parent Name -->
-            <EditText
-                android:id="@+id/parentNameInput"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:hint="@string/hint_parent_name"
-                android:inputType="text"
-                android:padding="12dp"
-                android:textColor="@color/text_primary"
-                android:textSize="20sp"/>
-
-            <!-- Parent Contact -->
-            <EditText
-                android:id="@+id/parentContactInput"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:hint="@string/hint_parent_contact"
-                android:inputType="phone"
-                android:padding="12dp"
-                android:textColor="@color/text_primary"
-                android:textSize="20sp"/>
-
-            <!-- Parent Email: links the parent's verified login to this student -->
-            <EditText
-                android:id="@+id/parentEmailInput"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:hint="@string/hint_parent_email_used_to_sign_in"
-                android:inputType="textEmailAddress"
-                android:padding="12dp"
-                android:textColor="@color/text_primary"
-                android:textSize="20sp"/>
-
-            <!-- Home Location -->
-            <EditText
-                android:id="@+id/homeLocationInput"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="10dp"
-                android:background="@drawable/edittext_background"
-                android:hint="@string/hint_home_location"
-                android:inputType="text"
-                android:padding="12dp"
-                android:textColor="@color/text_primary"
-                android:textSize="20sp"/>
-
-            <!-- Save Button -->
-            <Button
-                android:id="@+id/saveStudentButton"
-                android:layout_width="280dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/brand_primary"
-                android:drawablePadding="8dp"
-                android:padding="16dp"
-                android:text="@string/title_add_student"
-                android:textColor="@color/white"
-                android:textSize="16sp"/>
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-</LinearLayout>
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_l">
+
+                <LinearLayout style="@style/Widget.Transport.CardHeader">
+
+                    <ImageView
+                        style="@style/Widget.Transport.IconBadge"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_student" />
+
+                    <TextView
+                        style="@style/Widget.Transport.CardHeaderTitle"
+                        android:text="@string/form_new_student" />
+                </LinearLayout>
+
+                <TextView
+                    style="@style/Widget.Transport.FieldLabel"
+                    android:layout_marginTop="@dimen/spacing_l"
+                    android:text="@string/student" />
+
+                <EditText
+                    android:id="@+id/studentNameInput"
+                    style="@style/Widget.Transport.Field"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:autofillHints="name"
+                    android:hint="@string/hint_student_name"
+                    android:inputType="textPersonName|textCapWords" />
+
+                <Spinner
+                    android:id="@+id/classDropdown"
+                    style="@style/Widget.Transport.Dropdown" />
+
+                <EditText
+                    android:id="@+id/studentIdInput"
+                    style="@style/Widget.Transport.Field"
+                    android:hint="@string/hint_student_id_number"
+                    android:importantForAutofill="no"
+                    android:inputType="number" />
+
+                <Spinner
+                    android:id="@+id/routeDropdown"
+                    style="@style/Widget.Transport.Dropdown" />
+
+                <TextView
+                    style="@style/Widget.Transport.FieldLabel"
+                    android:text="@string/parent_2" />
+
+                <EditText
+                    android:id="@+id/parentNameInput"
+                    style="@style/Widget.Transport.Field"
+                    android:layout_marginTop="@dimen/spacing_s"
+                    android:autofillHints="name"
+                    android:hint="@string/hint_parent_name"
+                    android:inputType="textPersonName|textCapWords" />
+
+                <EditText
+                    android:id="@+id/parentContactInput"
+                    style="@style/Widget.Transport.Field"
+                    android:autofillHints="phone"
+                    android:hint="@string/hint_parent_contact"
+                    android:inputType="phone" />
+
+                <!-- Parent Email: links the parent's verified login to this student -->
+                <EditText
+                    android:id="@+id/parentEmailInput"
+                    style="@style/Widget.Transport.Field"
+                    android:autofillHints="emailAddress"
+                    android:hint="@string/hint_parent_email_used_to_sign_in"
+                    android:inputType="textEmailAddress" />
+
+                <EditText
+                    android:id="@+id/homeLocationInput"
+                    style="@style/Widget.Transport.Field"
+                    android:autofillHints="postalAddress"
+                    android:hint="@string/hint_home_location"
+                    android:inputType="textPostalAddress" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveStudentButton"
+                    style="@style/Widget.Transport.Button.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xl"
+                    android:text="@string/title_add_student"
+                    app:icon="@drawable/ic_add_24"
+                    app:iconGravity="textStart" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bottom sheet style panel with large rounded top corners (auth forms). -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/surface" />
+    <corners
+        android:topLeftRadius="@dimen/radius_xl"
+        android:topRightRadius="@dimen/radius_xl" />
+</shape>

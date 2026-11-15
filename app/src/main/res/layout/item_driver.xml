@@ -1,23 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Staff list row: avatar badge, name, role line and a status pill (set by DriverAdapter). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:layout_marginVertical="4dp"
+    android:background="@drawable/bg_row"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:minHeight="64dp"
+    android:orientation="horizontal"
+    android:padding="@dimen/spacing_m">
 
-    <TextView
-        android:id="@+id/driverNameTextView"
-        android:layout_width="match_parent"
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_icon_circle"
+        android:backgroundTint="@color/tile_cyan_container"
+        android:importantForAccessibility="no"
+        android:padding="9dp"
+        android:src="@drawable/ic_driver"
+        app:tint="@color/tile_on_cyan" />
+
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/text_primary"/>
+        android:layout_marginHorizontal="@dimen/spacing_m"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/driverNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/driverRoleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textAppearance="@style/TextAppearance.Transport.Subtitle" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/driverStatusTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@color/text_secondary"/>
+        style="@style/Widget.Transport.Pill" />
 </LinearLayout>

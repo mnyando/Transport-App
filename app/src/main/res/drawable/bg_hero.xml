@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hero panel: indigo-to-violet gradient with rounded bottom corners and two soft light
+     "orbs" for depth. Used at the top of the home and welcome screens. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="315"
+                android:startColor="@color/brand_gradient_start"
+                android:centerColor="@color/brand_gradient_mid"
+                android:endColor="@color/brand_gradient_end"
+                android:type="linear" />
+            <corners
+                android:bottomLeftRadius="@dimen/radius_xl"
+                android:bottomRightRadius="@dimen/radius_xl" />
+        </shape>
+    </item>
+    <item
+        android:width="220dp"
+        android:height="220dp"
+        android:gravity="top|end"
+        android:right="-80dp"
+        android:top="-60dp">
+        <shape android:shape="oval">
+            <solid android:color="#1AFFFFFF" />
+        </shape>
+    </item>
+    <item
+        android:width="140dp"
+        android:height="140dp"
+        android:gravity="bottom|start"
+        android:bottom="-50dp"
+        android:left="-40dp">
+        <shape android:shape="oval">
+            <solid android:color="#14FFFFFF" />
+        </shape>
+    </item>
+</layer-list>

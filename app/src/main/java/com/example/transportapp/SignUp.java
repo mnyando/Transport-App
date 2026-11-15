@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +25,6 @@ public class SignUp extends AppCompatActivity {
     private EditText etFullName, etEmail, etPassword;
     private Button btnSignUp;
     private TextView tvSignIn;
-    private ImageView ivTogglePassword;
     private CheckBox cbConsent;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -48,11 +46,10 @@ public class SignUp extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         btnSignUp = findViewById(R.id.btnSignUp);
         tvSignIn = findViewById(R.id.tvSignIn);
-        ivTogglePassword = findViewById(R.id.ivTogglePassword);
         cbConsent = findViewById(R.id.cbConsent);
         findViewById(R.id.tvPrivacyNotice).setOnClickListener(v -> PrivacyNotice.show(this));
 
-        PasswordToggle.attach(ivTogglePassword, etPassword);
+        // Show/hide password is the text field's own end icon (endIconMode="password_toggle").
 
         // Handle sign-up button click
         btnSignUp.setOnClickListener(v -> {

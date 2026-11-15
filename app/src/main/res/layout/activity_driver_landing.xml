@@ -1,150 +1,278 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Driver home, built for use in the vehicle: a gradient profile hero (tag="hero", see
+     SystemBars), two large trip buttons, messages, and an unmistakable SOS button. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background"
-    android:orientation="vertical">
+    android:fillViewport="true"
+    android:tag="hero">
 
-    <!-- Navigation Bar -->
-    <include
-        layout="@layout/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize" />
-
-    <!-- Content Container -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <!-- Trip Summary Section -->
-        <com.google.android.material.card.MaterialCardView
+        <!-- ===== Hero ===== -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp"
-            android:backgroundTint="@color/surface">
+            android:background="@drawable/bg_hero"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/spacing_xl"
+            android:paddingTop="@dimen/spacing_s"
+            android:paddingBottom="@dimen/spacing_xl"
+            android:tag="hero_top">
+
+            <!-- Top row: screen title + sign out (Session.setUpHomeToolbar shows the button) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/on_hero"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/signOutButton"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_icon_circle"
+                    android:backgroundTint="@color/glass_fill"
+                    android:contentDescription="@string/sign_out"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/baseline_logout_24"
+                    android:visibility="gone"
+                    app:tint="@color/on_hero" />
+            </LinearLayout>
+
+            <!-- Profile -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_l"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/driverImageView"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:contentDescription="@null"
+                    android:padding="2dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/driver"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Transport.Circle"
+                    app:strokeColor="@color/on_hero"
+                    app:strokeWidth="3dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_l"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/driver_hero_eyebrow"
+                        android:textAppearance="@style/TextAppearance.Transport.Eyebrow" />
+
+                    <TextView
+                        android:id="@+id/driverNameTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:accessibilityHeading="true"
+                        android:text="@string/driver_name_name"
+                        android:textAppearance="@style/TextAppearance.Transport.Display"
+                        android:textSize="22sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Assignment on glass panels -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_l"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/vehicleTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_icon_rounded"
+                    android:backgroundTint="@color/glass_fill"
+                    android:drawablePadding="@dimen/spacing_s"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_vertical"
+                    android:maxLines="2"
+                    android:minHeight="56dp"
+                    android:paddingHorizontal="@dimen/spacing_m"
+                    android:paddingVertical="@dimen/spacing_s"
+                    android:text="@string/assigned_vehicle_vehicle"
+                    android:textColor="@color/on_hero"
+                    android:textSize="16sp"
+                    app:drawableStartCompat="@drawable/ic_bus_24"
+                    app:drawableTint="@color/brand_accent" />
+
+                <TextView
+                    android:id="@+id/routeTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_xs"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_icon_rounded"
+                    android:backgroundTint="@color/glass_fill"
+                    android:drawablePadding="@dimen/spacing_s"
+                    android:ellipsize="end"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center_vertical"
+                    android:maxLines="2"
+                    android:minHeight="56dp"
+                    android:paddingHorizontal="@dimen/spacing_m"
+                    android:paddingVertical="@dimen/spacing_s"
+                    android:text="@string/assigned_route_route"
+                    android:textColor="@color/on_hero"
+                    android:textSize="16sp"
+                    app:drawableStartCompat="@drawable/ic_route"
+                    app:drawableTint="@color/brand_accent" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ===== Actions ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/spacing_l">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_xs"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:accessibilityHeading="true"
+                android:text="@string/driver_trip_actions"
+                android:textAppearance="@style/TextAppearance.Transport.SectionLabel" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_marginTop="@dimen/spacing_s"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/pickUpButton"
+                    style="@style/Widget.Transport.Button.Primary"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="12dp"
-                    android:text="@string/driver_details"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:layout_weight="1"
+                    android:minHeight="120dp"
+                    android:text="@string/pick_up"
+                    android:textSize="18sp"
+                    app:cornerRadius="@dimen/radius_l"
+                    app:icon="@drawable/ic_bus_24"
+                    app:iconGravity="top"
+                    app:iconSize="32dp" />
 
-                <ImageView
-                    android:contentDescription="@null"
-                    android:id="@+id/driverImageView"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/circle_background"
-                    android:src="@drawable/driver"
-                    android:scaleType="centerCrop" />
-
-                <TextView
-                    android:id="@+id/driverNameTextView"
-                    android:layout_width="match_parent"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/dropOffButton"
+                    style="@style/Widget.Transport.Button.Primary"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="6dp"
-                    android:text="@string/driver_name_name"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp" />
+                    android:layout_marginStart="@dimen/spacing_xs"
+                    android:layout_weight="1"
+                    android:minHeight="120dp"
+                    android:text="@string/drop_off"
+                    android:textSize="18sp"
+                    app:backgroundTint="@color/brand_gradient_end"
+                    app:cornerRadius="@dimen/radius_l"
+                    app:icon="@drawable/ic_check_24"
+                    app:iconGravity="top"
+                    app:iconSize="32dp" />
+            </LinearLayout>
 
-                <TextView
-                    android:id="@+id/vehicleTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="6dp"
-                    android:text="@string/assigned_vehicle_vehicle"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/messagesButton"
+                style="@style/Widget.Transport.Button.Tonal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_s"
+                android:minHeight="64dp"
+                android:text="@string/messages_from_parents"
+                android:textSize="17sp"
+                app:icon="@drawable/ic_chat_24"
+                app:iconGravity="textStart" />
 
-                <TextView
-                    android:id="@+id/routeTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="6dp"
-                    android:text="@string/assigned_route_route"
-                    android:textColor="@color/text_primary"
-                    android:textSize="20sp" />
+            <!-- Emergency: alerts the school and every parent on this bus -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xl"
+                app:cardBackgroundColor="@color/status_error_container"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="8dp">
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_m">
 
-                    <Button
-                        android:id="@+id/pickUpButton"
-                        android:layout_width="0dp"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/sosButton"
+                        style="@style/Widget.Transport.Button"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="64dp"
-                        android:textSize="18sp"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        android:backgroundTint="@color/brand_primary"
-                        android:text="@string/pick_up"
-                        android:textColor="@android:color/white" />
+                        android:minHeight="72dp"
+                        android:text="@string/sos_emergency"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/error_red"
+                        app:icon="@drawable/ic_warning_24"
+                        app:iconGravity="textStart"
+                        app:iconSize="28dp"
+                        app:iconTint="@color/white" />
 
-                    <Button
-                        android:id="@+id/dropOffButton"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="64dp"
-                        android:textSize="18sp"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:backgroundTint="@color/brand_primary"
-                        android:text="@string/drop_off"
-                        android:textColor="@android:color/white" />
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:gravity="center"
+                        android:text="@string/driver_sos_hint"
+                        android:textColor="@color/status_on_error"
+                        android:textSize="13sp" />
                 </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
 
-                <Button
-                    android:id="@+id/messagesButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="64dp"
-                    android:textSize="18sp"
-                    android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/blue"
-                    android:text="@string/messages_from_parents"
-                    android:textColor="@android:color/white" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-                <!-- Emergency: alerts the school and every parent on this bus -->
-                <Button
-                    android:id="@+id/sosButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    android:layout_marginTop="16dp"
-                    android:backgroundTint="@color/error_red"
-                    android:text="@string/sos_emergency"
-                    android:textColor="@android:color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+        <include
+            layout="@layout/footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
-
-    <!-- Footer Section -->
-    <include
-        layout="@layout/footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+</ScrollView>

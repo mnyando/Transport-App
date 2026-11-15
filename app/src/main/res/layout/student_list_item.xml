@@ -1,34 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="6dp"
+    android:layout_marginVertical="4dp"
+    android:background="@drawable/bg_row"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?attr/selectableItemBackground">
+    android:gravity="center_vertical"
+    android:minHeight="60dp"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/spacing_m"
+    android:paddingVertical="@dimen/spacing_s">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="@drawable/bg_icon_circle"
+        android:backgroundTint="@color/surface"
+        android:importantForAccessibility="no"
+        android:padding="8dp"
+        android:src="@drawable/ic_student"
+        app:tint="@color/text_accent" />
+
+    <TextView
+        android:id="@+id/studentNameTextView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="12dp">
+        android:layout_marginHorizontal="@dimen/spacing_m"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:maxLines="1"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp" />
 
-        <!-- Student Name -->
-        <TextView
-            android:id="@+id/studentNameTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="20sp"
-            android:textColor="@color/text_primary"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end"/>
-
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_chevron_right_24"
+        app:tint="@color/text_hint" />
+</LinearLayout>

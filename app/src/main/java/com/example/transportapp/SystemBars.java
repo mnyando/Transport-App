@@ -17,16 +17,23 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 /**
- * Edge-to-edge for every screen (review section 5).
+ * Edge-to-edge for every screen.
  *
  * The app draws behind the status bar and the gesture/navigation bar (Android 15 forces this),
- * so each screen's root view is padded by the real size of those bars and of the keyboard,
- * instead of the old fixed 24 dp toolbar margin, which was wrong on phones with a notch or a
- * taller status bar. Screens with the green toolbar get a green strip behind the status bar
- * (with light icons) so the bar looks continuous; screens with the green footer get the same
- * at the bottom.
+ * so each screen's root view is padded by the real size of those bars and of the keyboard.
+ *
+ * Screens with the shared gradient toolbar get the same gradient painted behind the status bar
+ * (with light icons) so the bar looks continuous. Screens whose root view has
+ * {@code android:tag="hero"} draw their own gradient hero under the status bar: they get light
+ * status icons and no strip, and are not padded at the top (the hero pads itself via
+ * {@link #HERO_TOP_TAG} children, see {@link #applyInsets}).
  */
 final class SystemBars {
+
+    /** Root tag for screens that draw a gradient hero edge to edge under the status bar. */
+    static final String HERO_TAG = "hero";
+    /** Tag for the view inside a hero screen that should be pushed below the status bar. */
+    static final String HERO_TOP_TAG = "hero_top";
 
     private SystemBars() {}
 
@@ -36,18 +43,18 @@ final class SystemBars {
         View root = content.getChildAt(0);
 
         boolean hasToolbar = activity.findViewById(R.id.toolbar) != null;
-        boolean hasFooter = activity.findViewById(R.id.footer_text) != null;
-        int barColor = ContextCompat.getColor(activity, R.color.brand_primary);
+        boolean isHero = HERO_TAG.equals(root.getTag());
+        View heroTop = isHero ? root.findViewWithTag(HERO_TOP_TAG) : null;
 
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(activity.getWindow(), root);
-        if (hasToolbar) controller.setAppearanceLightStatusBars(false);
-        if (hasFooter) controller.setAppearanceLightNavigationBars(false);
+        if (hasToolbar || isHero) controller.setAppearanceLightStatusBars(false);
 
         int padLeft = root.getPaddingLeft();
         int padTop = root.getPaddingTop();
         int padRight = root.getPaddingRight();
         int padBottom = root.getPaddingBottom();
+        int heroTopPad = heroTop != null ? heroTop.getPaddingTop() : 0;
         Drawable originalBackground = root.getBackground();
 
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, windowInsets) -> {
@@ -56,28 +63,35 @@ final class SystemBars {
             Insets ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
             int bottom = Math.max(bars.bottom, ime.bottom);
 
-            v.setPadding(padLeft + bars.left, padTop + bars.top,
-                    padRight + bars.right, padBottom + bottom);
-
-            if (hasToolbar || hasFooter) {
-                v.setBackground(withBarStrips(originalBackground, barColor,
-                        hasToolbar ? bars.top : 0,
-                        hasFooter && ime.bottom == 0 ? bars.bottom : 0));
+            if (isHero) {
+                // The hero runs under the status bar; only its content is pushed down.
+                v.setPadding(padLeft + bars.left, padTop, padRight + bars.right, padBottom + bottom);
+                if (heroTop != null) {
+                    heroTop.setPadding(heroTop.getPaddingLeft(), heroTopPad + bars.top,
+                            heroTop.getPaddingRight(), heroTop.getPaddingBottom());
+                }
+            } else {
+                v.setPadding(padLeft + bars.left, padTop + bars.top,
+                        padRight + bars.right, padBottom + bottom);
+                if (hasToolbar) {
+                    v.setBackground(withStatusStrip(activity, originalBackground, bars.top));
+                }
             }
             return WindowInsetsCompat.CONSUMED;
         });
         ViewCompat.requestApplyInsets(root);
     }
 
-    /** The screen's own background with brand-coloured strips behind the system bars. */
-    private static Drawable withBarStrips(Drawable base, int color, int top, int bottom) {
+    /** The screen's own background with the toolbar gradient behind the status bar. */
+    private static Drawable withStatusStrip(Activity activity, Drawable base, int top) {
         Drawable bottomLayer = base != null ? base : new ColorDrawable(Color.TRANSPARENT);
-        LayerDrawable layers = new LayerDrawable(new Drawable[]{
-                bottomLayer, new ColorDrawable(color), new ColorDrawable(color)});
+        Drawable strip = ContextCompat.getDrawable(activity, R.drawable.bg_header_gradient);
+        if (strip == null) {
+            strip = new ColorDrawable(ContextCompat.getColor(activity, R.color.brand_primary));
+        }
+        LayerDrawable layers = new LayerDrawable(new Drawable[]{bottomLayer, strip.mutate()});
         layers.setLayerGravity(1, Gravity.TOP | Gravity.FILL_HORIZONTAL);
         layers.setLayerHeight(1, top);
-        layers.setLayerGravity(2, Gravity.BOTTOM | Gravity.FILL_HORIZONTAL);
-        layers.setLayerHeight(2, bottom);
         return layers;
     }
 }

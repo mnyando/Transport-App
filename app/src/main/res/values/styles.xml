@@ -1,17 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Design-system text and component styles (DESIGN_SYSTEM_AND_PLAN.md, step 1).
+<!-- Design-system text and component styles ("Midnight Indigo").
      Colours come from tokens with day/night values, so every style works in both themes. -->
 <resources>
-    <!-- Screen header -->
+
+    <!-- ===== Typography ===== -->
+
+    <!-- Large hero headline on the gradient -->
+    <style name="TextAppearance.Transport.Display" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:textSize">30sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="android:textColor">@color/on_hero</item>
+    </style>
+
+    <!-- Small uppercase eyebrow label above a headline -->
+    <style name="TextAppearance.Transport.Eyebrow" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.12</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/on_hero_muted</item>
+    </style>
+
+    <!-- Body copy on the gradient -->
+    <style name="TextAppearance.Transport.HeroBody" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">15sp</item>
+        <item name="android:lineSpacingMultiplier">1.15</item>
+        <item name="android:textColor">@color/on_hero_muted</item>
+    </style>
+
+    <!-- Screen / section header -->
     <style name="TextAppearance.Transport.Header" parent="TextAppearance.Material3.HeadlineSmall">
         <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">-0.01</item>
         <item name="android:textColor">@color/text_primary</item>
     </style>
 
     <!-- Card title -->
     <style name="TextAppearance.Transport.Title" parent="TextAppearance.Material3.TitleMedium">
         <item name="android:textSize">17sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/text_primary</item>
     </style>
@@ -25,16 +56,51 @@
     <!-- Subtitle / meta -->
     <style name="TextAppearance.Transport.Subtitle" parent="TextAppearance.Material3.BodyMedium">
         <item name="android:textSize">14sp</item>
+        <item name="android:lineSpacingMultiplier">1.1</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <!-- Section label above a group of cards -->
+    <style name="TextAppearance.Transport.SectionLabel" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@color/text_secondary</item>
     </style>
 
     <!-- Badge / status pill text (set textColor to the matching status_on_* token) -->
     <style name="TextAppearance.Transport.Badge" parent="TextAppearance.Material3.LabelMedium">
         <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <!-- Card: 16dp radius, low elevation, 1dp subtle outline -->
+    <!-- Fleet overview number and label -->
+    <style name="TextAppearance.Transport.StatValue" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textSize">26sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_accent</item>
+    </style>
+
+    <style name="TextAppearance.Transport.StatLabel" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <!-- Stat number / label inside a glass panel on the hero -->
+    <style name="TextAppearance.Transport.HeroStatValue" parent="TextAppearance.Transport.StatValue">
+        <item name="android:textColor">@color/on_hero</item>
+    </style>
+
+    <style name="TextAppearance.Transport.HeroStatLabel" parent="TextAppearance.Transport.StatLabel">
+        <item name="android:textColor">@color/on_hero_muted</item>
+    </style>
+
+    <!-- ===== Containers ===== -->
+
+    <!-- Card: flat, 24dp radius, hairline outline -->
     <style name="Widget.Transport.Card" parent="Widget.Material3.CardView.Elevated">
         <item name="cardCornerRadius">@dimen/radius_l</item>
         <item name="cardElevation">@dimen/card_elevation_default</item>
@@ -43,24 +109,37 @@
         <item name="cardBackgroundColor">@color/surface</item>
     </style>
 
+    <!-- Translucent panel on the gradient hero -->
+    <style name="Widget.Transport.GlassCard" parent="Widget.Material3.CardView.Filled">
+        <item name="cardCornerRadius">@dimen/radius_m</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/glass_fill</item>
+        <item name="strokeColor">@color/glass_stroke</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
     <!-- Admin action tile: flat, tinted, one of three equal tiles in a row -->
     <style name="Widget.Transport.Tile" parent="Widget.Material3.CardView.Filled">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:minHeight">88dp</item>
+        <item name="android:minHeight">92dp</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="cardBackgroundColor">@color/surface_variant</item>
         <item name="cardCornerRadius">@dimen/radius_m</item>
         <item name="cardElevation">0dp</item>
         <item name="strokeWidth">0dp</item>
+        <item name="rippleColor">@color/theme_primary_container</item>
     </style>
 
     <!-- Icon inside an admin tile -->
     <style name="Widget.Transport.TileIcon" parent="">
-        <item name="android:layout_width">28dp</item>
-        <item name="android:layout_height">28dp</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:padding">9dp</item>
+        <item name="android:background">@drawable/bg_icon_circle</item>
+        <item name="android:backgroundTint">@color/surface</item>
         <item name="android:importantForAccessibility">no</item>
         <item name="tint">@color/text_accent</item>
     </style>
@@ -72,29 +151,213 @@
         <item name="android:layout_marginTop">@dimen/spacing_s</item>
         <item name="android:importantForAccessibility">no</item>
         <item name="android:textAppearance">@style/TextAppearance.Material3.LabelLarge</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textColor">@color/text_primary</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
-    <!-- Fleet overview number and label -->
-    <style name="TextAppearance.Transport.StatValue" parent="TextAppearance.Material3.HeadlineSmall">
-        <item name="android:textSize">24sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/text_accent</item>
+    <!-- Round tinted icon badge used in card headers and list rows -->
+    <style name="Widget.Transport.IconBadge" parent="">
+        <item name="android:layout_width">44dp</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:background">@drawable/bg_icon_rounded</item>
+        <item name="android:backgroundTint">@color/theme_primary_container</item>
+        <item name="android:importantForAccessibility">no</item>
+        <item name="tint">@color/theme_on_primary_container</item>
     </style>
 
-    <style name="TextAppearance.Transport.StatLabel" parent="TextAppearance.Material3.BodySmall">
-        <item name="android:textSize">13sp</item>
-        <item name="android:textColor">@color/text_secondary</item>
+    <!-- ===== Buttons ===== -->
+
+    <!-- App-wide default for every <Button>: rounded, sentence case, comfortable height -->
+    <style name="Widget.Transport.Button" parent="Widget.Material3.Button">
+        <item name="android:minHeight">@dimen/touch_target_driver</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:insetTop">4dp</item>
+        <item name="android:insetBottom">4dp</item>
+        <item name="cornerRadius">@dimen/radius_m</item>
+        <item name="iconPadding">10dp</item>
     </style>
 
-    <!-- Primary action button: brand blue, pill shape, large driver-friendly target -->
-    <style name="Widget.Transport.Button.Primary" parent="Widget.Material3.Button">
+    <!-- Primary action button: brand indigo, large driver-friendly target -->
+    <style name="Widget.Transport.Button.Primary" parent="Widget.Transport.Button">
         <item name="backgroundTint">@color/brand_primary</item>
         <item name="android:textColor">@color/brand_on_primary</item>
+        <item name="iconTint">@color/brand_on_primary</item>
         <item name="android:minHeight">@dimen/touch_target_action</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="cornerRadius">@dimen/radius_pill</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <!-- Soft tinted secondary action -->
+    <style name="Widget.Transport.Button.Tonal" parent="Widget.Material3.Button.TonalButton">
+        <item name="android:minHeight">@dimen/touch_target_driver</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="cornerRadius">@dimen/radius_m</item>
+        <item name="backgroundTint">@color/theme_primary_container</item>
+        <item name="android:textColor">@color/theme_on_primary_container</item>
+        <item name="iconTint">@color/theme_on_primary_container</item>
+        <item name="iconPadding">10dp</item>
+    </style>
+
+    <!-- Outlined secondary action -->
+    <style name="Widget.Transport.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:minHeight">@dimen/touch_target_driver</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="cornerRadius">@dimen/radius_m</item>
+        <item name="strokeColor">@color/border_light</item>
+        <item name="android:textColor">@color/text_accent</item>
+        <item name="iconTint">@color/text_accent</item>
+        <item name="iconPadding">10dp</item>
+    </style>
+
+    <!-- White button that sits on the gradient hero -->
+    <style name="Widget.Transport.Button.OnHero" parent="Widget.Transport.Button">
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/brand_primary_dark</item>
+        <item name="iconTint">@color/brand_primary_dark</item>
+        <item name="android:minHeight">@dimen/touch_target_action</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <!-- Translucent button on the gradient hero -->
+    <style name="Widget.Transport.Button.OnHeroGlass" parent="Widget.Transport.Button">
+        <item name="backgroundTint">@color/glass_fill</item>
+        <item name="android:textColor">@color/on_hero</item>
+        <item name="iconTint">@color/on_hero</item>
+        <item name="strokeColor">@color/glass_stroke</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <!-- Destructive action (delete screens) -->
+    <style name="Widget.Transport.Button.Danger" parent="Widget.Transport.Button.Primary">
+        <item name="backgroundTint">@color/error_red</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="iconTint">@color/white</item>
+    </style>
+
+    <!-- ===== Form controls ===== -->
+
+    <!-- Filled text field (plain EditText). Spacing above is built in. -->
+    <style name="Widget.Transport.Field" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/spacing_m</item>
+        <item name="android:minHeight">56dp</item>
+        <item name="android:background">@drawable/edittext_background</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingBottom">14dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+    </style>
+
+    <!-- Dropdown (Spinner) that matches the text fields, with a chevron and rounded popup -->
+    <style name="Widget.Transport.Dropdown" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_marginTop">@dimen/spacing_m</item>
+        <item name="android:background">@drawable/bg_dropdown</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">48dp</item>
+        <item name="android:spinnerMode">dropdown</item>
+        <item name="android:popupBackground">@drawable/bg_popup</item>
+        <item name="android:popupElevation">8dp</item>
+    </style>
+
+    <!-- Segmented control: a horizontal RadioGroup on a tinted track -->
+    <style name="Widget.Transport.SegmentGroup" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/spacing_s</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:background">@drawable/bg_segment_track</item>
+    </style>
+
+    <!-- One option in a segmented control -->
+    <style name="Widget.Transport.Segment" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/bg_segment</item>
+        <item name="android:gravity">center</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/segment_text</item>
+    </style>
+
+    <!-- Small label above a group of fields -->
+    <style name="Widget.Transport.FieldLabel" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/spacing_xl</item>
+        <item name="android:textAppearance">@style/TextAppearance.Transport.SectionLabel</item>
+    </style>
+
+    <!-- Card header row: icon badge + title -->
+    <style name="Widget.Transport.CardHeader" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="Widget.Transport.CardHeaderTitle" parent="">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">@dimen/spacing_m</item>
+        <item name="android:textAppearance">@style/TextAppearance.Transport.Title</item>
+    </style>
+
+    <!-- Status pill (colour per state with backgroundTint + textColor) -->
+    <style name="Widget.Transport.Pill" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_pill</item>
+        <item name="android:paddingStart">10dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Transport.Badge</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <!-- ===== Shapes ===== -->
+
+    <style name="ShapeAppearance.Transport.Rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_m</item>
+    </style>
+
+    <style name="ShapeAppearance.Transport.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- ===== Inputs ===== -->
+
+    <!-- Filled field, fully rounded, no resting underline; indigo underline while focused -->
+    <style name="Widget.Transport.TextInput" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/surface_variant</item>
+        <item name="boxStrokeColor">@color/input_stroke</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="boxCornerRadiusTopStart">@dimen/radius_m</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/radius_m</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/radius_m</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/radius_m</item>
+        <item name="hintTextColor">@color/text_accent</item>
+        <item name="startIconTint">@color/text_hint</item>
+        <item name="endIconTint">@color/text_hint</item>
     </style>
 </resources>

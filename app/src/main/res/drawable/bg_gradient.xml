@@ -1,12 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Full-screen brand gradient with soft light orbs (auth screens). -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
             <gradient
-                android:angle="45"
-                android:startColor="#006400"
-                android:endColor="#FFD700"
+                android:angle="300"
+                android:startColor="@color/brand_gradient_start"
+                android:centerColor="@color/brand_gradient_mid"
+                android:endColor="@color/brand_gradient_end"
                 android:type="linear" />
+        </shape>
+    </item>
+    <item
+        android:width="300dp"
+        android:height="300dp"
+        android:gravity="top|end"
+        android:right="-120dp"
+        android:top="-80dp">
+        <shape android:shape="oval">
+            <solid android:color="#1AFFFFFF" />
+        </shape>
+    </item>
+    <item
+        android:width="220dp"
+        android:height="220dp"
+        android:gravity="bottom|start"
+        android:bottom="-60dp"
+        android:left="-90dp">
+        <shape android:shape="oval">
+            <solid android:color="#12FFFFFF" />
         </shape>
     </item>
 </layer-list>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rounded, tinted list row with a ripple. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/theme_primary_container">
+    <item>
+        <shape>
+            <solid android:color="@color/surface_variant" />
+            <corners android:radius="@dimen/radius_m" />
+        </shape>
+    </item>
+</ripple>

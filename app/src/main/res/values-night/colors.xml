@@ -1,43 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Dark theme (review section 5). Bars and buttons keep the brand colours with white text;
-         surfaces go dark and text goes light. Text colours meet 4.5:1 on #1E1E1E. -->
-    <color name="screen_background">#121212</color>
-    <color name="surface">#1E1E1E</color>
-    <color name="surface_light">#242424</color>
-    <color name="gray_light">#2A2A2A</color>
-    <color name="light_gray">#3A3A3A</color>
-    <color name="divider">#333333</color>
-    <color name="border_light">#3A3A3A</color>
+    <!-- Dark theme. Bars, hero gradients and filled buttons keep the brand colours with white text;
+         surfaces go deep navy and text goes light. Text colours meet 4.5:1 on the surface. -->
+    <color name="screen_background">#0B0D17</color>
+    <color name="surface">#151826</color>
+    <color name="surface_light">#0B0D17</color>
+    <color name="gray_light">#1F2335</color>
+    <color name="light_gray">#2A2F45</color>
+    <color name="divider">#262A3E</color>
+    <color name="border_light">#2A2F45</color>
 
-    <color name="text_primary">#E6E6E6</color>
-    <color name="text_strong">#E0E0E0</color>
-    <color name="text_dark">#D0D0D0</color>
-    <color name="text_secondary">#B0B0B0</color>
-    <color name="text_muted">#A8A8A8</color>
-    <color name="text_hint">#9E9E9E</color>
-    <color name="gray">#A8A8A8</color>
+    <color name="text_primary">#E8EAF6</color>
+    <color name="text_strong">#E2E5F3</color>
+    <color name="text_dark">#CBD0E4</color>
+    <color name="text_secondary">#A5ABC4</color>
+    <color name="text_muted">#9AA0BA</color>
+    <color name="text_hint">#8D93AD</color>
+    <color name="gray">#9AA0BA</color>
 
-    <color name="text_accent">#93C5FD</color>
-    <color name="text_link">#90CAF9</color>
-    <color name="text_error">#EF9A9A</color>
+    <color name="text_accent">#A5B4FC</color>
+    <color name="text_link">#A5B4FC</color>
+    <color name="text_error">#FCA5A5</color>
 
-    <!-- Design system. brand_primary stays #2563EB (bars, filled buttons with white text);
-         the Material primary role goes light so primary-coloured text stays readable on dark. -->
-    <color name="theme_primary">#93C5FD</color>
-    <color name="theme_on_primary">#0B1F44</color>
-    <color name="theme_primary_container">#1E3A8A</color>
-    <color name="theme_on_primary_container">#DBEAFE</color>
+    <color name="theme_primary">#A5B4FC</color>
+    <color name="theme_on_primary">#1E1B4B</color>
+    <color name="theme_primary_container">#312E81</color>
+    <color name="theme_on_primary_container">#E0E7FF</color>
 
-    <color name="status_success_container">#1E3A24</color>
-    <color name="status_on_success">#81C995</color>
-    <color name="status_warning_container">#3D2E00</color>
-    <color name="status_on_warning">#FDD663</color>
-    <color name="status_error_container">#3E1C1A</color>
-    <color name="status_on_error">#F28B82</color>
-    <color name="status_info_container">#1E2A44</color>
-    <color name="status_on_info">#93C5FD</color>
+    <color name="status_success_container">#14321F</color>
+    <color name="status_on_success">#86EFAC</color>
+    <color name="status_warning_container">#3A2A05</color>
+    <color name="status_on_warning">#FCD34D</color>
+    <color name="status_error_container">#3B1518</color>
+    <color name="status_on_error">#FCA5A5</color>
+    <color name="status_info_container">#1E1F4A</color>
+    <color name="status_on_info">#A5B4FC</color>
 
-    <color name="surface_variant">#2D2F31</color>
-    <color name="outline_card">#3C4043</color>
+    <color name="tile_cyan_container">#0E3440</color>
+    <color name="tile_on_cyan">#67E8F9</color>
+    <color name="tile_violet_container">#2E1F55</color>
+    <color name="tile_on_violet">#C4B5FD</color>
+    <color name="tile_amber_container">#3A2A05</color>
+    <color name="tile_on_amber">#FCD34D</color>
+
+    <color name="surface_variant">#1F2335</color>
+    <color name="outline_card">#262A3E</color>
 </resources>

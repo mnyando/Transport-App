@@ -23,7 +23,8 @@ class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.StaffViewHolder> {
     @Override
     public StaffViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(android.R.layout.simple_list_item_1, parent, false);
+                .inflate(R.layout.item_list_row, parent, false);
+        ((android.widget.ImageView) view.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_driver);
         return new StaffViewHolder(view);
     }
 

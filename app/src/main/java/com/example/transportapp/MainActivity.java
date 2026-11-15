@@ -21,7 +21,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
+        // Straight to sign-in: the home screen is chosen by the role on the account
+        // (Login.fetchUserRole), so a separate "pick your role" page only added a step.
         findViewById(R.id.get_started).setOnClickListener(v ->
-                startActivity(new Intent(this, RoleSelectActivity.class)));
+                startActivity(new Intent(this, Login.class)));
     }
 }

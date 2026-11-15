@@ -72,7 +72,7 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
             // Names only: staff phone numbers are not shown to parents (review section 3).
             // Parents contact the driver and attendant through the bus chat.
             tvDriver.setText(formatLabelValue("Driver", student.getDriverName()));
-            tvAttendant.setText(formatLabelValue("Attendant", student.getAttendantName()));
+            tvAttendant.setText(formatLabelValue("Conductor", student.getAttendantName()));
             tvPickup.setText(formatLabelValue("Pickup", student.getPickupTime()));
             tvDropoff.setText(formatLabelValue("Drop-off", student.getDropOffTime()));
         }

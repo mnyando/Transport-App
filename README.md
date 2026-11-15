@@ -6,7 +6,7 @@ Built in Java with Firebase (Authentication, Cloud Firestore, Cloud Messaging).
 
 ## Features
 
-The app opens on a landing screen. **Get Started** leads to a role picker (School, Parent, Driver) and then to login or sign-up. After login the user is sent to the dashboard for the role stored on their account.
+The app opens on a landing screen. **Get Started** leads straight to login or sign-up (there is no role picker). After login the user is sent to the dashboard for the role stored on their account.
 
 | Role | What they can do |
 |---|---|
@@ -60,10 +60,11 @@ The app reads and writes these Firestore collections: `users`, `staff`, `student
 
 #### Accounts and access
 
-The role always comes from `users/{uid}.role` on the server, never from the role picker, and `firestore.rules` enforces it:
+The role always comes from `users/{uid}.role` on the server, and `firestore.rules` enforces it:
 
 - **Parents** sign up in the app with the school's **sign-up code** (role `parent`, with recorded consent to the privacy notice) and must verify their email. The school enters the parent's email on the student record. Cloud Functions then link the verified account to the child by account ID (`parentUids`), and parents can read only children linked that way.
-- **Drivers** also sign up in the app, with the same sign-up code. The school then enters the driver's sign-in email on their staff record (Add/Modify Staff). The `linkStaffAccount` Cloud Function sets `role: driver` and `staffId` on the account, and the driver sees only the children, trips, alerts and chat of the bus on that staff record. Removing the email, setting the staff member to Not Active or deleting the record ends access.
+- **Drivers** also sign up in the app, with the same sign-up code. The school then enters the driver's sign-in email on their staff record (Add/Modify Staff). The `linkStaffAccount` Cloud Function sets `role: driver` and `staffId` on the account, and the driver sees only the children, trips, alerts and chat of the bus on that staff record. Removing the email, setting the staff member to Not Active or deleting the record ends access. If that link was missed (for example the record was saved as Not Active, or created before the functions were deployed), the app calls `linkMyStaffAccount` at sign-in to repair it, and tells the driver why if it can't.
+- **Conductors** are staff with the role shown as *Conductor* (stored as `Attendant`). They need no driving licence or sign-in email and don't sign in; their name is shown to parents on the bus.
 - **School** accounts are set up by an administrator in the Firebase console (`role: school`).
 
 Deploy the rules, indexes and functions together (functions need the Blaze plan):
@@ -87,6 +88,7 @@ firebase deploy --only firestore:rules,firestore:indexes,functions
 |---|---|
 | `sendParentPush` | Sends each pick-up, drop-off and SOS alert to the parent's phones, respecting their alert settings. |
 | `linkStaffAccount`, `onUserProfileCreated` | Link a driver's account to their staff record by email. |
+| `linkMyStaffAccount` | Called at sign-in: repairs a driver link the two triggers above missed, and reports why when it can't. |
 | `linkMyChildren`, `onStudentWritten` | Link verified parents to their children by account ID, and keep each bus's `studentCount` correct. |
 | `syncBusStaff` | Keeps the driver and attendant names on `busGroups/{bus}` for parents. |
 | `notifyChatMessage` | Pushes a new bus-chat message to the other people in that bus's chat. |
@@ -121,7 +123,7 @@ keyPassword=...
 | Suite | What it covers | Run |
 |---|---|---|
 | `app/src/test` | ViewModel unit tests with fake repositories: the parent dashboard and the trip rules (explicit start, one trip at a time, resume, honest alerts). | `./gradlew testDebugUnitTest` |
-| `app/src/androidTest` | The app launches and **Get Started** opens the role picker. | `./gradlew connectedAndroidTest` (emulator or device) |
+| `app/src/androidTest` | The app launches and **Get Started** opens sign-in. | `./gradlew connectedAndroidTest` (emulator or device) |
 | `functions/test` | Cloud Function helpers (time zones, missing drop-offs). | `cd functions && npm ci && npm test` |
 | `rules-tests` | `firestore.rules` in the Firestore emulator: who can read and write what. | `cd rules-tests && npm ci && npm test` (needs Java 11+) |
 
@@ -133,7 +135,7 @@ GitHub Actions (`.github/workflows/ci.yml`) runs the build, the unit tests, the 
 app/src/main/
 ├── AndroidManifest.xml
 ├── java/com/example/transportapp/
-│   ├── MainActivity, RoleSelectActivity, Login, SignUp, PrivacyNotice   # entry flow and auth
+│   ├── MainActivity, Login, SignUp, PrivacyNotice, StaffLinks   # entry flow and auth
 │   ├── SchoolLanding, Add*/Modify*/Delete*           # school management screens
 │   ├── Reports, *ReportActivity                      # reports and charts
 │   ├── DriverLanding, TripActivity, TripViewModel, *TripRepository, TripLocationService   # driver screens

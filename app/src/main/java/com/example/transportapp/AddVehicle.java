@@ -79,12 +79,30 @@ public class AddVehicle extends AppCompatActivity {
         vehicleData.put("studentCount", 0L);
         vehicleData.put("status", status); // Add status to the map
 
-        // Save data to Firestore
-        db.collection(FirestorePaths.VEHICLES).add(vehicleData)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(this, "Vehicle added successfully", Toast.LENGTH_SHORT).show();
-                    finish(); // Close the activity after saving
+        // Vehicle names must be unique: routes, staff, children and the bus group all find the
+        // bus by name. The button stays off until done so a double tap can't add it twice.
+        saveVehicleButton.setEnabled(false);
+        RecordLinks.nameTaken(db, FirestorePaths.VEHICLES, "vehicleName", vehicleName, null)
+                .addOnSuccessListener(taken -> {
+                    if (Boolean.TRUE.equals(taken)) {
+                        saveVehicleButton.setEnabled(true);
+                        vehicleNameInput.setError(getString(R.string.error_vehicle_name_taken, vehicleName));
+                        vehicleNameInput.requestFocus();
+                        return;
+                    }
+                    db.collection(FirestorePaths.VEHICLES).add(vehicleData)
+                            .addOnSuccessListener(documentReference -> {
+                                Toast.makeText(this, "Vehicle added successfully", Toast.LENGTH_SHORT).show();
+                                finish(); // Close the activity after saving
+                            })
+                            .addOnFailureListener(e -> {
+                                saveVehicleButton.setEnabled(true);
+                                UserErrors.show(this, "Could not save the vehicle", e);
+                            });
                 })
-                .addOnFailureListener(e -> UserErrors.show(this, "Could not save the vehicle", e));
+                .addOnFailureListener(e -> {
+                    saveVehicleButton.setEnabled(true);
+                    UserErrors.show(this, "Could not save the vehicle", e);
+                });
     }
 }

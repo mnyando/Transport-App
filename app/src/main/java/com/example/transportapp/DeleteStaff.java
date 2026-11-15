@@ -75,6 +75,12 @@ public class DeleteStaff extends AppCompatActivity implements StaffAdapter.OnSta
         fetchRoutes();
         fetchStaff();
 
+        // Read-only screen. android:enabled on a RadioGroup doesn't reach its buttons, so the
+        // status and role toggles could still be tapped (and did nothing).
+        for (RadioGroup group : new RadioGroup[]{statusRadioGroup, roleRadioGroup}) {
+            for (int i = 0; i < group.getChildCount(); i++) group.getChildAt(i).setEnabled(false);
+        }
+
         // Handle staff deletion
         deleteStaffButton.setOnClickListener(v -> showDeleteConfirmationDialog());
     }
@@ -182,14 +188,18 @@ public class DeleteStaff extends AppCompatActivity implements StaffAdapter.OnSta
     }
 
     private void deleteStaff() {
+        if (selectedStaffId == null) return;
+        deleteStaffButton.setEnabled(false);
         firestore.collection(FirestorePaths.STAFF).document(selectedStaffId)
                 .delete()
                 .addOnSuccessListener(aVoid -> {
+                    deleteStaffButton.setEnabled(true);
                     Toast.makeText(this, "Staff deleted successfully", Toast.LENGTH_SHORT).show();
                     fetchStaff(); // Refresh the list
                     clearFields();
                 })
                 .addOnFailureListener(e -> {
+                    deleteStaffButton.setEnabled(true);
                     UserErrors.show(this, "Could not delete staff", e);
                 });
     }

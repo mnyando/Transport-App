@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Shared footer (review section 4). Use with <include layout="@layout/footer" />.
-     TransportApp fills in the copyright line with the current year. -->
+<!-- Shared footer: a quiet sign-off line instead of a heavy coloured bar.
+     Use with <include layout="@layout/footer" />. TransportApp fills in the current year. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/brand_primary"
     android:gravity="center"
-    android:paddingVertical="12dp">
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/spacing_l"
+    android:paddingBottom="@dimen/spacing_m">
+
+    <ImageView
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginEnd="6dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_shield_24"
+        app:tint="@color/text_hint" />
 
     <TextView
         android:id="@+id/footer_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:textSize="14sp" />
+        android:textColor="@color/text_hint"
+        android:textSize="12sp" />
 </LinearLayout>

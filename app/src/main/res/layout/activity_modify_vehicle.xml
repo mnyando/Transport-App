@@ -1,156 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fillViewport="true"
     android:background="@color/screen_background"
-    android:padding="16dp">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Toolbar -->
         <include
             layout="@layout/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <!-- Filter Section -->
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="@color/surface"
-            android:padding="24dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="10dp">
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_l">
 
-            <LinearLayout
+            <!-- Step 1: choose a vehicle -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
-                <!-- RecyclerView for Vehicles -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/vehicleRecyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="217dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:nestedScrollingEnabled="true" />
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Vehicle Details Form -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="@color/surface"
-            android:padding="24dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="10dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- Vehicle Name -->
-                <EditText
-                    android:id="@+id/vehicleNameInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="@string/hint_vehicle_name"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textSize="20sp"/>
-
-                <!-- Vehicle Number -->
-                <EditText
-                    android:id="@+id/vehicleNumberInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="@string/hint_vehicle_number"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textSize="20sp"/>
-
-                <!-- Vehicle ID -->
-                <EditText
-                    android:id="@+id/vehicleIdInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="@string/hint_vehicle_id"
-                    android:inputType="text"
-                    android:padding="12dp"
-                    android:textSize="20sp"/>
-
-                <!-- Capacity -->
-                <EditText
-                    android:id="@+id/capacityInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:background="@drawable/edittext_background"
-                    android:hint="@string/hint_capacity"
-                    android:inputType="number"
-                    android:padding="12dp"
-                    android:textSize="20sp"/>
-
-                <!-- Radio Buttons for Active/Not Active -->
-                <RadioGroup
-                    android:id="@+id/statusRadioGroup"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_l">
 
-                    <RadioButton
-                        android:id="@+id/activeRadioButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/active"
-                        android:textSize="18sp"
-                        android:padding="8dp" />
+                    <LinearLayout style="@style/Widget.Transport.CardHeader">
 
-                    <RadioButton
-                        android:id="@+id/notActiveRadioButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/not_active"
-                        android:textSize="18sp"
-                        android:padding="8dp" />
-                </RadioGroup>
+                        <ImageView
+                            style="@style/Widget.Transport.IconBadge"
+                            android:backgroundTint="@color/tile_amber_container"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_bus_24"
+                            app:tint="@color/tile_on_amber" />
 
-                <!-- Save Button -->
-                <Button
-                    android:id="@+id/saveVehicleButton"
-                    android:layout_width="280dp"
+                        <TextView
+                            style="@style/Widget.Transport.CardHeaderTitle"
+                            android:text="@string/form_choose_vehicle" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/vehicleRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:clipToPadding="false"
+                        android:nestedScrollingEnabled="true" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Step 2: edit -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_m">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="24dp"
-                    android:backgroundTint="@color/brand_primary"
-                    android:padding="16dp"
-                    android:text="@string/title_modify_vehicle"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_l">
+
+                    <LinearLayout style="@style/Widget.Transport.CardHeader">
+
+                        <ImageView
+                            style="@style/Widget.Transport.IconBadge"
+                            android:backgroundTint="@color/tile_violet_container"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_edit_24"
+                            app:tint="@color/tile_on_violet" />
+
+                        <TextView
+                            style="@style/Widget.Transport.CardHeaderTitle"
+                            android:text="@string/form_details" />
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/vehicleNameInput"
+                        style="@style/Widget.Transport.Field"
+                        android:layout_marginTop="@dimen/spacing_l"
+                        android:hint="@string/hint_vehicle_name"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapWords" />
+
+                    <EditText
+                        android:id="@+id/vehicleNumberInput"
+                        style="@style/Widget.Transport.Field"
+                        android:hint="@string/hint_vehicle_number"
+                        android:importantForAutofill="no"
+                        android:inputType="textCapCharacters" />
+
+                    <EditText
+                        android:id="@+id/vehicleIdInput"
+                        style="@style/Widget.Transport.Field"
+                        android:hint="@string/hint_vehicle_id"
+                        android:importantForAutofill="no"
+                        android:inputType="text" />
+
+                    <EditText
+                        android:id="@+id/capacityInput"
+                        style="@style/Widget.Transport.Field"
+                        android:hint="@string/hint_capacity"
+                        android:importantForAutofill="no"
+                        android:inputType="number" />
+
+                    <TextView
+                        style="@style/Widget.Transport.FieldLabel"
+                        android:text="@string/form_status" />
+
+                    <RadioGroup
+                        android:id="@+id/statusRadioGroup"
+                        style="@style/Widget.Transport.SegmentGroup">
+
+                        <RadioButton
+                            android:id="@+id/activeRadioButton"
+                            style="@style/Widget.Transport.Segment"
+                            android:text="@string/active" />
+
+                        <RadioButton
+                            android:id="@+id/notActiveRadioButton"
+                            style="@style/Widget.Transport.Segment"
+                            android:text="@string/not_active" />
+                    </RadioGroup>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/saveVehicleButton"
+                        style="@style/Widget.Transport.Button.Primary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xl"
+                        android:text="@string/title_modify_vehicle"
+                        app:icon="@drawable/ic_check_24"
+                        app:iconGravity="textStart" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

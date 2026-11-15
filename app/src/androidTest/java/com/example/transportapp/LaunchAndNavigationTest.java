@@ -15,8 +15,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Guards the app's entry flow: MainActivity must launch, and "Get Started" must open the
- * RoleSelectActivity role picker. Catches regressions such as an activity missing from the manifest
+ * Guards the app's entry flow: MainActivity must launch, and "Get Started" must open sign-in
+ * (there is no separate role picker; the account's role decides the home screen). Catches
+ * regressions such as an activity missing from the manifest
  * (ActivityNotFoundException) or a layout that fails to inflate.
  */
 @RunWith(AndroidJUnit4.class)
@@ -32,12 +33,10 @@ public class LaunchAndNavigationTest {
     }
 
     @Test
-    public void getStarted_opensRolePicker() {
+    public void getStarted_opensSignIn() {
         onView(withId(R.id.get_started)).perform(scrollTo(), click());
 
-        // The role picker is a ScrollView, so scroll each button into view before asserting.
-        onView(withId(R.id.school_button)).perform(scrollTo()).check(matches(isDisplayed()));
-        onView(withId(R.id.parent_button)).perform(scrollTo()).check(matches(isDisplayed()));
-        onView(withId(R.id.driver_button)).perform(scrollTo()).check(matches(isDisplayed()));
+        onView(withId(R.id.etEmail)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnLogin)).perform(scrollTo()).check(matches(isDisplayed()));
     }
 }

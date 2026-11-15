@@ -1,38 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Bus group chat: gradient toolbar, message bubbles, pill composer with a round send button.
+     The title ("Bus X chat") comes from ChatActivity.setTitle via TransportApp. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/screen_background"
+    android:orientation="vertical">
 
-    <!-- RecyclerView to display chat messages -->
+    <include
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingVertical="@dimen/spacing_m"
         android:scrollbars="vertical" />
 
-    <!-- Input section for typing and sending messages -->
+    <!-- Composer -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_m"
+        android:paddingTop="@dimen/spacing_s"
+        android:paddingBottom="@dimen/spacing_m">
 
         <EditText
             android:id="@+id/messageInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@drawable/bg_input_pill"
             android:hint="@string/hint_type_a_message"
-            android:padding="8dp"
-            android:background="@android:drawable/editbox_background_normal" />
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="4"
+            android:minHeight="52dp"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="12dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_hint"
+            android:textSize="16sp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/send"
-            android:padding="8dp" />
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="@dimen/spacing_s"
+            android:contentDescription="@string/chat_send"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:backgroundTint="@color/brand_primary"
+            app:cornerRadius="26dp"
+            app:icon="@drawable/ic_send_24"
+            app:iconSize="22dp"
+            app:iconTint="@color/white" />
     </LinearLayout>
 </LinearLayout>

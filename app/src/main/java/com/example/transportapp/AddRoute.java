@@ -111,6 +111,14 @@ public class AddRoute extends AppCompatActivity {
             Toast.makeText(this, "Invalid distance value", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (totalDistance < 0) {
+            Toast.makeText(this, "Invalid distance value", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!RouteTimes.dropOffAfterPickup(pickupTime, dropOffTime)) {
+            Toast.makeText(this, R.string.error_dropoff_before_pickup, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // Prepare route data for Firestore (no time validation)
         Map<String, Object> routeData = new HashMap<>();
@@ -121,14 +129,31 @@ public class AddRoute extends AppCompatActivity {
         routeData.put("pickupTime", pickupTime);
         routeData.put("dropOffTime", dropOffTime);
 
-        // Save to Firestore
-        firestore.collection(FirestorePaths.ROUTES)
-                .add(routeData)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(this, "Route added successfully", Toast.LENGTH_SHORT).show();
-                    clearForm();
+        // Route names must be unique: students and staff find their route by name, and the
+        // first match would win. The button stays off until done so a double tap can't add twice.
+        addRouteButton.setEnabled(false);
+        RecordLinks.nameTaken(firestore, FirestorePaths.ROUTES, "routeName", routeName, null)
+                .addOnSuccessListener(taken -> {
+                    if (Boolean.TRUE.equals(taken)) {
+                        addRouteButton.setEnabled(true);
+                        routeNameEditText.setError(getString(R.string.error_route_name_taken, routeName));
+                        routeNameEditText.requestFocus();
+                        return;
+                    }
+                    firestore.collection(FirestorePaths.ROUTES)
+                            .add(routeData)
+                            .addOnSuccessListener(documentReference -> {
+                                addRouteButton.setEnabled(true);
+                                Toast.makeText(this, "Route added successfully", Toast.LENGTH_SHORT).show();
+                                clearForm();
+                            })
+                            .addOnFailureListener(e -> {
+                                addRouteButton.setEnabled(true);
+                                UserErrors.show(this, "Could not add route", e);
+                            });
                 })
                 .addOnFailureListener(e -> {
+                    addRouteButton.setEnabled(true);
                     UserErrors.show(this, "Could not add route", e);
                 });
     }
@@ -143,11 +168,11 @@ public class AddRoute extends AppCompatActivity {
     }
 
     private void showTimePickerDialog(EditText targetEditText) {
+        // Open at the time already in the box (not always 12:00).
+        int[] start = RouteTimes.parse(targetEditText.getText().toString());
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
-                (view, hourOfDay, minute) -> {
-                    String time = String.format("%02d:%02d", hourOfDay, minute); // Ensures "05:40"
-                    targetEditText.setText(time);
-                }, 12, 0, true); // 24-hour format
+                (view, hourOfDay, minute) -> targetEditText.setText(RouteTimes.format(hourOfDay, minute)),
+                start[0], start[1], true); // 24-hour format
         timePickerDialog.show();
     }
 }

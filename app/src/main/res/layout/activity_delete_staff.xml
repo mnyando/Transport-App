@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/screen_background"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-    <!-- Navigation Bar -->
     <include
         layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize" />
 
-    <!-- ScrollView -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -24,199 +20,155 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_l">
 
-            <!-- RecyclerView CardView -->
+            <include layout="@layout/delete_warning" />
+
+            <!-- Step 1: choose a staff member -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="@color/surface"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="10dp">
+                android:layout_marginTop="@dimen/spacing_m">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="10dp">
+                    android:padding="@dimen/spacing_l">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/staff_list"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
-                        android:layout_gravity="center"
-                        android:paddingBottom="8dp"/>
+                    <LinearLayout style="@style/Widget.Transport.CardHeader">
+
+                        <ImageView
+                            style="@style/Widget.Transport.IconBadge"
+                            android:backgroundTint="@color/tile_cyan_container"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_driver"
+                            app:tint="@color/tile_on_cyan" />
+
+                        <TextView
+                            style="@style/Widget.Transport.CardHeaderTitle"
+                            android:text="@string/form_choose_staff" />
+                    </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/driverRecyclerView"
                         android:layout_width="match_parent"
-                        android:layout_height="250dp"
-                        android:scrollbars="vertical"/>
+                        android:layout_height="240dp"
+                        android:layout_marginTop="@dimen/spacing_m"
+                        android:clipToPadding="false"
+                        android:scrollbars="vertical" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Delete Staff Form Section -->
+            <!-- Step 2: review (read-only) and remove -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:backgroundTint="@color/surface"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="10dp">
+                android:layout_marginTop="@dimen/spacing_m">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="24dp">
+                    android:padding="@dimen/spacing_l">
+
+                    <TextView
+                        style="@style/Widget.Transport.FieldLabel"
+                        android:layout_marginTop="0dp"
+                        android:text="@string/form_details" />
 
                     <EditText
                         android:id="@+id/driverNameInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginHorizontal="10dp"
-                        android:background="@drawable/edittext_background"
+                        style="@style/Widget.Transport.Field"
+                        android:layout_marginTop="@dimen/spacing_s"
+                        android:enabled="false"
                         android:hint="@string/hint_staff_name"
-                        android:inputType="text"
-                        android:padding="12dp"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint"
-                        android:textSize="20sp"
-                        android:enabled="false" /> <!-- Disabled for display only -->
+                        android:importantForAutofill="no"
+                        android:inputType="text" />
 
                     <EditText
                         android:id="@+id/driverPhoneInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginHorizontal="10dp"
-                        android:background="@drawable/edittext_background"
+                        style="@style/Widget.Transport.Field"
+                        android:enabled="false"
                         android:hint="@string/hint_phone_number"
-                        android:inputType="phone"
-                        android:padding="12dp"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint"
-                        android:textSize="20sp"
-                        android:enabled="false" />
+                        android:importantForAutofill="no"
+                        android:inputType="phone" />
 
                     <EditText
                         android:id="@+id/licenseNumberInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginHorizontal="10dp"
-                        android:background="@drawable/edittext_background"
+                        style="@style/Widget.Transport.Field"
+                        android:enabled="false"
                         android:hint="@string/hint_license_number"
-                        android:inputType="text"
-                        android:padding="12dp"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint"
-                        android:textSize="20sp"
-                        android:enabled="false" />
+                        android:importantForAutofill="no"
+                        android:inputType="text" />
+
+                    <TextView
+                        style="@style/Widget.Transport.FieldLabel"
+                        android:text="@string/form_assignment" />
 
                     <Spinner
                         android:id="@+id/vehicleDropdown"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginHorizontal="10dp"
-                        android:background="@drawable/edittext_background"
-                        android:padding="12dp"
-                        android:spinnerMode="dropdown"
+                        style="@style/Widget.Transport.Dropdown"
+                        android:layout_marginTop="@dimen/spacing_s"
                         android:enabled="false" />
 
                     <Spinner
                         android:id="@+id/routeDropdown"
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginHorizontal="10dp"
-                        android:background="@drawable/edittext_background"
-                        android:padding="12dp"
-                        android:spinnerMode="dropdown"
+                        style="@style/Widget.Transport.Dropdown"
                         android:enabled="false" />
+
+                    <TextView
+                        style="@style/Widget.Transport.FieldLabel"
+                        android:text="@string/form_status" />
 
                     <RadioGroup
                         android:id="@+id/statusRadioGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginHorizontal="10dp"
-                        android:orientation="horizontal"
+                        style="@style/Widget.Transport.SegmentGroup"
                         android:enabled="false">
 
                         <RadioButton
                             android:id="@+id/activeRadioButton"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/active"
-                            android:textSize="18sp"
-                            android:textColor="@color/text_primary"
-                            android:padding="8dp"
-                            android:checked="true" />
+                            style="@style/Widget.Transport.Segment"
+                            android:checked="true"
+                            android:text="@string/active" />
 
                         <RadioButton
                             android:id="@+id/notActiveRadioButton"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/not_active"
-                            android:textSize="18sp"
-                            android:textColor="@color/text_primary"
-                            android:padding="8dp" />
+                            style="@style/Widget.Transport.Segment"
+                            android:text="@string/not_active" />
                     </RadioGroup>
+
+                    <TextView
+                        style="@style/Widget.Transport.FieldLabel"
+                        android:text="@string/form_role" />
 
                     <RadioGroup
                         android:id="@+id/roleRadioGroup"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginHorizontal="10dp"
-                        android:orientation="horizontal"
+                        style="@style/Widget.Transport.SegmentGroup"
                         android:enabled="false">
 
                         <RadioButton
                             android:id="@+id/driverRadioButton"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/driver"
-                            android:textSize="18sp"
-                            android:textColor="@color/text_primary"
-                            android:padding="8dp"
-                            android:checked="true" />
+                            style="@style/Widget.Transport.Segment"
+                            android:checked="true"
+                            android:text="@string/driver" />
 
                         <RadioButton
                             android:id="@+id/attendantRadioButton"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/attendant"
-                            android:textSize="18sp"
-                            android:textColor="@color/text_primary"
-                            android:padding="8dp" />
+                            style="@style/Widget.Transport.Segment"
+                            android:text="@string/attendant" />
                     </RadioGroup>
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/deleteStaffButton"
+                        style="@style/Widget.Transport.Button.Danger"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginBottom="10dp"
-                        android:backgroundTint="@color/brand_primary"
-                        android:padding="16dp"
+                        android:layout_marginTop="@dimen/spacing_xl"
                         android:text="@string/title_delete_staff"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:cornerRadius="12dp" />
+                        app:icon="@drawable/ic_delete_24"
+                        app:iconGravity="textStart" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
