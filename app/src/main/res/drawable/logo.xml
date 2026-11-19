@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Brand mark: front of a school bus on a blue tile. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp" android:height="48dp"
+    android:viewportWidth="48" android:viewportHeight="48">
+    <path android:fillColor="#1D4ED8" android:pathData="M12,0H36A12,12 0,0 1,48 12V36A12,12 0,0 1,36 48H12A12,12 0,0 1,0 36V12A12,12 0,0 1,12 0Z"/>
+    <path android:fillColor="#0891B2" android:pathData="M48,22V36A12,12 0,0 1,36 48H18Z"/>
+    <path android:fillColor="#FACC15" android:pathData="M16,10H32A4,4 0,0 1,36 14V34A3,3 0,0 1,33 37H15A3,3 0,0 1,12 34V14A4,4 0,0 1,16 10Z"/>
+    <path android:fillColor="#0B1F4D" android:pathData="M16.5,14H31.5A1.5,1.5 0,0 1,33 15.5V23.5A1.5,1.5 0,0 1,31.5 25H16.5A1.5,1.5 0,0 1,15 23.5V15.5A1.5,1.5 0,0 1,16.5 14Z"/>
+    <path android:fillColor="#93C5FD" android:pathData="M17,15.5H23L19,23.5H17Z"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M18.5,31a2,2 0,1 0,-4 0a2,2 0,1 0,4 0zM33.5,31a2,2 0,1 0,-4 0a2,2 0,1 0,4 0z"/>
+    <path android:fillColor="#0B1F4D" android:pathData="M21,30H27V32H21ZM14,37H19V40A1.5,1.5 0,0 1,17.5 41.5H15.5A1.5,1.5 0,0 1,14 40ZM29,37H34V40A1.5,1.5 0,0 1,32.5 41.5H30.5A1.5,1.5 0,0 1,29 40Z"/>
+</vector>

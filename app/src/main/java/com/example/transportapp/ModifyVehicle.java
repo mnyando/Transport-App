@@ -168,7 +168,7 @@ public class ModifyVehicle extends AppCompatActivity {
             }
             if (seats < riders) {
                 saveVehicleButton.setEnabled(true);
-                capacityInput.setError(getString(R.string.error_capacity_below_students, (int) riders));
+                capacityInput.setError(getResources().getQuantityString(R.plurals.error_capacity_below_students, (int) riders, (int) riders));
                 capacityInput.requestFocus();
                 return;
             }

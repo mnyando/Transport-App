@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Welcome illustration: a school bus on its route to school, with a live-location pin. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp" android:height="190dp"
+    android:viewportWidth="360" android:viewportHeight="190">
+    <!-- Sky, sun, clouds, hills -->
+    <path android:fillColor="#DBEAFE" android:pathData="M0,0H360V190H0Z"/>
+    <path android:fillColor="#FDE68A" android:pathData="M330,34a22,22 0,1 0,-44 0a22,22 0,1 0,44 0z"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M40,46a12,12 0,0 1,22 -6a10,10 0,0 1,16 8a8,8 0,0 1,-2 16H44a9,9 0,0 1,-4 -18zM170,30a10,10 0,0 1,18 -4a8,8 0,0 1,13 7a6,6 0,0 1,-1 12H172a7,7 0,0 1,-2 -15z"/>
+    <path android:fillColor="#BFDBFE" android:pathData="M0,120Q60,80 120,112T240,104T360,98V160H0Z"/>
+    <path android:fillColor="#A7C7F9" android:pathData="M0,140Q90,110 180,134T360,124V160H0Z"/>
+    <!-- School -->
+    <path android:fillColor="#FFFFFF" android:pathData="M272,92H344V160H272Z"/>
+    <path android:fillColor="#2563EB" android:pathData="M266,94L308,66L350,94Z"/>
+    <path android:fillColor="#0B1F4D" android:pathData="M307,50H309V68H307Z"/>
+    <path android:fillColor="#FACC15" android:pathData="M309,50H322L318,55L322,60H309Z"/>
+    <path android:fillColor="#93C5FD" android:pathData="M280,102H294V116H280ZM322,102H336V116H322ZM280,124H294V138H280ZM322,124H336V138H322Z"/>
+    <path android:fillColor="#1E3A8A" android:pathData="M300,128H316V160H300Z"/>
+    <path android:fillColor="#FDE68A" android:pathData="M302,84a6,6 0,1 0,12 0a6,6 0,1 0,-12 0z"/>
+    <!-- Road -->
+    <path android:fillColor="#334155" android:pathData="M0,158H360V190H0Z"/>
+    <path android:fillColor="#F8FAFC" android:pathData="M8,172H38V176H8ZM62,172H92V176H62ZM116,172H146V176H116ZM170,172H200V176H170ZM224,172H254V176H224ZM278,172H308V176H278ZM332,172H360V176H332Z"/>
+    <!-- Route dots and live-location pin -->
+    <path android:fillColor="#2563EB" android:pathData="M61.5,96a2.5,2.5 0,1 0,5 0a2.5,2.5 0,1 0,-5 0zM71.5,86a2.5,2.5 0,1 0,5 0a2.5,2.5 0,1 0,-5 0zM83.5,80a2.5,2.5 0,1 0,5 0a2.5,2.5 0,1 0,-5 0z"/>
+    <path android:fillColor="#2563EB" android:pathData="M52,58a14,14 0,0 1,14 14c0,10 -14,26 -14,26s-14,-16 -14,-26a14,14 0,0 1,14 -14z"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M46.5,72a5.5,5.5 0,1 0,11 0a5.5,5.5 0,1 0,-11 0z"/>
+    <!-- Bus -->
+    <path android:fillColor="#0F172A" android:fillAlpha="0.18" android:pathData="M96,156H254V160H96Z"/>
+    <path android:fillColor="#FACC15" android:pathData="M100,88H240A12,12 0,0 1,252 100V146A4,4 0,0 1,248 150H96A4,4 0,0 1,92 146V96A8,8 0,0 1,100 88Z"/>
+    <path android:fillColor="#EAB308" android:pathData="M92,132H252V138H92Z"/>
+    <path android:fillColor="#0B1F4D" android:pathData="M92,124H252V127H92Z"/>
+    <path android:fillColor="#1E3A8A" android:pathData="M102,98H124V118H102ZM130,98H152V118H130ZM158,98H180V118H158ZM186,98H208V118H186Z"/>
+    <path android:fillColor="#93C5FD" android:pathData="M103,99H111L104,111H103ZM131,99H139L132,111H131ZM159,99H167L160,111H159ZM187,99H195L188,111H187Z"/>
+    <path android:fillColor="#1E3A8A" android:pathData="M216,98H238A8,8 0,0 1,246 106V120H216Z"/>
+    <path android:fillColor="#93C5FD" android:pathData="M217,99H226L218,113H217Z"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M247,140a3,3 0,1 0,6 0a3,3 0,1 0,-6 0z"/>
+    <path android:fillColor="#DC2626" android:pathData="M84,102H90V116H84Z"/>
+    <path android:fillColor="#0F172A" android:pathData="M111,152a13,13 0,1 0,26 0a13,13 0,1 0,-26 0zM209,152a13,13 0,1 0,26 0a13,13 0,1 0,-26 0z"/>
+    <path android:fillColor="#CBD5E1" android:pathData="M119,152a5,5 0,1 0,10 0a5,5 0,1 0,-10 0zM217,152a5,5 0,1 0,10 0a5,5 0,1 0,-10 0z"/>
+</vector>

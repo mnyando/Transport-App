@@ -246,7 +246,7 @@ public class ModifyRoute extends AppCompatActivity {
                 .update(updatedData)
                 .addOnSuccessListener(aVoid -> {
                     if (!studentsNeedUpdate || oldName == null) {
-                        finishUpdate(getString(R.string.route_updated_students, 0));
+                        finishUpdate(getResources().getQuantityString(R.plurals.route_updated_students, 0, 0));
                         return;
                     }
                     // Students keep their own copy of route, bus and times; move them with it.
@@ -257,8 +257,8 @@ public class ModifyRoute extends AppCompatActivity {
                                 for (String email : parentEmails) {
                                     BusGroups.addParent(firestore, vehicle, email);
                                 }
-                                finishUpdate(getString(R.string.route_updated_students,
-                                        parentEmails.size()));
+                                finishUpdate(getResources().getQuantityString(R.plurals.route_updated_students,
+                                        parentEmails.size(), parentEmails.size()));
                             })
                             .addOnFailureListener(e -> {
                                 updateRouteButton.setEnabled(true);

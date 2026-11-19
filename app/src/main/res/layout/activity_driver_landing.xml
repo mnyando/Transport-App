@@ -73,7 +73,7 @@
                     android:contentDescription="@null"
                     android:padding="2dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/driver"
+                    android:src="@drawable/ill_avatar_driver"
                     app:shapeAppearanceOverlay="@style/ShapeAppearance.Transport.Circle"
                     app:strokeColor="@color/on_hero"
                     app:strokeWidth="3dp" />

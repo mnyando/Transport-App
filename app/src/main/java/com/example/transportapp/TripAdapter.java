@@ -32,9 +32,10 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
     @Override
     public void onBindViewHolder(@NonNull TripViewHolder holder, int position) {
         Map<String, Object> trip = trips.get(position);
+        android.content.Context ctx = holder.itemView.getContext();
 
         // Set route
-        holder.routeText.setText(trip.containsKey("route") ? trip.get("route").toString() : "Unknown Route");
+        holder.routeText.setText(trip.containsKey("route") ? trip.get("route").toString() : ctx.getString(R.string.trip_unknown_route));
 
         // Set date/time
         if (trip.containsKey("date")) {
@@ -42,7 +43,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
         } else if (trip.containsKey("startTimeMillis")) {
             holder.timeText.setText(dateFormat.format(new Date((Long)trip.get("startTimeMillis"))));
         } else {
-            holder.timeText.setText("Date not available");
+            holder.timeText.setText(R.string.trip_date_unavailable);
         }
 
         // UPDATED TRIP TYPE SECTION - This is where you should add the new logic
@@ -50,15 +51,15 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
             // Use the tripType we set in processTripDocument
             String type = trip.get("tripType").toString();
             holder.tripType.setText(
-                    type.equalsIgnoreCase("pickup") ? "Pickup Trip" :
-                            type.equalsIgnoreCase("dropoff") ? "Dropoff Trip" : "Regular Trip");
+                    type.equalsIgnoreCase("pickup") ? R.string.trip_type_pickup :
+                            type.equalsIgnoreCase("dropoff") ? R.string.trip_type_dropoff : R.string.trip_type_regular);
         }
         // Keep the old type check as fallback
         else if (trip.containsKey("type")) {
             String type = trip.get("type").toString();
-            holder.tripType.setText(type.equalsIgnoreCase("pickup") ? "Pickup Trip" : "Dropoff Trip");
+            holder.tripType.setText(type.equalsIgnoreCase("pickup") ? R.string.trip_type_pickup : R.string.trip_type_dropoff);
         } else {
-            holder.tripType.setText("Trip Type: N/A");
+            holder.tripType.setText(R.string.trip_type_na);
         }
 
         // Set duration
@@ -68,18 +69,18 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.TripViewHolder
             long duration = (Long)trip.get("endTimeMillis") - (Long)trip.get("startTimeMillis");
             holder.durationText.setText(formatDuration(duration));
         } else {
-            holder.durationText.setText("Duration: N/A");
+            holder.durationText.setText(R.string.trip_duration_na);
         }
 
         // Set student count
         if (trip.containsKey("studentCount")) {
             int count = Integer.parseInt(trip.get("studentCount").toString());
-            holder.studentsText.setText(count + (count == 1 ? " student" : " students"));
+            holder.studentsText.setText(ctx.getResources().getQuantityString(R.plurals.trip_student_count, count, count));
         } else if (trip.containsKey("studentIds")) {
             int count = ((List<?>) trip.get("studentIds")).size();
-            holder.studentsText.setText(count + (count == 1 ? " student" : " students"));
+            holder.studentsText.setText(ctx.getResources().getQuantityString(R.plurals.trip_student_count, count, count));
         } else {
-            holder.studentsText.setText("Student count: N/A");
+            holder.studentsText.setText(R.string.trip_students_na);
         }
     }
     private String formatDuration(long millis) {

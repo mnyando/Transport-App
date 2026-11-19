@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.transportapp"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.transportapp"

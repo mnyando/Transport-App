@@ -91,7 +91,7 @@
                         android:id="@+id/studentAvatar"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/students_enrolled"
+                        android:src="@drawable/ill_avatar_student"
                         android:contentDescription="@string/student_avatar_desc"/>
 
                     <LinearLayout

@@ -146,7 +146,7 @@ public class TripActivity extends AppCompatActivity implements TripChecklistAdap
                 break;
             case READY:
             case STARTING:
-                statusText.setText(getString(R.string.trip_not_started, s.students.size(), vehicle));
+                statusText.setText(getResources().getQuantityString(R.plurals.trip_not_started, s.students.size(), s.students.size(), vehicle));
                 actionButton.setText(R.string.start_trip);
                 actionButton.setEnabled(s.phase == TripViewModel.Phase.READY);
                 actionButton.setOnClickListener(v -> viewModel.startTrip());

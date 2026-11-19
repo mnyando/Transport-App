@@ -98,7 +98,7 @@
                     android:layout_height="match_parent"
                     android:contentDescription="@null"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/landing_image" />
+                    android:src="@drawable/ill_hero_bus" />
             </com.google.android.material.card.MaterialCardView>
 
         <!-- Features -->

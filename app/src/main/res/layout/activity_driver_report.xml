@@ -27,6 +27,10 @@
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
         android:paddingTop="8dp"
+        android:hint="@string/search_drivers_hint"
+        android:inputType="text|textCapWords"
+        android:importantForAutofill="no"
+        android:imeOptions="actionSearch"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -59,7 +63,7 @@
                     android:id="@+id/driverAvatar"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:src="@drawable/active_driverr"
+                    android:src="@drawable/ill_avatar_driver"
                     android:contentDescription="@string/driver_avatar_desc"/>
 
                 <LinearLayout

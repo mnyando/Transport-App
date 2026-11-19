@@ -188,8 +188,8 @@ public class StudentReportActivity extends AppCompatActivity {
             // Set basic student info
             studentNameText.setText(studentData.containsKey("name") ?
                     studentData.get("name").toString() : "Unknown");
-            studentGradeText.setText(" " + (studentData.containsKey("grade") ?
-                    studentData.get("grade").toString() : "N/A"));
+            studentGradeText.setText(getString(R.string.student_grade_value,
+                    studentData.containsKey("grade") ? studentData.get("grade").toString() : getString(R.string.value_na)));
             studentVehicleText.setText(studentData.containsKey("vehicle") ?
                     studentData.get("vehicle").toString() : "Not assigned");
 

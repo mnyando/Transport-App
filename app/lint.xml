@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Lint checks reviewed and judged not to apply to this app. -->
+<lint>
+    <!-- Licence and vehicle "numbers" are alphanumeric plates/IDs (e.g. KDA 123B), so a numeric
+         keyboard would be wrong. -->
+    <issue id="TextFields" severity="ignore" />
+    <!-- accessibilityHeading is safely ignored below API 28 and helps TalkBack on newer devices. -->
+    <issue id="UnusedAttribute" severity="ignore" />
+    <!-- Each adapter's list is replaced wholesale from a fresh Firestore query, so a full
+         refresh is the correct change event. -->
+    <issue id="NotifyDataSetChanged" severity="ignore" />
+</lint>

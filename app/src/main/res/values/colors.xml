@@ -2,62 +2,52 @@
 <resources>
     <!-- Contrast ratios are for white text on the colour (WCAG AA needs 4.5:1).
          Colours used for text or surfaces have dark-mode values in values-night/colors.xml. -->
-    <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green">#15803D</color>        <!-- Status/data green -->
-    <color name="blue">#0E7490</color>         <!-- Secondary actions: deep cyan, 5.4:1 -->
+    <color name="blue">#0369A1</color>         <!-- Secondary actions: deep cyan, 5.4:1 -->
     <color name="red">#DC2626</color>          <!-- 4.8:1 -->
-    <color name="light_green">#22C55E</color>
     <color name="gold">#F59E0B</color>
     <color name="gray">#64748B</color>         <!-- Secondary text, 4.8:1 on white -->
-    <color name="light_gray">#E2E8F0</color>
     <color name="gray_light">#F1F5F9</color>
 
     <color name="text_primary">#0F172A</color>
     <color name="text_hint">#64748B</color>
-    <color name="screen_background">#F5F6FB</color>
-    <color name="accent_orange">#B45309</color> <!-- 5.0:1 -->
-    <color name="text_muted">#64748B</color>
+    <color name="screen_background">#F3F6FB</color>
+<!-- 5.0:1 -->
     <color name="text_secondary">#475569</color>
-    <color name="surface_light">#F5F6FB</color>
     <color name="error_red">#DC2626</color>
-    <color name="dark_green">#166534</color>
-    <color name="divider">#E8EAF2</color>
-    <color name="border_light">#E2E5EE</color>
-    <color name="link_blue">#4F46E5</color>
-    <color name="text_dark">#334155</color>
-    <color name="text_strong">#1E293B</color>
+    <color name="divider">#E5EAF2</color>
+    <color name="border_light">#DDE3EE</color>
 
     <!-- Semantic colours. Layouts use these instead of white/black. -->
     <color name="surface">#FFFFFF</color>
-    <color name="text_accent">#4338CA</color>   <!-- Indigo headings / numbers on a surface, 7.9:1 -->
-    <color name="text_link">#4F46E5</color>
+    <color name="text_accent">#1D4ED8</color>   <!-- Indigo headings / numbers on a surface, 7.9:1 -->
+    <color name="text_link">#2563EB</color>
     <color name="text_error">#DC2626</color>
 
-    <!-- ===== Design system: "Midnight Indigo" ===== -->
+    <!-- ===== Design system: "Transit Blue" ===== -->
 
     <!-- Brand: indigo with a violet gradient. brand_primary is fixed in both themes and carries
          white text (6.3:1). theme_* feed the Material colour roles and change for dark. -->
-    <color name="brand_primary">#4F46E5</color>
-    <color name="brand_primary_dark">#3730A3</color>
+    <color name="brand_primary">#2563EB</color>
+    <color name="brand_primary_dark">#1E3A8A</color>
     <color name="brand_on_primary">#FFFFFF</color>
-    <color name="brand_gradient_start">#312E81</color>
-    <color name="brand_gradient_mid">#4F46E5</color>
-    <color name="brand_gradient_end">#7C3AED</color>
+    <color name="brand_gradient_start">#0B1F4D</color>
+    <color name="brand_gradient_mid">#1D4ED8</color>
+    <color name="brand_gradient_end">#0891B2</color>
     <!-- School-bus amber, used sparingly for highlights -->
-    <color name="brand_accent">#FBBF24</color>
-    <color name="brand_on_accent">#451A03</color>
+    <color name="brand_accent">#FACC15</color>
 
     <!-- Translucent whites for "glass" panels on the gradient hero -->
     <color name="glass_fill">#26FFFFFF</color>
     <color name="glass_stroke">#40FFFFFF</color>
     <color name="on_hero">#FFFFFF</color>
-    <color name="on_hero_muted">#D9E0E7FF</color>
+    <color name="on_hero_muted">#DCE7F5FF</color>
 
-    <color name="theme_primary">#4F46E5</color>
+    <color name="theme_primary">#2563EB</color>
     <color name="theme_on_primary">#FFFFFF</color>
-    <color name="theme_primary_container">#E0E7FF</color>
-    <color name="theme_on_primary_container">#312E81</color>
+    <color name="theme_primary_container">#DBEAFE</color>
+    <color name="theme_on_primary_container">#1E3A8A</color>
 
     <!-- Status pairs: text/icon colour on its container meets 4.5:1 -->
     <color name="status_success_container">#DCFCE7</color> <!-- Boarded / Arrived -->
@@ -66,8 +56,8 @@
     <color name="status_on_warning">#92400E</color>
     <color name="status_error_container">#FEE2E2</color>   <!-- Absent / Emergency -->
     <color name="status_on_error">#B91C1C</color>
-    <color name="status_info_container">#E0E7FF</color>    <!-- Tracking / Live -->
-    <color name="status_on_info">#3730A3</color>
+    <color name="status_info_container">#DBEAFE</color>    <!-- Tracking / Live -->
+    <color name="status_on_info">#1E40AF</color>
 
     <!-- Tile accents (icon container + icon) for the school hub sections -->
     <color name="tile_cyan_container">#CFFAFE</color>
@@ -78,6 +68,8 @@
     <color name="tile_on_amber">#92400E</color>
 
     <!-- Surfaces and outlines -->
-    <color name="surface_variant">#EEF0F7</color>  <!-- Inputs, tiles, nested panels -->
-    <color name="outline_card">#E6E8F0</color>     <!-- 1dp card border -->
+    <color name="surface_variant">#EEF2F8</color>  <!-- Inputs, tiles, nested panels -->
+    <color name="outline_card">#E3E8F0</color>     <!-- 1dp card border -->
+    <!-- Used by parent_notification.xml -->
+    <color name="light_gray">#E2E8F0</color>
 </resources>

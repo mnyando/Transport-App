@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Student avatar: child with backpack straps. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp" android:height="64dp"
+    android:viewportWidth="64" android:viewportHeight="64">
+    <path android:fillColor="#FEF3C7" android:pathData="M64,32a32,32 0,1 0,-64 0a32,32 0,1 0,64 0z"/>
+    <path android:fillColor="#2563EB" android:pathData="M12,57a24,15 0,0 1,40 0a32,32 0,0 1,-40 0z"/>
+    <path android:fillColor="#F59E0B" android:pathData="M21,46h4v14h-4zM39,46h4v14h-4z"/>
+    <path android:fillColor="#E0A878" android:pathData="M28,38h8v8h-8z"/>
+    <path android:fillColor="#E8B48A" android:pathData="M43,30a11,12 0,1 0,-22 0a11,12 0,1 0,22 0z"/>
+    <path android:fillColor="#3B2A1E" android:pathData="M20,29Q19,15 32,15Q45,15 44,29Q40,22 32,22Q26,22 20,29Z"/>
+    <path android:fillColor="#3B2A1E" android:pathData="M26.5,31a1.5,1.5 0,1 0,3 0a1.5,1.5 0,1 0,-3 0zM34.5,31a1.5,1.5 0,1 0,3 0a1.5,1.5 0,1 0,-3 0z"/>
+    <path android:strokeColor="#3B2A1E" android:strokeWidth="1.6" android:strokeLineCap="round" android:pathData="M28.5,36Q32,39 35.5,36"/>
+</vector>

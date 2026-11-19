@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.PluralsRes;
 import androidx.annotation.StringRes;
 
 import com.google.android.gms.tasks.Task;
@@ -70,13 +71,28 @@ final class StudentRecords {
 
     /** A reason the save was refused, with a message for the school. */
     static final class Refused extends FirebaseFirestoreException {
-        @StringRes final int messageRes;
+        final int messageRes;
+        final int quantity; // -1 for a plain string, otherwise the count for a plurals resource
         final Object[] args;
 
         Refused(@StringRes int messageRes, Object... args) {
+            this(messageRes, -1, args);
+        }
+
+        private Refused(int messageRes, int quantity, Object[] args) {
             super("refused", Code.ABORTED);
             this.messageRes = messageRes;
+            this.quantity = quantity;
             this.args = args;
+        }
+
+        static Refused plural(@PluralsRes int pluralsRes, int quantity, Object... args) {
+            return new Refused(pluralsRes, quantity, args);
+        }
+
+        String message(Context context) {
+            return quantity < 0 ? context.getString(messageRes, args)
+                    : context.getResources().getQuantityString(messageRes, quantity, args);
         }
     }
 
@@ -141,7 +157,7 @@ final class StudentRecords {
             Exception e = task.getException();
             Refused refused = findRefused(e);
             if (refused != null) {
-                result.onFailed(context.getString(refused.messageRes, refused.args), null);
+                result.onFailed(refused.message(context), null);
             } else {
                 Log.w(TAG, "Student not saved", e);
                 result.onFailed(null, e);
@@ -170,7 +186,7 @@ final class StudentRecords {
                 count = stored != null ? stored : baseline;
                 int capacity = Vehicle.parseCapacity(bus.get("capacity"));
                 if (capacity <= 0) throw new Refused(R.string.error_vehicle_capacity_missing, data.get("vehicle"));
-                if (count >= capacity) throw new Refused(R.string.error_vehicle_full, data.get("vehicle"), capacity);
+                if (count >= capacity) throw Refused.plural(R.plurals.error_vehicle_full, (int) capacity, data.get("vehicle"), (int) capacity);
             }
 
             if (source == null) {

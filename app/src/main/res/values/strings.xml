@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Transport App</string>
 
     <string-array name="grade_levels">
@@ -35,28 +35,15 @@
     <string name="trips_completed">Trips Completed</string>
     <string name="peak_time">Peak Time</string>
     <string name="am_pm">AM</string>
-    <string name="pm">PM</string>
     <string name="avg_students">Avg Students</string>
     <string name="recent_route_trips">Recent Route Trips</string>
     <string name="route_efficiency_chart_desc">Bar chart showing route efficiency metrics including trips count, average duration, and student capacity</string>
-    <string name="trip_item_desc">Trip details including route, time, duration and number of students</string>
 
     <!-- Time Periods -->
-    <string name="time_period_early_morning">6-8 AM</string>
-    <string name="time_period_morning">8-10 AM</string>
-    <string name="time_period_midday">10 AM-12 PM</string>
-    <string name="time_period_afternoon">12-2 PM</string>
-    <string name="time_period_late_afternoon">2-4 PM</string>
-    <string name="time_period_evening">4-6 PM</string>
 
     <!-- Chart Labels -->
-    <string name="chart_label_trips">Trips</string>
-    <string name="chart_label_duration">Duration (mins)</string>
-    <string name="chart_label_students">Students</string>
 
     <!-- Empty States -->
-    <string name="empty_route_data">No trip data available for this route</string>
-    <string name="loading_routes">Loading route information…</string>
 
     <string name="student_report">Student Report</string>
     <string name="search_student">Search student</string>
@@ -104,7 +91,7 @@
     <string name="title_pick_up">Pick-up</string>
     <string name="title_reports">Transport Analytics</string>
     <string name="title_school_landing">School Dashboard</string>
-    <string name="footer_copyright">© %1$d School Transport Solutions</string>
+    <string name="footer_copyright" tools:ignore="PluralsCandidate">© %1$d School Transport Solutions</string>
 
     <!-- Layout text moved out of the layouts (review section 4) -->
     <string name="hint_route_id_name">Route ID/Name</string>
@@ -131,11 +118,8 @@
     <string name="hint_vehicle_number">Vehicle Number</string>
     <string name="hint_capacity">Capacity</string>
     <string name="hint_type_a_message">Type a message</string>
-    <string name="send">Send</string>
     <string name="hint_total_distance">Total Distance</string>
-    <string name="staff_list">Staff List</string>
     <string name="hint_vehicle_id">Vehicle ID</string>
-    <string name="driver_details">Driver Details</string>
     <string name="driver_name_name">Driver Name: [Name]</string>
     <string name="assigned_vehicle_vehicle">Assigned Vehicle: [Vehicle]</string>
     <string name="assigned_route_route">Assigned Route: [Route]</string>
@@ -144,9 +128,7 @@
     <string name="messages_from_parents">Messages from parents</string>
     <string name="sos_emergency">SOS - Emergency</string>
     <string name="n_0">0</string>
-    <string name="student_status">Student Status</string>
     <string name="trip_complete">Complete trip</string>
-    <string name="login_to_your_account">Login to Your Account</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -154,7 +136,6 @@
     <string name="no_account_sign_up">No account? Sign up</string>
     <string name="safe_reliable_transparent_school_transpo">Safe. Reliable. Transparent School Transport Solutions.</string>
     <string name="get_started">Get Started</string>
-    <string name="why_choose_our_app">Why Choose Our App?</string>
     <string name="bus_tracking">Bus Tracking</string>
     <string name="parents_can_get_timely_pickups_and">Parents can get timely pickups and drop-offs notifications.</string>
     <string name="instant_notifications">Instant Notifications</string>
@@ -166,14 +147,12 @@
     <string name="where_is_the_bus">Where is the bus?</string>
     <string name="message_the_bus">Message the bus</string>
     <string name="your_children">Your Children</string>
-    <string name="loading_your_children">Loading your children...</string>
+    <string name="loading_your_children">Loading your children…</string>
     <string name="notifications">Notifications</string>
     <string name="no_notifications_yet">No notifications yet</string>
     <string name="student_history">Student History</string>
-    <string name="school">School</string>
     <string name="parent_2">Parent</string>
     <string name="text">--:--</string>
-    <string name="general_information">Fleet overview</string>
     <string name="students_enrolled">Students Enrolled</string>
     <string name="text_2">-</string>
     <string name="routes_travelled">Routes Travelled</string>
@@ -203,12 +182,9 @@
     <string name="tile_remove">Remove</string>
     <string name="school_more">More</string>
     <string name="school_overview_hint">Pull down to refresh</string>
-    <string name="create_an_account">Create an Account</string>
     <string name="hint_full_name">Full Name</string>
     <string name="sign_up">Sign Up</string>
     <string name="already_have_an_account_sign_in">Already have an account? Sign in</string>
-    <string name="picked">Picked</string>
-    <string name="not_picked">Not Picked</string>
     <string name="grade_3">Grade: 3</string>
     <string name="route_a_westside">Route: A - Westside</string>
     <string name="vehicle_bus_101">Vehicle: Bus 101</string>
@@ -270,8 +246,7 @@
     <string name="trip_load_failed_detail">Check your internet connection, then try again.</string>
     <string name="trip_bus">Bus %1$s</string>
     <string name="trip_no_students">No children are assigned to this bus yet. Ask the school to check the student records.</string>
-    <string name="trip_not_started">%1$d children on bus %2$s. Tap Start trip when you set off.</string>
-    <string name="trip_active_status">Started %1$s · %2$d of %3$d marked</string>
+    <string name="trip_active_status" tools:ignore="PluralsCandidate">Started %1$s · %2$d of %3$d marked</string>
     <string name="trip_resumed">Continuing the trip you started earlier.</string>
     <string name="trip_completed">Trip completed. Parents are being notified.</string>
     <plurals name="trip_parents_without_email">
@@ -301,7 +276,6 @@
 
     <!-- Driver home (review #21) -->
     <string name="not_set">Not set</string>
-    <string name="driver_label_name">Driver: %1$s</string>
     <string name="driver_label_vehicle">Bus: %1$s</string>
     <string name="driver_label_route">Route: %1$s</string>
     <string name="driver_refresh_failed">Could not refresh your bus and route</string>
@@ -315,7 +289,6 @@
     <string name="error_vehicle_not_found">Bus %1$s was not found. Check which bus the route uses on Modify Route.</string>
     <string name="error_student_id_taken">Another student in %2$s already has ID %1$s.</string>
     <string name="error_vehicle_capacity_missing">Bus %1$s has no valid capacity. Set it on Modify Vehicle first.</string>
-    <string name="error_vehicle_full">Bus %1$s is full (%2$d seats). Choose another route or increase its capacity.</string>
     <string name="error_capacity_number">Enter the number of seats, for example 30</string>
     <string name="vehicle_capacity_label">Capacity: %1$s</string>
     <string name="error_license_taken">A staff member with this licence number already exists.</string>
@@ -366,7 +339,6 @@
     <string name="invite_code_message">Parents need this code to create an account. Give it only to families of children on the transport list, and change it if it gets out.</string>
     <string name="invite_code_none">No code set yet. Parents cannot sign up until you set one.</string>
     <string name="invite_code_current">Current code: %1$s</string>
-    <string name="invite_code_new">New code</string>
     <string name="invite_code_generate">New random code</string>
     <string name="invite_code_saved">Sign-up code updated</string>
     <string name="invite_code_load_failed">Could not load the sign-up code</string>
@@ -399,7 +371,6 @@
     <string name="form_status">Status</string>
     <string name="form_role">Role</string>
     <string name="form_schedule">Schedule</string>
-    <string name="form_contact">Contact</string>
     <string name="form_choose_staff">Choose a staff member</string>
     <string name="form_choose_route">Choose a route</string>
     <string name="form_choose_vehicle">Choose a vehicle</string>
@@ -418,17 +389,48 @@
     <string name="error_select_status">Choose Active or Not Active</string>
     <string name="error_route_name_taken">A route called "%1$s" already exists</string>
     <string name="error_vehicle_name_taken">A vehicle called "%1$s" already exists</string>
-    <string name="error_bus_too_small_for_route">%1$s has %2$d free seats, but %3$d children are on this route</string>
-    <string name="error_capacity_below_students">%1$d children are already on this bus. Capacity can\'t be lower than that.</string>
-    <string name="error_vehicle_rename_in_use">This bus is used by %1$d route(s), %2$d staff and %3$d children. Move them to another bus before renaming it.</string>
-    <string name="error_vehicle_delete_in_use">This bus is used by %1$d route(s), %2$d staff and %3$d children. Move them to another bus before removing it.</string>
-    <string name="error_route_delete_in_use">%1$d children and %2$d staff are on this route. Move them to another route before removing it.</string>
+    <string name="error_bus_too_small_for_route" tools:ignore="PluralsCandidate">%1$s has %2$d free seats, but %3$d children are on this route</string>
+    <string name="error_vehicle_rename_in_use" tools:ignore="PluralsCandidate">This bus is used by %1$d route(s), %2$d staff and %3$d children. Move them to another bus before renaming it.</string>
+    <string name="error_vehicle_delete_in_use" tools:ignore="PluralsCandidate">This bus is used by %1$d route(s), %2$d staff and %3$d children. Move them to another bus before removing it.</string>
+    <string name="error_route_delete_in_use" tools:ignore="PluralsCandidate">%1$d children and %2$d staff are on this route. Move them to another route before removing it.</string>
     <string name="error_driver_limit">%1$s already has 2 drivers</string>
-    <string name="route_updated_students">Route updated (%1$d children moved with it)</string>
     <string name="route_update_partial">Route saved, but some children could not be updated. Open the route and save it again.</string>
     <string name="checking_links_failed">Could not check what uses this record</string>
     <string name="error_dropoff_before_pickup">Drop-off time must be later than pickup time</string>
     <string name="error_license_required_driver">Drivers need a driving licence number</string>
     <string name="driver_staff_inactive">Your driver record is marked Not Active. Ask the school to set it to Active, then sign in again.</string>
     <string name="driver_staff_not_driver">Your staff record is not set up as a driver. Ask the school to set your role to Driver.</string>
+
+    <!-- Trip list (TripAdapter / StudentReportActivity) -->
+    <string name="trip_unknown_route">Unknown route</string>
+    <string name="trip_date_unavailable">Date not available</string>
+    <string name="trip_type_pickup">Pickup trip</string>
+    <string name="trip_type_dropoff">Dropoff trip</string>
+    <string name="trip_type_regular">Regular trip</string>
+    <string name="trip_type_na">Trip type: N/A</string>
+    <string name="trip_duration_na">Duration: N/A</string>
+    <string name="trip_students_na">Student count: N/A</string>
+    <string name="student_grade_value"> %1$s</string>
+    <string name="value_na">N/A</string>
+    <plurals name="trip_student_count">
+        <item quantity="one">%d student</item>
+        <item quantity="other">%d students</item>
+    </plurals>
+    <plurals name="trip_not_started">
+        <item quantity="one">%1$d child on bus %2$s. Tap Start trip when you set off.</item>
+        <item quantity="other">%1$d children on bus %2$s. Tap Start trip when you set off.</item>
+    </plurals>
+    <plurals name="error_vehicle_full">
+        <item quantity="one">Bus %1$s is full (%2$d seat). Choose another route or increase its capacity.</item>
+        <item quantity="other">Bus %1$s is full (%2$d seats). Choose another route or increase its capacity.</item>
+    </plurals>
+    <plurals name="route_updated_students">
+        <item quantity="one">Route updated (%1$d child moved with it)</item>
+        <item quantity="other">Route updated (%1$d children moved with it)</item>
+    </plurals>
+    <plurals name="error_capacity_below_students">
+        <item quantity="one">%1$d child is already on this bus. Capacity can\'t be lower than that.</item>
+        <item quantity="other">%1$d children are already on this bus. Capacity can\'t be lower than that.</item>
+    </plurals>
+    <string name="search_drivers_hint">Search drivers by name</string>
 </resources>

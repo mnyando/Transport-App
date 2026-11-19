@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Driver avatar: person in a uniform and peaked cap. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp" android:height="64dp"
+    android:viewportWidth="64" android:viewportHeight="64">
+    <path android:fillColor="#DBEAFE" android:pathData="M64,32a32,32 0,1 0,-64 0a32,32 0,1 0,64 0z"/>
+    <path android:fillColor="#1D4ED8" android:pathData="M10,56a26,16 0,0 1,44 0a32,32 0,0 1,-44 0z"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M27,45L32,53L37,45Z"/>
+    <path android:fillColor="#FACC15" android:pathData="M41,50h6v3h-6z"/>
+    <path android:fillColor="#B9825A" android:pathData="M28,38h8v8h-8z"/>
+    <path android:fillColor="#C68B59" android:pathData="M44,29a12,13 0,1 0,-24 0a12,13 0,1 0,24 0z"/>
+    <path android:fillColor="#0B1F4D" android:pathData="M18,22Q32,8 46,22V24H18Z"/>
+    <path android:fillColor="#0B1F4D" android:pathData="M18,23H48A2,2 0,0 1,48 27H16A2,2 0,0 1,18 23Z"/>
+    <path android:fillColor="#FACC15" android:pathData="M29.5,18a2.5,2.5 0,1 0,5 0a2.5,2.5 0,1 0,-5 0z"/>
+    <path android:fillColor="#3B2A1E" android:pathData="M26.5,31a1.5,1.5 0,1 0,3 0a1.5,1.5 0,1 0,-3 0zM34.5,31a1.5,1.5 0,1 0,3 0a1.5,1.5 0,1 0,-3 0z"/>
+    <path android:strokeColor="#3B2A1E" android:strokeWidth="1.6" android:strokeLineCap="round" android:pathData="M28.5,36Q32,39 35.5,36"/>
+</vector>
